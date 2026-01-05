@@ -1,0 +1,102 @@
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Converting diagrams:  95%|███████████████████████████████████████████▋  | 19/20 [00:09<00:00,  2.47it/s]Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
+Converting diagrams: 100%|██████████████████████████████████████████████| 20/20 [00:09<00:00,  2.10it/s]
+
+============================================================
+Conversion Summary
+============================================================
+Total HTML files:        155
+Converted:               0
+Skipped:                 0
+Errors:                  20
+============================================================
+
+⚠ Errors:
+  - Error processing Air filter.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Steering Wheel and AirBag.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Antenna.html: Error converting SVG: cannot import desired renderPM backend rlPyCairoSeek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Body Interior & Exterior Electronics.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Mud Guard.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing body lower stucture.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Body Exterior Trim.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing Baffle Plate-Ware.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing inner framing(left side).html: Error converting SVG: cannot import desired renderPM 
+backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  - Error processing inner framing(right side).html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users
+  ... and 10 more

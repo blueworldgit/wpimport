@@ -1,0 +1,28 @@
+# WooCommerce EPC Import - Python Dependencies
+
+# WooCommerce REST API
+woocommerce==3.0.0
+
+# HTML Parsing
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# HTTP Requests
+requests==2.31.0
+
+# Data Processing
+pandas==2.1.1
+numpy==1.26.0
+
+# Image Processing (for Phase 1A - Placeholder generation)
+Pillow==10.0.0
+
+# SVG Conversion (for Phase 5 - can install later when needed)
+# cairosvg==2.7.1
+# Note: cairosvg requires Cairo system libraries - install separately when needed
+
+# Progress Bars
+tqdm==4.66.1
+
+# Utilities
+python-dotenv==1.0.0

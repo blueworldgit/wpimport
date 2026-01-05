@@ -1,0 +1,41 @@
+# Python
+env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Sensitive files
+keys.txt
+config_local.py
+
+# Data files (too large for git)
+*.xlsx
+LSFAL11A4PA157987/
+
+# Output files
+images/converted/*.png
+images/converted/*.svg
+data/extracted/*.json
+logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary
+temp.txt
+*.tmp
