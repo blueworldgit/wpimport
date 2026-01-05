@@ -95,6 +95,40 @@ class WooCommerceImporter:
         print(f"\n✓ Placeholder IDs: {self.placeholder_ids}\n")
         return self.placeholder_ids
     
+    def upload_image_to_wordpress(self, image_path):
+        """
+        Upload a single image (PNG or SVG) to WordPress media library
+        Returns media ID or None if upload fails
+        """
+        import requests
+        
+        try:
+            # Determine MIME type
+            mime_type = 'image/png' if image_path.suffix == '.png' else 'image/svg+xml'
+            
+            with open(image_path, 'rb') as img:
+                files = {'file': img}
+                response = requests.post(
+                    f"{self.wcapi.url}/wp-json/wp/v2/media",
+                    files=files,
+                    auth=(self.wcapi.consumer_key, self.wcapi.consumer_secret),
+                    headers={
+                        'Content-Disposition': f'attachment; filename="{image_path.name}"',
+                        'Content-Type': mime_type
+                    }
+                )
+                
+                if response.status_code == 201:
+                    media_data = response.json()
+                    return media_data['id']
+                else:
+                    print(f"    Upload failed: HTTP {response.status_code}")
+                    return None
+        
+        except Exception as e:
+            print(f"    Upload error: {str(e)}")
+            return None
+    
     def get_or_create_category(self, category_name, parent_id=0):
         """
         Get existing category ID or create new one
@@ -162,6 +196,45 @@ class WooCommerceImporter:
         
         return category_ids
     
+    def get_diagram_image_path(self, product_data):
+        """
+        Find diagram image for product (PNG or SVG)
+        Priority: PNG → SVG → placeholder
+        Returns: (file_path, file_type) or (None, None)
+        """
+        base_dir = Path(__file__).resolve().parent.parent
+        images_dir = base_dir / 'images' / 'converted'
+        
+        # Get serial number and diagram name from product data
+        diagram_file = product_data.get('diagram_file', '')
+        if diagram_file:
+            # Extract diagram name from HTML file path
+            diagram_name = Path(diagram_file).stem.replace(' ', '_')
+            
+            # Build expected filename pattern (SerialNumber_DiagramName)
+            # Try to extract serial from categories
+            categories = product_data.get('categories', [])
+            serial_number = None
+            for cat in categories:
+                if cat.startswith('LSF') and len(cat) == 17:
+                    serial_number = cat
+                    break
+            
+            if serial_number:
+                base_filename = f"{serial_number}_{diagram_name}"
+                
+                # Check for PNG first (preferred)
+                png_path = images_dir / f"{base_filename}.png"
+                if png_path.exists():
+                    return (png_path, 'png')
+                
+                # Check for SVG as fallback
+                svg_path = images_dir / f"{base_filename}.svg"
+                if svg_path.exists():
+                    return (svg_path, 'svg')
+        
+        return (None, None)
+    
     def assign_placeholder_image(self, product_data):
         """
         Assign appropriate placeholder based on orientation
@@ -206,8 +279,24 @@ class WooCommerceImporter:
         # Get category IDs
         category_ids = self.build_category_hierarchy(product_data['categories'])
         
-        # Get placeholder image
-        image_id = self.assign_placeholder_image(product_data)
+        # Try to find diagram image (PNG or SVG)
+        diagram_path, img_type = self.get_diagram_image_path(product_data)
+        image_id = None
+        
+        if diagram_path:
+            # Upload diagram image to WordPress
+            try:
+                image_id = self.upload_image_to_wordpress(diagram_path)
+                if image_id:
+                    self.stats['images_uploaded'] += 1
+                    print(f"  ✓ Uploaded {img_type.upper()}: {diagram_path.name}")
+            except Exception as e:
+                print(f"  ⚠ Failed to upload {img_type.upper()}: {e}")
+                # Fall back to placeholder
+                image_id = self.assign_placeholder_image(product_data)
+        else:
+            # Use placeholder if no diagram image exists
+            image_id = self.assign_placeholder_image(product_data)
         
         # Build product data
         wc_product = {
