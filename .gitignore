@@ -22,13 +22,6 @@ LSFAL11A4PA157987/
 
 # Output files
 
-data/extracted/*.json
-data/checkpoints/*.json
-logs/*.log
-conversion_errors.txt
-bugs.txt
-import_log.txt
-
 # IDE
 .vscode/
 .idea/
