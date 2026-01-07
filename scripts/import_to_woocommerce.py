@@ -22,7 +22,13 @@ class WooCommerceImporter:
         self.wp_username = wp_username
         self.wp_app_password = wp_app_password
         self.checkpoint_dir = Path(checkpoint_dir)
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir = Path(log_dir)
+        self.log_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create error log file
+        self.error_log_path = self.log_dir / f"import_errors_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        
         self.stats = {
             'start_time': datetime.now().isoformat(),
             'products_created': 0,
@@ -36,6 +42,46 @@ class WooCommerceImporter:
         self.category_cache = {}  # name -> ID mapping
         self.placeholder_ids = {}  # Will store uploaded placeholder image IDs
         self.processed_skus = set()  # Track processed SKUs to avoid duplicates
+        
+        # Try to load existing checkpoint
+        self.load_checkpoint()
+    
+    def load_checkpoint(self, filename='import_checkpoint.json'):
+        """Load previous import progress if it exists"""
+        checkpoint_path = self.checkpoint_dir / filename
+        
+        if checkpoint_path.exists():
+            try:
+                with open(checkpoint_path, 'r', encoding='utf-8') as f:
+                    checkpoint_data = json.load(f)
+                
+                self.processed_skus = set(checkpoint_data.get('processed_skus', []))
+                self.category_cache = checkpoint_data.get('category_cache', {})
+                self.placeholder_ids = checkpoint_data.get('placeholder_ids', {})
+                
+                # Merge stats
+                old_stats = checkpoint_data.get('stats', {})
+                if old_stats:
+                    self.stats['products_created'] = old_stats.get('products_created', 0)
+                    self.stats['products_updated'] = old_stats.get('products_updated', 0)
+                    self.stats['variations_created'] = old_stats.get('variations_created', 0)
+                    self.stats['categories_created'] = old_stats.get('categories_created', 0)
+                    self.stats['images_uploaded'] = old_stats.get('images_uploaded', 0)
+                    self.stats['errors'].extend(old_stats.get('errors', []))
+                    self.stats['skipped'].extend(old_stats.get('skipped', []))
+                
+                print(f"\n✓ Loaded checkpoint: {len(self.processed_skus)} products already imported")
+                print(f"  Resuming from where you left off...\n")
+            except Exception as e:
+                print(f"\n⚠ Could not load checkpoint: {e}")
+                print("  Starting fresh import...\n")
+    
+    def log_error(self, error_msg):
+        """Log error to both console and file"""
+        print(f"\n❌ {error_msg}")
+        self.stats['errors'].append(error_msg)
+        with open(self.error_log_path, 'a', encoding='utf-8') as f:
+            f.write(f"[{datetime.now().isoformat()}] {error_msg}\n")
     
     def test_connection(self):
         """Test API connection"""
@@ -356,14 +402,12 @@ class WooCommerceImporter:
                 return response.json()['id']
             else:
                 error_msg = f"Failed to create product {sku}: {response.status_code} - {response.text}"
-                print(f"\n❌ {error_msg}")
-                self.stats['errors'].append(error_msg)
+                self.log_error(error_msg)
                 return None
         
         except Exception as e:
             error_msg = f"Error creating product {sku}: {str(e)}"
-            print(f"\n❌ {error_msg}")
-            self.stats['errors'].append(error_msg)
+            self.log_error(error_msg)
             return None
     
     def create_variable_product(self, product_data):
@@ -483,15 +527,13 @@ class WooCommerceImporter:
                     self.stats['variations_created'] += 1
                 else:
                     error_msg = f"Failed to create variation {sku}: {var_response.status_code}"
-                    print(f"\n❌ {error_msg}")
-                    self.stats['errors'].append(error_msg)
+                    self.log_error(error_msg)
             
             return parent_id
         
         except Exception as e:
             error_msg = f"Error creating variable product {product_data['name']}: {str(e)}"
-            print(f"\n❌ {error_msg}")
-            self.stats['errors'].append(error_msg)
+            self.log_error(error_msg)
             return None
     
     def import_products(self, products_data, test_mode=False):
@@ -506,14 +548,28 @@ class WooCommerceImporter:
         print(f"Importing {len(products_data)} products to WooCommerce")
         print(f"{'='*60}\n")
         
+        skipped_count = 0
+        
         for product in tqdm(products_data, desc="Importing products"):
+            # Skip if already processed
+            if product['sku'] in self.processed_skus:
+                skipped_count += 1
+                continue
+            
             if product['type'] == 'simple':
                 self.create_simple_product(product)
             elif product['type'] == 'variable':
                 self.create_variable_product(product)
             
+            # Save checkpoint every 10 products
+            if len(self.processed_skus) % 10 == 0:
+                self.save_checkpoint()
+            
             # Rate limiting (WooCommerce API: ~60 requests/minute)
             time.sleep(0.5)
+        
+        if skipped_count > 0:
+            print(f"\n✓ Skipped {skipped_count} already imported products")
         
         self.stats['end_time'] = datetime.now().isoformat()
     
@@ -552,6 +608,7 @@ class WooCommerceImporter:
                 print(f"  - {error}")
             if len(self.stats['errors']) > 10:
                 print(f"  ... and {len(self.stats['errors']) - 10} more")
+            print(f"\n📄 Full error log: {self.error_log_path}")
         
         if self.stats['skipped']:
             print(f"\n⚠ Skipped {len(self.stats['skipped'])} items (see logs for details)")
