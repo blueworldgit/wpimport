@@ -21,8 +21,7 @@ config.py
 LSFAL11A4PA157987/
 
 # Output files
-images/converted/*.png
-images/converted/*.svg
+
 data/extracted/*.json
 data/checkpoints/*.json
 logs/*.log
