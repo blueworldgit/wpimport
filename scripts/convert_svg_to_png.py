@@ -16,15 +16,17 @@ base_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(base_dir))
 
 class SVGConverter:
-    def __init__(self, data_dir, output_dir):
+    def __init__(self, data_dir, output_dir, error_log='conversion_errors.txt'):
         self.data_dir = Path(data_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.error_log_path = Path(error_log)
         self.stats = {
             'total_files': 0,
             'converted': 0,
             'skipped': 0,
-            'errors': []
+            'errors': [],
+            'failed_files': []  # Store filenames that failed
         }
     
     def extract_diagram_code(self, soup):
@@ -52,28 +54,36 @@ class SVGConverter:
         try:
             from svglib.svglib import svg2rlg
             from reportlab.graphics import renderPM
+            import warnings
+            
+            # Suppress warnings and stderr (font errors)
+            warnings.filterwarnings('ignore')
             
             # Save SVG temporarily
             svg_temp = output_path.with_suffix('.svg')
             with open(svg_temp, 'w', encoding='utf-8') as f:
                 f.write(svg_string)
             
-            # Convert SVG to ReportLab drawing
-            drawing = svg2rlg(str(svg_temp))
+            # Suppress stderr to hide font errors
+            import contextlib
+            with contextlib.redirect_stderr(io.StringIO()):
+                # Convert SVG to ReportLab drawing
+                drawing = svg2rlg(str(svg_temp))
+                
+                if drawing:
+                    # Calculate scale to achieve target width
+                    scale = width / drawing.width if drawing.width > 0 else 1
+                    drawing.width = width
+                    drawing.height = drawing.height * scale
+                    drawing.scale(scale, scale)
+                    
+                    # Render to PNG
+                    renderPM.drawToFile(drawing, str(output_path), fmt='PNG', dpi=150)
+            
+            # Remove temp SVG
+            svg_temp.unlink()
             
             if drawing:
-                # Calculate scale to achieve target width
-                scale = width / drawing.width if drawing.width > 0 else 1
-                drawing.width = width
-                drawing.height = drawing.height * scale
-                drawing.scale(scale, scale)
-                
-                # Render to PNG
-                renderPM.drawToFile(drawing, str(output_path), fmt='PNG', dpi=150)
-                
-                # Remove temp SVG
-                svg_temp.unlink()
-                
                 return output_path
             else:
                 raise Exception("Failed to parse SVG")
@@ -83,6 +93,7 @@ class SVGConverter:
     
     def process_html_file(self, html_path):
         """Extract SVG from HTML and convert to PNG"""
+        filename = None  # Initialize to track intended filename
         try:
             with open(html_path, 'r', encoding='utf-8') as f:
                 soup = BeautifulSoup(f.read(), 'lxml')
@@ -102,9 +113,9 @@ class SVGConverter:
             
             # Build filename: SerialNumber_DiagramName
             if serial_number:
-                filename = f"{serial_number}_{diagram_name}"
+                filename = f"{serial_number}_{diagram_name}.png"
             else:
-                filename = diagram_name
+                filename = f"{diagram_name}.png"
             
             # Find SVG element
             svg = soup.find('svg')
@@ -116,7 +127,7 @@ class SVGConverter:
             svg_string = str(svg)
             
             # Output filename with serial
-            output_file = self.output_dir / f"{filename}.png"
+            output_file = self.output_dir / filename
             
             # Check if already exists
             if output_file.exists():
@@ -127,11 +138,14 @@ class SVGConverter:
             result_path = self.svg_to_png_pillow(svg_string, output_file)
             
             self.stats['converted'] += 1
-            return result_path, filename
+            return result_path, filename.replace('.png', '')
             
         except Exception as e:
             error_msg = f"Error processing {html_path.name}: {str(e)}"
             self.stats['errors'].append(error_msg)
+            # Log the intended filename even though conversion failed
+            if filename:
+                self.stats['failed_files'].append(filename)
             return None, str(e)
     
     def convert_batch(self, limit=None):
@@ -175,6 +189,17 @@ class SVGConverter:
         
         if self.stats['errors']:
             print("⚠ Errors:")
+        
+        # Write failed filenames to log file
+        if self.stats['failed_files']:
+            with open(self.error_log_path, 'w', encoding='utf-8') as f:
+                f.write("# Failed Image Conversions\n")
+                f.write(f"# Total failed: {len(self.stats['failed_files'])}\n")
+                f.write(f"# Generated: {Path(__file__).name}\n\n")
+                for failed_file in self.stats['failed_files']:
+                    f.write(f"{failed_file}\n")
+            print(f"\n📝 Failed filenames written to: {self.error_log_path}")
+            print(f"   Total failed: {len(self.stats['failed_files'])}")
             for error in self.stats['errors'][:10]:
                 print(f"  - {error}")
             if len(self.stats['errors']) > 10:
@@ -183,6 +208,13 @@ class SVGConverter:
 
 def main():
     """Main conversion function"""
+    
+    # Add GTK3 to PATH for Windows PNG conversion
+    import os
+    gtk3_path = r"C:\Program Files\GTK3-Runtime Win64\bin"
+    if os.path.exists(gtk3_path):
+        os.environ['PATH'] = gtk3_path + os.pathsep + os.environ.get('PATH', '')
+        print(f"✓ Added GTK3 to PATH: {gtk3_path}")
     
     # Paths
     data_dir = base_dir / 'LSFAL11A4PA157987'

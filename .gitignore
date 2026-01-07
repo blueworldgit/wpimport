@@ -13,6 +13,8 @@ build/
 # Sensitive files
 keys.txt
 config_local.py
+productioncreds.txt
+config.py
 
 # Data files (too large for git)
 *.xlsx
@@ -22,7 +24,11 @@ LSFAL11A4PA157987/
 images/converted/*.png
 images/converted/*.svg
 data/extracted/*.json
+data/checkpoints/*.json
 logs/*.log
+conversion_errors.txt
+bugs.txt
+import_log.txt
 
 # IDE
 .vscode/

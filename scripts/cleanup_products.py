@@ -6,34 +6,19 @@ import sys
 from pathlib import Path
 from woocommerce import API
 
-# Add parent directory to path for config
-base_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(base_dir))
-
-from config import WORDPRESS_URL
+# Production Configuration
+WORDPRESS_URL = "https://maxusvanparts.co.uk/"
+CONSUMER_KEY = "ck_1be77215f05ca7f848ac0ec16a6b68e76ced9302"
+CONSUMER_SECRET = "cs_b2c2be6911c85fe9abc62b4ec5170b9ab746392e"
 
 def delete_all_products():
     """Delete all products from WooCommerce"""
     
-    # Load keys
-    keys_file = base_dir / 'keys.txt'
-    with open(keys_file, 'r') as f:
-        content = f.read().strip()
-        lines = content.split('\n')
-        consumer_key = None
-        consumer_secret = None
-        
-        for i, line in enumerate(lines):
-            if 'ck_' in line:
-                consumer_key = line.strip()
-            elif 'cs_' in line:
-                consumer_secret = line.strip()
-    
     # Initialize API
     wcapi = API(
         url=WORDPRESS_URL,
-        consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
+        consumer_key=CONSUMER_KEY,
+        consumer_secret=CONSUMER_SECRET,
         version="wc/v3",
         timeout=30
     )
@@ -87,9 +72,9 @@ def delete_all_products():
         batch = all_products[i:i+batch_size]
         batch_ids = [{"id": p["id"]} for p in batch]
         
-        # Use batch delete endpoint
+        # Use batch delete endpoint with force=true to bypass lookup table
         response = wcapi.post("products/batch", {
-            "delete": batch_ids
+            "delete": [{"id": p["id"], "force": True} for p in batch]
         })
         
         if response.status_code == 200:
@@ -110,7 +95,28 @@ def delete_all_products():
     
     if errors == 0:
         print("✓ All products deleted successfully!")
-        print("✓ Database is clean and ready for new import.\n")
+        
+        # Regenerate lookup tables to clear SKU residue
+        print("\nRegenerating WooCommerce lookup tables...")
+        try:
+            import requests
+            # Use WooCommerce System Status Tools to regenerate
+            response = wcapi.post("system_status/tools/clear_transients", {})
+            print("✓ Cleared transients")
+            
+            response = wcapi.post("system_status/tools/regenerate_product_lookup_tables", {})
+            if response.status_code == 200:
+                print("✓ Product lookup tables regenerated")
+            else:
+                print("⚠️  Could not auto-regenerate lookup tables")
+                print("\nManual fix needed - Run this SQL in phpMyAdmin:")
+                print("TRUNCATE TABLE wp_wc_product_meta_lookup;")
+        except Exception as e:
+            print("⚠️  Could not auto-regenerate lookup tables")
+            print("\nManual fix needed - Run this SQL in phpMyAdmin:")
+            print("TRUNCATE TABLE wp_wc_product_meta_lookup;")
+        
+        print("\n✓ Database is clean and ready for new import.\n")
     else:
         print(f"⚠️  {errors} products failed to delete. Please check manually.\n")
 

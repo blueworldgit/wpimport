@@ -355,18 +355,18 @@ def main():
     # Create extractor
     extractor = EPCDataExtractor(data_dir, output_dir, log_dir)
     
-    # Extract data (TEST MODE: limit to 20 products)
-    print("\n🔧 TEST MODE: Extracting first 20 products only")
-    data = extractor.extract_category_data(data_dir, test_limit=20)
+    # Extract data (FULL MODE: all products)
+    print("\n🚀 FULL MODE: Extracting all products")
+    data = extractor.extract_category_data(data_dir, test_limit=None)
     
     # Save data
-    extractor.save_extracted_data(data, filename='extracted_data_test.json')
+    extractor.save_extracted_data(data, filename='extracted_data_full.json')
     
     # Print summary
     extractor.print_summary()
     
     print("✓ Extraction complete! Ready for WooCommerce import.")
-    print(f"✓ Next step: Run the import script with extracted_data_test.json")
+    print(f"✓ Next step: Run the import script with extracted_data_full.json")
 
 
 if __name__ == "__main__":

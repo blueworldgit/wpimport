@@ -1,102 +1,41 @@
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Converting diagrams:  95%|███████████████████████████████████████████▋  | 19/20 [00:09<00:00,  2.47it/s]Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Unable to find a suitable font for 'font-family:'ArialMT'', weight:normal, style:normal
-Converting diagrams: 100%|██████████████████████████████████████████████| 20/20 [00:09<00:00,  2.10it/s]
+❌ Error converting LSFAL11A4PA157987_body_lower_stucture.svg: The SVG size is undefined
+Converting:  15%|████████▎                                             | 24/155 [00:06<00:30,  4.28it/s]
+❌ Error converting LSFAL11A4PA157987_Coolant_Plumbing_&_Hardware--EV.svg: The SVG size is undefined
+Converting:  17%|█████████                                             | 26/155 [00:07<00:26,  4.91it/s]
+❌ Error converting LSFAL11A4PA157987_Coolant_Plumbing_&_Hardware-PHEV.svg: The SVG size is undefined
+Converting:  25%|█████████████▏                                        | 38/155 [00:11<00:41,  2.84it/s]
+❌ Error converting LSFAL11A4PA157987_Engine_Compartment_Fuse_Box.svg: The SVG size is undefined
+Converting:  26%|█████████████▉                                        | 40/155 [00:11<00:27,  4.20it/s]
+❌ Error converting LSFAL11A4PA157987_Engine_shield.svg: The SVG size is undefined
+Converting:  30%|████████████████▎                                     | 47/155 [00:13<00:31,  3.42it/s]
+❌ Error converting LSFAL11A4PA157987_Frong_Seat(right_).svg: The SVG size is undefined
+Converting:  32%|█████████████████                                     | 49/155 [00:14<00:23,  4.50it/s]
+❌ Error converting LSFAL11A4PA157987_Front_Bumper.svg: The SVG size is undefined
+Converting:  34%|██████████████████▍                                   | 53/155 [00:14<00:21,  4.65it/s]
+❌ Error converting LSFAL11A4PA157987_Front_End_Exterior_Airflow.svg: The SVG size is undefined
+Converting:  37%|████████████████████▏                                 | 58/155 [00:16<00:22,  4.24it/s]
+❌ Error converting LSFAL11A4PA157987_Front_Seat(left_).svg: The SVG size is undefined
 
-============================================================
-Conversion Summary
-============================================================
-Total HTML files:        155
-Converted:               0
-Skipped:                 0
-Errors:                  20
-============================================================
-
-⚠ Errors:
-  - Error processing Air filter.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Steering Wheel and AirBag.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Antenna.html: Error converting SVG: cannot import desired renderPM backend rlPyCairoSeek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Body Interior & Exterior Electronics.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Mud Guard.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing body lower stucture.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Body Exterior Trim.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing Baffle Plate-Ware.html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing inner framing(left side).html: Error converting SVG: cannot import desired renderPM 
-backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  - Error processing inner framing(right side).html: Error converting SVG: cannot import desired renderPM backend rlPyCairo
-Seek advice at the users list see
-https://pairlist2.pair.net/mailman/listinfo/reportlab-users
-  ... and 10 more
+❌ Error converting LSFAL11A4PA157987_Front_Seat(Right).svg: The SVG size is undefined
+Converting:  43%|███████████████████████▎                              | 67/155 [00:17<00:21,  4.13it/s]
+❌ Error converting LSFAL11A4PA157987_Grille.svg: The SVG size is undefined
+Converting:  46%|████████████████████████▋                             | 71/155 [00:18<00:18,  4.59it/s]
+❌ Error converting LSFAL11A4PA157987_Ignition_Switch_and_Key.svg: The SVG size is undefined
+Converting:  48%|█████████████████████████▊                            | 74/155 [00:19<00:17,  4.60it/s]
+❌ Error converting LSFAL11A4PA157987_inner_framing(right_side).svg: The SVG size is undefined
+Converting:  53%|████████████████████████████▌                         | 82/155 [00:21<00:17,  4.23it/s]
+❌ Error converting LSFAL11A4PA157987_Interior_Heating_Pipe.svg: The SVG size is undefined
+Converting:  57%|███████████████████████████████                       | 89/155 [00:23<00:22,  2.96it/s]
+❌ Error converting LSFAL11A4PA157987_On_Vehicle_Attachments.svg: The SVG size is undefined
+Converting:  61%|█████████████████████████████████                     | 95/155 [00:24<00:15,  3.96it/s]
+❌ Error converting LSFAL11A4PA157987_Passive_Entry_Passive_Start.svg: The SVG size is undefined
+Converting:  69%|████████████████████████████████████▌                | 107/155 [00:28<00:14,  3.23it/s]
+❌ Error converting LSFAL11A4PA157987_Rear_Lamp.svg: The SVG size is undefined
+Converting:  75%|███████████████████████████████████████▋             | 116/155 [00:30<00:09,  3.94it/s]
+❌ Error converting LSFAL11A4PA157987_Refrigerant_Plumbing_&_Hardware-PHEV.svg: The SVG size is undefined 
+Converting:  81%|███████████████████████████████████████████          | 126/155 [00:32<00:08,  3.33it/s]
+❌ Error converting LSFAL11A4PA157987_Sound_Insulation、Heat_Insulation.svg: The SVG size is undefined    
+Converting:  85%|████████████████████████████████████████████▊        | 131/155 [00:33<00:05,  4.14it/s]
+❌ Error converting LSFAL11A4PA157987_Subdrivers_Integral_Double_Seat.svg: The SVG size is undefined      
+Converting:  86%|█████████████████████████████████████████████▍       | 133/155 [00:34<00:05,  3.86it/s]
+Traceback (most recent call last):

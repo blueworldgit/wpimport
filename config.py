@@ -8,7 +8,7 @@
 #   Staging: https://staging.yoursite.com
 #   Production: https://www.yoursite.com
 
-WORDPRESS_URL = "http://localhost/maxusparts/"
+WORDPRESS_URL = "https://maxusvanparts.co.uk"
 
 # Currency (for pricing)
 CURRENCY = "GBP"

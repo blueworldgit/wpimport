@@ -11,7 +11,7 @@ from woocommerce import API
 from tqdm import tqdm
 
 class WooCommerceImporter:
-    def __init__(self, api_url, consumer_key, consumer_secret, checkpoint_dir, log_dir):
+    def __init__(self, api_url, consumer_key, consumer_secret, checkpoint_dir, log_dir, wp_username=None, wp_app_password=None):
         self.wcapi = API(
             url=api_url,
             consumer_key=consumer_key,
@@ -19,6 +19,8 @@ class WooCommerceImporter:
             version="wc/v3",
             timeout=30
         )
+        self.wp_username = wp_username
+        self.wp_app_password = wp_app_password
         self.checkpoint_dir = Path(checkpoint_dir)
         self.log_dir = Path(log_dir)
         self.stats = {
@@ -70,24 +72,35 @@ class WooCommerceImporter:
                 continue
             
             try:
+                # Read image file
                 with open(filepath, 'rb') as img:
-                    files = {'file': img}
-                    # Use requests to upload to wp-json/wp/v2/media
-                    import requests
-                    response = requests.post(
-                        f"{self.wcapi.url}/wp-json/wp/v2/media",
-                        files=files,
-                        auth=(self.wcapi.consumer_key, self.wcapi.consumer_secret),
-                        headers={'Content-Disposition': f'attachment; filename="{filepath.name}"'}
-                    )
-                    
-                    if response.status_code == 201:
-                        media_data = response.json()
-                        self.placeholder_ids[key] = media_data['id']
-                        print(f"✓ Uploaded {key} placeholder (ID: {media_data['id']})")
-                        self.stats['images_uploaded'] += 1
-                    else:
-                        print(f"⚠ Failed to upload {key}: {response.status_code}")
+                    image_content = img.read()
+                
+                # Use WordPress Application Password authentication
+                import requests
+                
+                # Check if we have WordPress credentials
+                if not hasattr(self, 'wp_username') or not hasattr(self, 'wp_app_password'):
+                    print(f"⚠ Skipping {key}: No WordPress credentials provided")
+                    continue
+                
+                response = requests.post(
+                    f"{self.wcapi.url}/wp-json/wp/v2/media",
+                    data=image_content,
+                    auth=(self.wp_username, self.wp_app_password),
+                    headers={
+                        'Content-Disposition': f'attachment; filename={filepath.name}',
+                        'Content-Type': 'image/png'
+                    }
+                )
+                
+                if response.status_code == 201:
+                    media_data = response.json()
+                    self.placeholder_ids[key] = media_data['id']
+                    print(f"✓ Uploaded {key} placeholder (ID: {media_data['id']})")
+                    self.stats['images_uploaded'] += 1
+                else:
+                    print(f"⚠ Failed to upload {key}: {response.status_code}")
             
             except Exception as e:
                 print(f"✗ Error uploading {key}: {str(e)}")
@@ -97,33 +110,41 @@ class WooCommerceImporter:
     
     def upload_image_to_wordpress(self, image_path):
         """
-        Upload a single image (PNG or SVG) to WordPress media library
-        Returns media ID or None if upload fails
+        Upload image to WordPress media library using Application Password
+        Returns image data dict with media ID or None if upload fails
         """
         import requests
         
         try:
-            # Determine MIME type
-            mime_type = 'image/png' if image_path.suffix == '.png' else 'image/svg+xml'
+            # Check if we have WordPress credentials
+            if not hasattr(self, 'wp_username') or not hasattr(self, 'wp_app_password'):
+                return None
             
+            # Read image file
             with open(image_path, 'rb') as img:
-                files = {'file': img}
-                response = requests.post(
-                    f"{self.wcapi.url}/wp-json/wp/v2/media",
-                    files=files,
-                    auth=(self.wcapi.consumer_key, self.wcapi.consumer_secret),
-                    headers={
-                        'Content-Disposition': f'attachment; filename="{image_path.name}"',
-                        'Content-Type': mime_type
-                    }
-                )
-                
-                if response.status_code == 201:
-                    media_data = response.json()
-                    return media_data['id']
-                else:
-                    print(f"    Upload failed: HTTP {response.status_code}")
-                    return None
+                image_content = img.read()
+            
+            # Set headers
+            headers = {
+                'Content-Disposition': f'attachment; filename={image_path.name}',
+                'Content-Type': 'image/png' if image_path.suffix == '.png' else 'image/svg+xml'
+            }
+            
+            # Upload via WordPress REST API media endpoint
+            response = requests.post(
+                f"{self.wcapi.url}/wp-json/wp/v2/media",
+                data=image_content,
+                headers=headers,
+                auth=(self.wp_username, self.wp_app_password),
+                timeout=60  # 60 second timeout for large images
+            )
+            
+            if response.status_code == 201:
+                media_data = response.json()
+                return {'id': media_data['id']}
+            else:
+                print(f"    Upload failed: HTTP {response.status_code}")
+                return None
         
         except Exception as e:
             print(f"    Upload error: {str(e)}")
@@ -281,22 +302,27 @@ class WooCommerceImporter:
         
         # Try to find diagram image (PNG or SVG)
         diagram_path, img_type = self.get_diagram_image_path(product_data)
-        image_id = None
+        images_list = []
         
         if diagram_path:
             # Upload diagram image to WordPress
             try:
-                image_id = self.upload_image_to_wordpress(diagram_path)
-                if image_id:
+                image_data = self.upload_image_to_wordpress(diagram_path)
+                if image_data:
+                    images_list.append(image_data)
                     self.stats['images_uploaded'] += 1
                     print(f"  ✓ Uploaded {img_type.upper()}: {diagram_path.name}")
             except Exception as e:
                 print(f"  ⚠ Failed to upload {img_type.upper()}: {e}")
                 # Fall back to placeholder
-                image_id = self.assign_placeholder_image(product_data)
+                placeholder_id = self.assign_placeholder_image(product_data)
+                if placeholder_id:
+                    images_list.append({"id": placeholder_id})
         else:
             # Use placeholder if no diagram image exists
-            image_id = self.assign_placeholder_image(product_data)
+            placeholder_id = self.assign_placeholder_image(product_data)
+            if placeholder_id:
+                images_list.append({"id": placeholder_id})
         
         # Build product data
         wc_product = {
@@ -307,7 +333,7 @@ class WooCommerceImporter:
             "description": description,
             "short_description": product_data.get('remark', ''),
             "categories": [{"id": cat_id} for cat_id in category_ids],
-            "images": [{"id": image_id}] if image_id else [],
+            "images": images_list,
             "manage_stock": True,
             "stock_quantity": 50,
             "stock_status": "instock",
@@ -330,11 +356,13 @@ class WooCommerceImporter:
                 return response.json()['id']
             else:
                 error_msg = f"Failed to create product {sku}: {response.status_code} - {response.text}"
+                print(f"\n❌ {error_msg}")
                 self.stats['errors'].append(error_msg)
                 return None
         
         except Exception as e:
             error_msg = f"Error creating product {sku}: {str(e)}"
+            print(f"\n❌ {error_msg}")
             self.stats['errors'].append(error_msg)
             return None
     
@@ -357,8 +385,29 @@ class WooCommerceImporter:
         description += f"<p><strong>Callout Number:</strong> {product_data['callout']}</p>"
         description += f"<p>This product has {len(product_data['variations'])} variations.</p>"
         
-        # Get placeholder image (use general for parent)
-        image_id = self.placeholder_ids.get('general')
+        # Try to find diagram image (PNG or SVG)
+        diagram_path, img_type = self.get_diagram_image_path(product_data)
+        images_list = []
+        
+        if diagram_path:
+            # Upload diagram image to WordPress
+            try:
+                image_data = self.upload_image_to_wordpress(diagram_path)
+                if image_data:
+                    images_list.append(image_data)
+                    self.stats['images_uploaded'] += 1
+                    print(f"  ✓ Prepared {img_type.upper()}: {diagram_path.name}")
+            except Exception as e:
+                print(f"  ⚠ Failed to prepare {img_type.upper()}: {e}")
+                # Fall back to placeholder
+                placeholder_id = self.placeholder_ids.get('general')
+                if placeholder_id:
+                    images_list.append({"id": placeholder_id})
+        else:
+            # Use placeholder if no diagram image exists
+            placeholder_id = self.placeholder_ids.get('general')
+            if placeholder_id:
+                images_list.append({"id": placeholder_id})
         
         # Build parent product
         wc_product = {
@@ -366,7 +415,7 @@ class WooCommerceImporter:
             "type": "variable",
             "description": description,
             "categories": [{"id": cat_id} for cat_id in category_ids],
-            "images": [{"id": image_id}] if image_id else [],
+            "images": images_list,
             "attributes": [
                 {
                     "name": "Orientation",
@@ -434,12 +483,14 @@ class WooCommerceImporter:
                     self.stats['variations_created'] += 1
                 else:
                     error_msg = f"Failed to create variation {sku}: {var_response.status_code}"
+                    print(f"\n❌ {error_msg}")
                     self.stats['errors'].append(error_msg)
             
             return parent_id
         
         except Exception as e:
             error_msg = f"Error creating variable product {product_data['name']}: {str(e)}"
+            print(f"\n❌ {error_msg}")
             self.stats['errors'].append(error_msg)
             return None
     
@@ -510,7 +561,7 @@ def main():
     """Main import function"""
     # Paths
     base_dir = Path(__file__).parent.parent
-    data_file = base_dir / 'data' / 'extracted' / 'extracted_data_test.json'
+    data_file = base_dir / 'data' / 'extracted' / 'extracted_data_full.json'
     checkpoint_dir = base_dir / 'data' / 'checkpoints'
     log_dir = base_dir / 'logs'
     placeholder_dir = base_dir / 'images' / 'placeholders'
@@ -528,6 +579,18 @@ def main():
             elif 'Consumer secret' in line and i + 1 < len(lines):
                 consumer_secret = lines[i + 1]
     
+    # Load WordPress credentials from productioncreds.txt
+    creds_file = base_dir / 'productioncreds.txt'
+    wp_username = None
+    wp_password = None
+    if creds_file.exists():
+        with open(creds_file, 'r') as f:
+            lines = [line.strip() for line in f.readlines() if line.strip()]
+            # Expected format: URL, Consumer key line, Consumer secret line, username, password type, password
+            if len(lines) >= 6:
+                wp_username = lines[3]  # "developer"
+                wp_password = lines[5]  # "nIbM 6KlW sft3 hQyj OG4P ZYeI"
+    
     # Load config
     import sys
     sys.path.insert(0, str(base_dir))
@@ -540,8 +603,8 @@ def main():
     print(f"\nWordPress URL: {wp_url}")
     print(f"Data file: {data_file.name}")
     
-    # Create importer
-    importer = WooCommerceImporter(wp_url, consumer_key, consumer_secret, checkpoint_dir, log_dir)
+    # Create importer with WordPress credentials
+    importer = WooCommerceImporter(wp_url, consumer_key, consumer_secret, checkpoint_dir, log_dir, wp_username, wp_password)
     
     # Test connection
     if not importer.test_connection():
