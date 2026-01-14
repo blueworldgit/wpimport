@@ -1,49 +1,7 @@
 {
-  "processed_skus": [
-    "C00075904",
-    "C00075892",
-    "C00050803",
-    "C00176662",
-    "C00074268",
-    "B00004128",
-    "C00075893",
-    "C00134346",
-    "C00086777",
-    "C00176661",
-    "C00074267",
-    "C00041192",
-    "B00005370",
-    "C00176660",
-    "B00004683",
-    "C00074269",
-    "C00130629",
-    "C00017370",
-    "C00075888"
-  ],
-  "stats": {
-    "start_time": "2026-01-07T11:33:17.695617",
-    "products_created": 19,
-    "products_updated": 0,
-    "variations_created": 0,
-    "categories_created": 0,
-    "images_uploaded": 22,
-    "errors": [],
-    "skipped": [
-      "Duplicate SKU: C00017370"
-    ],
-    "end_time": "2026-01-07T11:36:26.810536"
-  },
-  "category_cache": {
-    "Maxus_0": 516,
-    "LSFAL11A4PA157987_516": 517,
-    "air intake system_517": 518,
-    "Air filter_518": 519,
-    "airbag_517": 526,
-    "Steering Wheel and AirBag_526": 527
-  },
-  "placeholder_ids": {
-    "general": 11848,
-    "left": 11849,
-    "right": 11850
-  }
+  "products_created": 0,
+  "last_processed_serial": null,
+  "categories_created": {},
+  "failed_products": [],
+  "timestamp": null
 }

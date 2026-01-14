@@ -1,47 +1,42 @@
-1. WordPress/WooCommerce Setup
-❓ Do you already have WordPress + WooCommerce installed, or do I need to provide setup instructions?
-wp instaled and keys provided
-❓ Do you have WooCommerce REST API credentials (Consumer Key & Secret), or shall I guide you through generating them?
-you have already successfully done a test see test_api...
-❓ What is your WordPress site URL (local development, staging, or production)?
-local for now
-2. Data Scope
-❓ Should I start with only the LSFAL11A4PA157987 serial you provided, or are there more serials to process?
-yes only this for now
-❓ Are all serials for the Maxus brand, or will there be other brands (Peugeot, etc.)?
-only for maxus for now
-❓ Approximately how many total products are you expecting across all serials?
-a lot!!!
-3. Pricing Strategy
-❓ Do you have an Excel/CSV file with pricing data ready, or should products be imported with $0.00 placeholder prices?
-yes excel file to match with sku at a later stage for now 0.00 GBP note gbp not USD
-❓ If you have pricing data, can you share a sample of the format (columns: SKU, Price, Stock Quantity, etc.)?
-I would prefer you set placeholders I have a good sheet with sku linked to pricing but thats for later
-❓ Should all products start as "in stock" or "out of stock" by default?
-all in stock 50 avail
-4. Image Handling
-❓ yes Start with placeholder images (as per spec)?
-❓ Should I create the 3 placeholder images (General, Left, Right) as part of Phase 1? yes please create the placeholders
-❓ For SVG→PNG conversion later (Phase 5), what resolution do you prefer (spec says 2000px width)?
-yes this should be good
-5. Variable Products Logic
-❓ Confirmed: Group parts with same name + same callout + different L/R values into one variable product?
-❓ What should happen if a part has no L/R value (empty) - create as simple product? yes
-❓ Should the parent variable product have no SKU, and only variations have SKUs? (WooCommerce best practice) yes 
-6. Data Extraction Details
-Looking at the HTML, I notice:
+add_action('rest_api_init', function() {
+    register_rest_route('internal-tools/v1', '/cleanup', [
+        'methods' => 'POST',
+        'callback' => 'run_internal_cleanup',
+        'permission_callback' => function() {
+            return current_user_can('administrator');
+        }
+    ]);
+});
 
-Some parts have class="dn" (hidden/inactive) - should these be excluded from import? yes ensure you exclude these
-Some parts appear multiple times with different data-id but same SKU - should I deduplicate by SKU? there should only be one sku these parts are probably the dn hidden class please cheeck again and confirm
-The "Remark" field sometimes contains important info (e.g., "LED", "Right rudder") - should this be:
-Added to product description? add to descr
-Saved as a custom attribute? save as custom attr
-Used to detect variations? if possible than yes
-7. Project Structure
-❓ Should I create the complete project structure as outlined in the spec (folders for scripts, logs, data, etc.)? yes
-❓ What Python version are you using? (Spec mentions 3.8+)
-❓ Should I create a requirements.txt for Python dependencies?
-8. Testing Approach
-❓ Should I build a test mode that imports only 10-20 products first for validation? yes please only 20 for now
-❓ Do you want detailed logging/progress bars during import? yes please
-❓ Should the script be resumable (checkpoint system) in case of interruptions? yes
+function run_internal_cleanup() {
+    global $wpdb;
+
+    // Remove orphaned postmeta
+    $wpdb->query("
+        DELETE pm FROM {$wpdb->postmeta} pm
+        LEFT JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+        WHERE p.ID IS NULL
+    ");
+
+    // Remove orphaned termmeta
+    $wpdb->query("
+        DELETE tm FROM {$wpdb->termmeta} tm
+        LEFT JOIN {$wpdb->terms} t ON tm.term_id = t.term_id
+        WHERE t.term_id IS NULL
+    ");
+
+    // Remove orphaned term relationships
+    $wpdb->query("
+        DELETE tr FROM {$wpdb->term_relationships} tr
+        LEFT JOIN {$wpdb->posts} p ON tr.object_id = p.ID
+        WHERE p.ID IS NULL
+    ");
+
+    // Optimize all tables
+    $tables = $wpdb->get_results("SHOW TABLES", ARRAY_N);
+    foreach ($tables as $table) {
+        $wpdb->query("OPTIMIZE TABLE {$table[0]}");
+    }
+
+    return ['status' => 'cleanup completed'];
+}

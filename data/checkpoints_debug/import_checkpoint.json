@@ -1,0 +1,27 @@
+{
+  "processed_skus": [
+    "C00176667",
+    "C00041192",
+    "C00087471",
+    "C00176669",
+    "C00176668"
+  ],
+  "stats": {
+    "start_time": "2026-01-13T10:42:37.407581",
+    "products_created": 4,
+    "products_updated": 1,
+    "variations_created": 0,
+    "categories_created": 2,
+    "images_uploaded": 0,
+    "errors": [],
+    "skipped": [],
+    "end_time": "2026-01-13T10:42:37.423732"
+  },
+  "category_cache": {
+    "Maxus_0": 516,
+    "LSH14J7C7MA114771_516": 720,
+    "air intake system_720": 723,
+    "Air filter_723": 724
+  },
+  "placeholder_ids": {}
+}

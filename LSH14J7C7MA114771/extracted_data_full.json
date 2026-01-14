@@ -1,0 +1,112 @@
+{
+  "serial_number": "LSH14J7C7MA114771",
+  "vehicle_brand": "Maxus",
+  "extraction_date": "2026-01-13T10:34:12.531859",
+  "categories_structure": {
+    "air intake system": [
+      "Air filter"
+    ]
+  },
+  "products": [
+    {
+      "type": "simple",
+      "name": "MOUNT-AIR CLEANER",
+      "sku": "C00041192",
+      "orientation": null,
+      "categories": [
+        "Maxus",
+        "LSH14J7C7MA114771",
+        "air intake system",
+        "Air filter"
+      ],
+      "callout": "1",
+      "quantity": "2.0",
+      "remark": "",
+      "lr_field": "",
+      "diagram_file": "air intake system\\Air filter.html",
+      "diagram_code": "JE140A001"
+    },
+    {
+      "type": "simple",
+      "name": "FILTER ASSEMBLY-AIR",
+      "sku": "C00087471",
+      "orientation": null,
+      "categories": [
+        "Maxus",
+        "LSH14J7C7MA114771",
+        "air intake system",
+        "Air filter"
+      ],
+      "callout": "3",
+      "quantity": "1.0",
+      "remark": "",
+      "lr_field": "",
+      "diagram_file": "air intake system\\Air filter.html",
+      "diagram_code": "JE140A001"
+    },
+    {
+      "type": "simple",
+      "name": "AIR CLEANER-LOWER",
+      "sku": "C00176669",
+      "orientation": null,
+      "categories": [
+        "Maxus",
+        "LSH14J7C7MA114771",
+        "air intake system",
+        "Air filter"
+      ],
+      "callout": "4",
+      "quantity": "1.0",
+      "remark": "",
+      "lr_field": "",
+      "diagram_file": "air intake system\\Air filter.html",
+      "diagram_code": "JE140A001"
+    },
+    {
+      "type": "simple",
+      "name": "FILTER-AIR CLEANER",
+      "sku": "C00176668",
+      "orientation": null,
+      "categories": [
+        "Maxus",
+        "LSH14J7C7MA114771",
+        "air intake system",
+        "Air filter"
+      ],
+      "callout": "5",
+      "quantity": "1.0",
+      "remark": "",
+      "lr_field": "",
+      "diagram_file": "air intake system\\Air filter.html",
+      "diagram_code": "JE140A001"
+    },
+    {
+      "type": "simple",
+      "name": "AIR CLEANER-UPPER",
+      "sku": "C00176667",
+      "orientation": null,
+      "categories": [
+        "Maxus",
+        "LSH14J7C7MA114771",
+        "air intake system",
+        "Air filter"
+      ],
+      "callout": "6",
+      "quantity": "1.0",
+      "remark": "",
+      "lr_field": "",
+      "diagram_file": "air intake system\\Air filter.html",
+      "diagram_code": "JE140A001"
+    }
+  ],
+  "stats": {
+    "total_files": 182,
+    "processed_files": 1,
+    "total_parts": 11,
+    "unique_skus": 5,
+    "variable_products": 0,
+    "simple_products": 11,
+    "excluded_dn": 34,
+    "errors": []
+  }
+}

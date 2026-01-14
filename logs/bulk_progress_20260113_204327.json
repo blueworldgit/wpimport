@@ -1,0 +1,534 @@
+{
+  "timestamp": "2026-01-13T20:43:50.628727",
+  "stats": {
+    "products_created": 11,
+    "products_updated": 0,
+    "products_skipped": 0,
+    "errors": 24,
+    "start_time": "2026-01-13T19:13:23.615112"
+  },
+  "processed_skus": [
+    "B00004085",
+    "B00005299",
+    "B00004653",
+    "C00406001",
+    "B00003510",
+    "B00006005",
+    "B00003507",
+    "B00004623",
+    "B00004848",
+    "B00003509",
+    "B90000621",
+    "B00003508",
+    "B00003511"
+  ],
+  "category_cache": {
+    "Accelerator Pedal": 1158,
+    "Accessory Switches": 1087,
+    "Air Bag Control Unit": 1180,
+    "Air filter": 1055,
+    "Air Intake System": [
+      1008,
+      1281
+    ],
+    "Airbag": [
+      1007,
+      1277
+    ],
+    "Antenna": [
+      1009,
+      1282
+    ],
+    "Baffle Plate-Ware": 1067,
+    "Battery Harnesses": 1156,
+    "BatteryandElectrical Energy Storage": 1079,
+    "Body accessories harness": 1150,
+    "Body Exterior Trim": 1060,
+    "Body Interior and Exterior Electronics": 1057,
+    "Body Lower Exterior Trim": [
+      1011,
+      1285
+    ],
+    "Body Lower Structure": [
+      1012,
+      1279
+    ],
+    "body lower stucture": 1059,
+    "Body Upper Exterior Trim": [
+      1013,
+      1280
+    ],
+    "Body Upper Structure": [
+      1014,
+      1284
+    ],
+    "Body Window": [
+      1015,
+      1286
+    ],
+    "Brake Apply": 1072,
+    "Brake Modulator": 1073,
+    "Brake Pedal": 1260,
+    "Brake Pipes": 1075,
+    "Brakes": [
+      1228,
+      1283
+    ],
+    "BumpersFascia and Grille": 1017,
+    "Charging and Energystorage": 1018,
+    "Chassis Harnesses": 1153,
+    "Chassis Structure": [
+      1019,
+      1288
+    ],
+    "Clusters": 1089,
+    "Clutch Apply": 1162,
+    "ClutchMT": 1167,
+    "ClutchPHEV": 1168,
+    "Communicate": [
+      1020,
+      1291
+    ],
+    "Coolant Plumbing and Hardware": 1108,
+    "Coolant Plumbing and Hardware-EV": 1110,
+    "Coolant Plumbing and Hardware-FCV": 1109,
+    "Coolant Plumbing and Hardware-PHEV": 1111,
+    "Customer Switches": [
+      1021,
+      1289
+    ],
+    "Door Wire Harnesses": 1152,
+    "Driver Information": [
+      1022,
+      1290
+    ],
+    "Emission Exhaust System": [
+      1249,
+      1296
+    ],
+    "Engine Compartment Fuse Box": 1154,
+    "Engine Management": 1157,
+    "EngineCompartmentHarness": 1149,
+    "Entertainment": [
+      1024,
+      1287
+    ],
+    "Exhaust system": 1243,
+    "Fenders": 1096,
+    "Floor Trim": 1121,
+    "Fluids and Lubrications": 1126,
+    "Frong Seat\uff08right \uff09": 1189,
+    "Front Brakes": 1242,
+    "Front Bumper": 1076,
+    "Front Closures Front End Sheetmetal": [
+      1025,
+      1294
+    ],
+    "Front Door Electric Glass Regulator": 1196,
+    "Front Door Handle and Lock": 1195,
+    "Front Door Trim": 1119,
+    "Front End Exterior Airflow": 1097,
+    "Front Interior Control": 1099,
+    "Front Interior HVAC Airflow": 1098,
+    "Front Lamp": [
+      1100,
+      1301
+    ],
+    "Front Seat\uff08left \uff09": 1188,
+    "Front Seat\uff08Left\uff09": 1191,
+    "Front Seat\uff08Right\uff09": 1190,
+    "Front Shock Absorber": 1203,
+    "Front Side Closure": 1194,
+    "Front Sub-frame": 1081,
+    "Front Suspension": 1201,
+    "Frontexterior Hvac Airflow": [
+      1026,
+      1295
+    ],
+    "Frontinterior Hvac Airflow": [
+      1027,
+      1306
+    ],
+    "Fuel Plumbing and Hardware": 1102,
+    "Fuel Storage and Handling": 1029,
+    "Fuel Tank and Canister": 1101,
+    "Grille": 1077,
+    "Hood": 1094,
+    "Hood Lock": 1095,
+    "Hvac and Powertrain Coolingin": 1030,
+    "Ignition Switch and Key": 1086,
+    "Infotainment System": 1092,
+    "inner framingleft side": 1061,
+    "inner framingright side": 1062,
+    "Instrument Panel and Console": 1031,
+    "Instrument Panel Crossmember\uff08LHD\uff09": 1114,
+    "Instrument Panel Crossmember\uff08RHD\uff09": 1115,
+    "Instrument Panel Wire Harnesses": 1238,
+    "Instrument Panel\uff08LHD\uff09": 1112,
+    "Instrument Panel\uff08RHD\uff09": 1113,
+    "Interior Acoustic Syetem": [
+      1032,
+      1303
+    ],
+    "Interior Heating Pipe": 1176,
+    "Interior Heating Pipe-FCV": 1177,
+    "Interior Lamp": [
+      1033,
+      1297
+    ],
+    "Interior Trim": [
+      1034,
+      1302
+    ],
+    "InteriorLamp": 1117,
+    "JE11CA001 - Engine ASM": [
+      1127,
+      1401
+    ],
+    "JE11CA002 - Block Group": [
+      1128,
+      1396
+    ],
+    "JE11CB001 - Cylinder BlockandAccessory": 1129,
+    "JE11CC001 - Cylinder Head": [
+      1130,
+      1399
+    ],
+    "JE11CD001 - Head CoverandPCV": 1131,
+    "JE11CE001 - Crankshaft Rod": [
+      1132,
+      1400
+    ],
+    "JE11CF001 - SHAFT-BALANCER": [
+      1133,
+      1395
+    ],
+    "JE11CG001 - MANIFOLD ASM-INT": [
+      1134,
+      1409
+    ],
+    "JE11CH001 - Exhaust ElbowandTurbocharger": 1135,
+    "JE11CI001 - Fuel System": [
+      1136,
+      1407
+    ],
+    "JE11CJ001 - Oil Cooler And InlandOtltTubeandFilter": 1137,
+    "JE11CK001 - SumpandOil Suction PipeandDipstick": 1138,
+    "JE11CL001 - Coolant Pump And InlandOtltTubeandThermostat": 1237,
+    "JE11CM001 - Damper PulleyandGearDrive": 1140,
+    "JE11CP001 - Timing Drive": [
+      1141,
+      1413
+    ],
+    "JE11CQ001 - AccessoryandAccessoryDrive": 1142,
+    "JE11CR001 - SensorandHarness": 1226,
+    "JE11CS001 - EGR ASM": [
+      1144,
+      1414
+    ],
+    "JE11CT001 - Engine Accessory": [
+      1145,
+      1421
+    ],
+    "JE11CU001 - LP-EGR intake pipeandAccessory": 1146,
+    "JE11CW001 - Engine wiring harness": [
+      1147,
+      1416
+    ],
+    "JE11CX001 - Engine shield": [
+      1148,
+      1418
+    ],
+    "JE421AE001 - Seat Arrangement of Shang Jie's 11 12and 14 Seats Australia": 1183,
+    "JE421AF001 - Three Seats Arrangement for VAN Vehicle Australia\u3001New Zealand": 1184,
+    "JE421AG001 - Two-Three Seats Arrangement for Chassis Vehicle Australia\u3001New Zealand": 1185,
+    "JE421AH001 - Arrangement for VAN Vehicle UK\u3001Hong Kong": 1186,
+    "JE421AI001 - Three Seats Arrangement for Chassis Vehicle UK\u3001Hong Kong": 1187,
+    "LSFAL11A4PA157987": [
+      1216,
+      1276
+    ],
+    "Manual transmission assembly\uff086MT Front-Back drive\uff09": 1163,
+    "Maxus": [
+      1227,
+      1275
+    ],
+    "Mounts": [
+      1035,
+      1300
+    ],
+    "Mud Guard": 1058,
+    "Multi-Function Column Switch": 1085,
+    "On Vehicle Attachments": 1124,
+    "On Vehicle AttachmentsandTools": 1036,
+    "On Vehicle Tools": 1125,
+    "Outer Framingleft side": 1063,
+    "Outer Framingright side": 1064,
+    "Park Brake": 1232,
+    "ParkDistanceControlSystem": 1181,
+    "Passive Entry Passive Start": 1088,
+    "Power and Signaldistribution": 1222,
+    "Power assembly installation": 1122,
+    "Power Generation": [
+      1209,
+      1309
+    ],
+    "Power Outlet and Cigarette Lighter HEvice": 1155,
+    "Power Transmission": [
+      1041,
+      1312
+    ],
+    "PowerInverter": 1080,
+    "Powertrain ControlandDiagnostic": 1039,
+    "Powertrain Driver Interface": [
+      1040,
+      1308
+    ],
+    "Powertrain Mounts-Electric vehicle": 1123,
+    "Propeller Shaft": 1169,
+    "Rear Axle \uff08Front drive vehicle\uff09": 1171,
+    "Rear Brakes": 1070,
+    "Rear Closure": [
+      1042,
+      1314
+    ],
+    "Rear Door Handle and Door Lock": 1174,
+    "Rear Drive Axle": 1170,
+    "Rear Drive Axle\uff08YUE JIN\uff09": 1172,
+    "Rear Electric Drive Axle": 1173,
+    "Rear Interior Airflow": 1175,
+    "Rear Lamp": [
+      1178,
+      1310
+    ],
+    "Rear Panel": 1066,
+    "Rear Shock Absorber": 1204,
+    "Rear Suspension": 1202,
+    "Rear View Mirror": [
+      1045,
+      1311
+    ],
+    "Rearinterior Hvac Airflow": [
+      1043,
+      1315
+    ],
+    "Redirector": 1200,
+    "Refrigerant Plumbing and Hardware": 1104,
+    "Refrigerant Plumbing and Hardware-Electric vehicle": 1244,
+    "Refrigerant Plumbing and Hardware-FCV": 1106,
+    "Refrigerant Plumbing and Hardware-PHEV": 1107,
+    "Roof Framing": 1065,
+    "Roof Trim": 1120,
+    "Safety Belt": [
+      1047,
+      1321
+    ],
+    "SafetyandAvoidance": 1046,
+    "Seats": [
+      1048,
+      1317
+    ],
+    "Side Closures": [
+      1049,
+      1320
+    ],
+    "Side PanelandRoof Safety Belt": 1182,
+    "Side Sliding Door Handle and Door Lock": 1197,
+    "Side Trim": 1118,
+    "Sound Insulation\u3001Heat Insulation": 1116,
+    "Spare Tire Device": 1082,
+    "Speaker": 1093,
+    "Steering": [
+      1050,
+      1323
+    ],
+    "Steering Column": 1199,
+    "Steering Wheel and AirBag": 1054,
+    "Subdrivers Integral Double Seat": 1192,
+    "Subdrivers Split Double Seat": 1193,
+    "Suspension": [
+      1051,
+      1322
+    ],
+    "TireWheelsWheel Trim": 1052,
+    "TireWheelTrim": 1205,
+    "TNK FIL DR": 1198,
+    "Transmission CSC and Operating Mechanism6MT back drive": 1164,
+    "Transmission Fork ComponentsSAGW-6MT back drive": 1165,
+    "Transmission Main Shaft And Gear6MT back drive": 1166,
+    "Transmission Shift Actuation-AMT": 1160,
+    "Transmission Shift Actuation-AT-Electric vehicle": 1261,
+    "Transmission Shift Actuation-AT\u3001Electric vehicle": 1161,
+    "Transmission Shift Actuation-MT": 1256,
+    "Uncategorized": [
+      16,
+      16
+    ],
+    "Urea system": 1103,
+    "Vehicle Date Recorder": 1090,
+    "Vehicle Tele-Communication": 1224,
+    "Washer System": 1208,
+    "Wheelhouse Liner": 1078,
+    "Window": 1068,
+    "Window Lift Switch": 1084,
+    "Wiper and Washer": 1053,
+    "Wiper\uff08LHD\uff09": 1206,
+    "Wiper\uff08RHD\uff09": 1207,
+    "Body Interior &amp; Exterior Electronics": 1278,
+    "Bumpers,Fascia &amp; Grille": 1292,
+    "Charging &amp; Energystorage": 1293,
+    "Fuel Storage &amp; Handling": 1304,
+    "Hvac &amp; Powertrain Coolingin": 1299,
+    "Instrument Panel &amp; Console": 1298,
+    "JE11CB001 - Cylinder Block&amp;Accessory": 1403,
+    "JE11CD001 - Head Cover&amp;PCV": 1402,
+    "JE11CH001 - Exhaust Elbow&amp;Turbocharger": 1406,
+    "JE11CJ001 - Oil Cooler And Inl&amp;OtltTube&amp;Filter": 1404,
+    "JE11CK001 - Sump&amp;Oil Suction Pipe&amp;Dipstick": 1411,
+    "JE11CL001 - Coolant Pump And Inl&amp;OtltTube&amp;Thermostat": 1405,
+    "JE11CM001 - Damper Pulley&amp;GearDrive": 1408,
+    "JE11CQ001 - Accessory&amp;AccessoryDrive": 1410,
+    "JE11CR001 - Sensor&amp;Harness": 1412,
+    "JE11CU001 - LP-EGR intake pipe&amp;Accessory": 1415,
+    "JE121A001 - Manual transmission assembly6MT FrontBack drive": 1433,
+    "JE121B001 - Transmission CSC and Operating Mechanism(6MT back drive)": 1436,
+    "JE121C001 - Transmission Fork Components(SAGW-6MT back drive)": 1437,
+    "JE121D001 - Transmission Main Shaft And Gear(6MT back drive)": 1440,
+    "JE122A001 - Clutch(MT)": 1439,
+    "JE122A002 - Clutch(PHEV)": 1435,
+    "JE123A001 - Propeller Shaft": 1438,
+    "JE125A001 - Rear Drive Axle": 1441,
+    "JE125A002 - Rear Axle Front drive vehicle": 1443,
+    "JE125A003 - Rear Drive AxleYUE JIN": 1434,
+    "JE125A004 - Rear Electric Drive Axle": 1442,
+    "JE131A001 - Engine Management": 1426,
+    "JE140A001 - Air filter": 1332,
+    "JE151A001 - Accelerator Pedal": 1424,
+    "JE152A001 - Transmission Shift Actuation-MT": 1429,
+    "JE152A002 - Transmission Shift Actuation-AMT": 1430,
+    "JE152A003 - Transmission Shift Actuation-ATElectric vehicle": 1432,
+    "JE153A001 - Clutch Apply": 1431,
+    "JE160A001 - Exhaust system": 1360,
+    "JE181A001 - Fuel Tank &amp; Canister": 1364,
+    "JE183A001 - Fuel Plumbing &amp; Hardware": 1367,
+    "JE184A001 - Urea system": 1369,
+    "JE214A001 - Steering Column": 1466,
+    "JE215A001 - Redirector": 1470,
+    "JE221A001 - Front Suspension": 1465,
+    "JE222A001 - Rear Suspension": 1469,
+    "JE224A001 - Front Shock Absorber": 1472,
+    "JE225A001 - Rear Shock Absorber": 1478,
+    "JE230A001 - Tire,Wheel,Trim": 1474,
+    "JE241A001 - Front Brakes": 1340,
+    "JE242A001 - Rear Brakes": 1343,
+    "JE243A001 - Park Brake": 1341,
+    "JE244A001 - Brake Apply": 1334,
+    "JE245A001 - Brake Modulator": 1342,
+    "JE246A001 - Brake Pedal": 1350,
+    "JE247A001 - Brake Pipes": 1347,
+    "JE251A001 - Front Sub-frame": 1345,
+    "JE255A001 - Spare Tire Device": 1348,
+    "JE261A001 - Power assembly installation": 1387,
+    "JE261A002 - Powertrain Mounts-Electric vehicle": 1391,
+    "JE312A001 - Refrigerant Plumbing &amp; Hardware": 1376,
+    "JE312A002 - Refrigerant Plumbing &amp; Hardware-Electric vehicle": 1375,
+    "JE312A003 - Refrigerant Plumbing &amp; Hardware-FCV": 1374,
+    "JE312A004 - Refrigerant Plumbing &amp; Hardware-PHEV": 1379,
+    "JE313A001 - Coolant Plumbing &amp; Hardware": 1377,
+    "JE313A002 - Coolant Plumbing &amp; Hardware-FCV": 1378,
+    "JE313A003 - Coolant Plumbing &amp; Hardware--EV": 1381,
+    "JE313A004 - Coolant Plumbing &amp; Hardware-PHEV": 1380,
+    "JE321A001 - Front Interior HVAC Airflow": 1372,
+    "JE322A001 - Front Interior Control": 1368,
+    "JE331A001 - Rear Interior Airflow": 1445,
+    "JE334A001 - Interior Heating Pipe": 1447,
+    "JE334A002 - Interior Heating Pipe-FCV": 1448,
+    "JE340A001 - Front End Exterior Airflow": 1370,
+    "JE411A001 - Instrument PanelLHD": 1383,
+    "JE411A002 - Instrument PanelRHD": 1382,
+    "JE412A001 - Instrument Panel CrossmemberLHD": 1385,
+    "JE412A002 - Instrument Panel CrossmemberRHD": 1384,
+    "JE421AE001 - Seat Arrangement of Shang Jies 11 12and 14 Seats (Australia)": 1446,
+    "JE421AF001 - Three Seats Arrangement for VAN Vehicle (AustraliaNew Zealand)": 1456,
+    "JE421AG001 - TwoThree Seats Arrangement for Chassis Vehicle (AustraliaNew Zealand)": 1454,
+    "JE421AH001 - Arrangement for VAN Vehicle (UKHong Kong)": 1457,
+    "JE421AI001 - Three Seats Arrangement for Chassis Vehicle (UKHong Kong)": 1461,
+    "JE421B001 - Front Seatleft": 1463,
+    "JE421B002 - Frong Seatright": 1459,
+    "JE421B003 - Front SeatRight": 1455,
+    "JE421B004 - Front SeatLeft": 1460,
+    "JE421B005 - Subdrivers Integral Double Seat": 1462,
+    "JE421B006 - Subdrivers Split Double Seat": 1458,
+    "JE431A001 - Side Trim": 1389,
+    "JE432A001 - Front Door Trim": 1388,
+    "JE436A001 - Roof Trim": 1392,
+    "JE437A001 - Floor Trim": 1386,
+    "JE440A001 - InteriorLamp": 1390,
+    "JE451A001 - Sound InsulationHeat Insulation": 1393,
+    "JE460A001 - Side Panel&amp;Roof Safety Belt": 1451,
+    "JE471A001 - Steering Wheel and AirBag": 1329,
+    "JE510A001 - body lower stucture": 1331,
+    "JE521A001 - inner framing(left side)": 1333,
+    "JE521B001 - inner framing(right side)": 1324,
+    "JE522A001 - Outer Framing(left side)": 1328,
+    "JE522B001 - Outer Framing(right side)": 1339,
+    "JE523A001 - Roof Framing": 1338,
+    "JE524A001 - Rear Panel": 1337,
+    "JE526A001 - Baffle Plate-Ware": 1336,
+    "JE551A001 - Front Side Closure": 1464,
+    "JE551B001 - Front Door Handle and Lock": 1467,
+    "JE551C001 - Front Door Electric Glass Regulator": 1471,
+    "JE553B001 - Side Sliding Door Handle and Door Lock": 1473,
+    "JE557A001 - TNK FIL DR": 1468,
+    "JE561C001 - Rear Door Handle and Door Lock": 1444,
+    "JE571A001 - Hood": 1371,
+    "JE571B001 - Hood Lock": 1365,
+    "JE572A001 - Fenders": 1373,
+    "JE580A001 - Rear View Mirror": 1450,
+    "JE611A001 - Window": 1335,
+    "JE621A001 - Front Bumper": 1349,
+    "JE623A001 - Grille": 1352,
+    "JE625A001 - Wheelhouse Liner": 1353,
+    "JE644A001 - Mud Guard": 1325,
+    "JE650A001 - Front Lamp": 1366,
+    "JE660A001 - Rear Lamp": 1449,
+    "JE681A001 - WiperLHD": 1476,
+    "JE681A002 - WiperRHD": 1475,
+    "JE682A001 - Washer System": 1477,
+    "JE691A001 - Body Exterior Trim": 1330,
+    "JE711A001 - Clusters": 1358,
+    "JE716A001 - Vehicle Date Recorder": 1363,
+    "JE721A001 - Window Lift Switch": 1361,
+    "JE723A001 - Multi-Function Column Switch": 1359,
+    "JE725A001 - Ignition Switch and Key": 1356,
+    "JE726A001 - Accessory Switches": 1357,
+    "JE731A001 - Infotainment System": 1362,
+    "JE732A001 - Speaker": 1355,
+    "JE741A001 - Antenna": 1326,
+    "JE751A001 - Vehicle Tele-Communication": 1351,
+    "JE811A001 - Air Bag Control Unit": 1453,
+    "JE812A001 - ParkDistanceControlSystem": 1452,
+    "JE821A001 - Passive Entry Passive Start": 1354,
+    "JE830A001 - Body Interior &amp; Exterior Electronics": 1327,
+    "JE843A001 - Battery&amp;Electrical Energy Storage": 1344,
+    "JE844A002 - PowerInverter": 1346,
+    "JE861A001 - EngineCompartmentHarness": 1423,
+    "JE862A001 - Body accessories harness": 1420,
+    "JE863A001 - Instrument Panel Wire Harnesses": 1419,
+    "JE864A001 - Door Wire Harnesses": 1422,
+    "JE865A001 - Chassis Harnesses": 1417,
+    "JE867A001 - Engine Compartment Fuse Box": 1425,
+    "JE868A001 - Power Outlet &amp; Cigarette Lighter HEvice": 1427,
+    "JE869A001 - Battery Harnesses": 1428,
+    "JE911A001 - On Vehicle Attachments": 1397,
+    "JE917A001 - On Vehicle Tools": 1394,
+    "JE919A001 - Fluids and Lubrications": 1398,
+    "On Vehicle Attachments&amp;Tools": 1305,
+    "Power &amp; Signaldistribution": 1307,
+    "Powertrain Control&amp;Diagnostic": 1313,
+    "Safety&amp;Avoidance": 1316,
+    "Tire,Wheels,Wheel Trim": 1318,
+    "Wiper &amp; Washer": 1319
+  },
+  "completed_products": []
+}

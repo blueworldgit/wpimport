@@ -1,17 +1,16 @@
-Uploading Placeholder Images to WordPress
+✅ Found 446 unique original_sku values in WordPress
+
+============================================================
+Updating Prices for 446 Unique SKUs
 ============================================================
 
-✓ Uploaded general placeholder (ID: 11919)
-✓ Uploaded left placeholder (ID: 11920)
-✓ Uploaded right placeholder (ID: 11921)
-
-✓ Placeholder IDs: {'general': 11919, 'left': 11920, 'right': 11921}
-
+Updating prices:   0%|▏                                                              | 1/446 [02:32<18:53:23, 152.82s/it]
 Traceback (most recent call last):
-  File "C:\wpimport\scripts\import_to_woocommerce.py", line 648, in <module>
+  File "C:\pythonstuff\wpimport\scripts\update_prices.py", line 393, in <module>
     main()
-    ~~~~^^
-  File "C:\wpimport\scripts\import_to_woocommerce.py", line 625, in main
-    with open(data_file, 'r', encoding='utf-8') as f:
-         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'C:\\wpimport\\data\\extracted\\extracted_data_full.json'
+  File "C:\pythonstuff\wpimport\scripts\update_prices.py", line 375, in main
+    updater.update_prices_optimized(
+  File "C:\pythonstuff\wpimport\scripts\update_prices.py", line 245, in update_prices_optimized
+    all_products = self.get_all_products_by_original_sku(sku)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'PriceUpdater' object has no attribute 'get_all_products_by_original_sku'. Did you mean: 'get_products_by_original_sku'?

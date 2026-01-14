@@ -1,0 +1,56 @@
+def import_or_update_part(part_data, model_category_id):
+    sku = part_data['sku']
+    
+    # 1. Search for the product by SKU
+    search_result = wcapi.get("products", params={"sku": sku}).json()
+    
+    if search_result:
+        # PRODUCT EXISTS: We need to add the new category to the existing ones
+        product_id = search_result[0]['id']
+        existing_categories = search_result[0].get('categories', [])
+        
+        # Extract existing IDs
+        category_ids = [cat['id'] for cat in existing_categories]
+        
+        # Add new category if not already present
+        if model_category_id not in category_ids:
+            category_ids.append(model_category_id)
+            
+            update_data = {
+                "categories": [{"id": cid} for cid in category_ids]
+            }
+            
+            wcapi.put(f"products/{product_id}", update_data)
+            print(f"Updated SKU {sku}: Added to new model category.")
+        else:
+            print(f"SKU {sku} already assigned to this model.")
+            
+    else:
+        # PRODUCT DOES NOT EXIST: Create it fresh
+        part_data['categories'] = [{"id": model_category_id}]
+        wcapi.post("products", part_data)
+        print(f"Created new SKU {sku}.")
+
+Important note categories are unique to a model and should be added to a model category as needed.
+
+        def add_part_to_model(sku, target_category_id):
+    # 1. Check if product already exists
+    product = wcapi.get("products", params={"sku": sku}).json()
+
+    if product:
+        product_id = product[0]['id']
+        # 2. Get the list of categories it is ALREADY in
+        current_cats = [c['id'] for c in product[0]['categories']]
+        
+        # 3. Add the new category ID if it's not already there
+        if target_category_id not in current_cats:
+            current_cats.append(target_category_id)
+            
+            # 4. Update the product with the combined list
+            wcapi.put(f"products/{product_id}", {
+                "categories": [{"id": c_id} for c_id in current_cats]
+            })
+            print(f"SKU {sku} is now shared with Category {target_category_id}")
+    else:
+        # Create fresh if it doesn't exist
+        # ... standard create logic ...

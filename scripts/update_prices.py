@@ -1,6 +1,6 @@
 """
-Price Update Script - Phase 4
-Updates WooCommerce product prices from Excel file
+Price Update Script - Phase 4 (WordPress-First)
+Updates WooCommerce product prices from Excel file using WordPress-first approach
 """
 import sys
 import pandas as pd
@@ -8,6 +8,7 @@ from pathlib import Path
 from woocommerce import API
 from tqdm import tqdm
 import time
+from datetime import datetime
 
 # Add parent directory to path for config
 base_dir = Path(__file__).parent.parent
@@ -19,17 +20,42 @@ class PriceUpdater:
     def __init__(self, excel_file, wcapi):
         self.excel_file = excel_file
         self.wcapi = wcapi
+        self.pricing_lookup = {}  # In-memory price lookup
+        self.no_price_log = base_dir / 'nopricefound.txt'
         self.stats = {
+            'total_in_db': 0,
             'total_in_excel': 0,
             'prices_updated': 0,
-            'not_found': 0,
+            'not_found_in_excel': 0,
+            'not_found_in_wp': 0,
+            'no_pricing_needed': 0,
             'errors': [],
             'skipped': []
         }
+        
+        # Initialize the no price log file
+        self.init_no_price_log()
+    
+    def init_no_price_log(self):
+        """Initialize the no price found log file"""
+        try:
+            with open(self.no_price_log, 'w', encoding='utf-8') as f:
+                f.write(f"# SKUs Not Found in Excel - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write("# These Oscar SKUs exist in database but have no pricing in Excel file\n\n")
+        except Exception as e:
+            print(f"Warning: Could not initialize no price log: {e}")
+    
+    def log_no_price_sku(self, sku):
+        """Log a SKU that has no pricing in Excel"""
+        try:
+            with open(self.no_price_log, 'a', encoding='utf-8') as f:
+                f.write(f"{sku}\n")
+        except Exception as e:
+            self.stats['errors'].append(f"Could not log no-price SKU {sku}: {e}")
     
     def load_pricing_data(self):
-        """Load pricing data from Excel file"""
-        print(f"\nLoading pricing data from: {self.excel_file}")
+        """Load pricing data from Excel file into memory lookup"""
+        print(f"\n📊 Loading pricing data from: {self.excel_file}")
         
         df = pd.read_excel(self.excel_file)
         
@@ -47,29 +73,172 @@ class PriceUpdater:
         df = df[df['Retail Price'].notna()]
         df = df[df['Retail Price'] > 0]
         
-        self.stats['total_in_excel'] = len(df)
+        # Create fast lookup dictionary
+        for _, row in df.iterrows():
+            self.pricing_lookup[row['Part Number']] = row['Retail Price']
         
-        print(f"✓ Loaded {len(df)} valid price records")
-        print(f"  SKU range: {df['Part Number'].min()} to {df['Part Number'].max()}")
-        print(f"  Price range: £{df['Retail Price'].min():.2f} to £{df['Retail Price'].max():.2f}")
+        self.stats['total_in_excel'] = len(self.pricing_lookup)
         
-        return df
+        print(f"✅ Loaded {len(self.pricing_lookup)} valid price records into memory")
+        print(f"   SKU range: {min(self.pricing_lookup.keys())} to {max(self.pricing_lookup.keys())}")
+        
+        if self.pricing_lookup:
+            prices = list(self.pricing_lookup.values())
+            print(f"   Price range: £{min(prices):.2f} to £{max(prices):.2f}")
+        
+        return True
     
-    def get_product_by_sku(self, sku):
-        """Get WooCommerce product by SKU"""
+    def get_imported_skus_from_wordpress(self):
+        """Get unique original_sku values from WordPress products"""
         try:
-            response = self.wcapi.get("products", params={"sku": sku, "per_page": 1})
+            print(f"\n🔍 Querying WordPress for imported original_sku metadata...")
+            
+            unique_skus = set()
+            page = 1
+            
+            while True:
+                response = self.wcapi.get("products", params={
+                    "per_page": 100,
+                    "page": page,
+                    "status": "publish"
+                })
+                
+                if response.status_code != 200 or not response.json():
+                    break
+                
+                products = response.json()
+                if not products:
+                    break
+                
+                # Extract original_sku metadata from each product
+                for product in products:
+                    meta_data = product.get('meta_data', [])
+                    for meta in meta_data:
+                        if meta.get('key') == 'original_sku':
+                            original_sku = meta.get('value')
+                            if original_sku:
+                                unique_skus.add(str(original_sku).strip())
+                
+                print(f"   📄 Processed page {page}: {len(products)} products")
+                page += 1
+                
+                # Safety limit
+                if page > 200:
+                    print("   ⚠️ Reached page limit (200), stopping")
+                    break
+            
+            unique_skus_list = sorted(list(unique_skus))
+            self.stats['total_in_db'] = len(unique_skus_list)
+            
+            print(f"✅ Found {len(unique_skus_list)} unique original_sku values in WordPress")
+            
+            return unique_skus_list
+        
+        except Exception as e:
+            print(f"❌ WordPress query error: {e}")
+            return []
+    def get_products_by_original_sku(self, original_sku):
+        """Get WooCommerce products by original_sku metadata that have no pricing"""
+        try:
+            # Search for products with this original SKU that have no regular price
+            response = self.wcapi.get("products", params={
+                "meta_key": "original_sku",
+                "meta_value": original_sku,
+                "per_page": 100,  # Get all matches
+                "status": "publish"
+            })
             
             if response.status_code == 200:
                 products = response.json()
-                if products:
-                    return products[0]
+                # Filter for products with no pricing or zero pricing
+                no_price_products = []
+                for product in products:
+                    regular_price = product.get('regular_price', '')
+                    if not regular_price or regular_price == '0' or regular_price == '0.00':
+                        no_price_products.append(product)
+                
+                return no_price_products if no_price_products else []
             
-            return None
+            return []
         
         except Exception as e:
-            self.stats['errors'].append(f"Error fetching SKU {sku}: {str(e)}")
-            return None
+            self.stats['errors'].append(f"Error fetching original SKU {original_sku}: {str(e)}")
+            return []
+    
+    def get_all_products_needing_pricing(self):
+        """Get all WordPress products that need pricing, grouped by original_sku - FAST BATCH METHOD"""
+        try:
+            print(f"\n🔍 Loading all WordPress products to check pricing status...")
+            
+            products_by_sku = {}
+            page = 1
+            
+            while True:
+                response = self.wcapi.get("products", params={
+                    "per_page": 100,
+                    "page": page,
+                    "status": "publish"
+                })
+                
+                if response.status_code != 200 or not response.json():
+                    break
+                
+                products = response.json()
+                if not products:
+                    break
+                
+                # Process each product
+                for product in products:
+                    # Get original_sku from metadata
+                    original_sku = None
+                    meta_data = product.get('meta_data', [])
+                    for meta in meta_data:
+                        if meta.get('key') == 'original_sku':
+                            original_sku = meta.get('value')
+                            break
+                    
+                    if original_sku:
+                        original_sku = str(original_sku).strip()
+                        
+                        # Check if product needs pricing
+                        regular_price = product.get('regular_price', '')
+                        needs_pricing = not regular_price or regular_price == '0' or regular_price == '0.00'
+                        
+                        if original_sku not in products_by_sku:
+                            products_by_sku[original_sku] = {
+                                'needs_pricing': [],
+                                'already_priced': [],
+                                'total_count': 0
+                            }
+                        
+                        products_by_sku[original_sku]['total_count'] += 1
+                        
+                        if needs_pricing:
+                            products_by_sku[original_sku]['needs_pricing'].append(product)
+                        else:
+                            products_by_sku[original_sku]['already_priced'].append(product)
+                
+                print(f"   📄 Processed page {page}: {len(products)} products")
+                page += 1
+                
+                # Safety limit
+                if page > 200:
+                    print("   ⚠️ Reached page limit (200), stopping")
+                    break
+            
+            total_products = sum(data['total_count'] for data in products_by_sku.values())
+            needs_pricing_count = sum(len(data['needs_pricing']) for data in products_by_sku.values())
+            already_priced_count = sum(len(data['already_priced']) for data in products_by_sku.values())
+            
+            print(f"✅ Loaded {total_products} products across {len(products_by_sku)} unique SKUs")
+            print(f"   📦 Products needing pricing: {needs_pricing_count}")
+            print(f"   ✅ Products already priced: {already_priced_count}")
+            
+            return products_by_sku
+        
+        except Exception as e:
+            print(f"❌ Error loading products: {e}")
+            return {}
     
     def update_product_price(self, product_id, price, sku):
         """Update product price in WooCommerce"""
@@ -90,124 +259,102 @@ class PriceUpdater:
             self.stats['errors'].append(f"Error updating {sku}: {str(e)}")
             return False
     
-    def update_variation_price(self, parent_id, variation_id, price, sku):
-        """Update variation price in WooCommerce"""
-        try:
-            price_str = f"{price:.2f}"
-            
-            response = self.wcapi.put(f"products/{parent_id}/variations/{variation_id}", {
-                "regular_price": price_str
-            })
-            
-            if response.status_code == 200:
-                return True
-            else:
-                self.stats['errors'].append(f"Failed to update variation {sku}: {response.status_code}")
-                return False
+    def update_multiple_products_price(self, products, price, original_sku):
+        """Update price for multiple products with same original SKU"""
+        updated_count = 0
         
-        except Exception as e:
-            self.stats['errors'].append(f"Error updating variation {sku}: {str(e)}")
-            return False
-    
-    def search_in_variations(self, sku, price):
-        """Search for SKU in product variations"""
-        try:
-            # Get all variable products
-            page = 1
-            while True:
-                response = self.wcapi.get("products", params={
-                    "type": "variable",
-                    "per_page": 100,
-                    "page": page
-                })
-                
-                if response.status_code != 200 or not response.json():
-                    break
-                
-                products = response.json()
-                
-                for product in products:
-                    # Get variations for this product
-                    var_response = self.wcapi.get(f"products/{product['id']}/variations", params={"per_page": 100})
-                    
-                    if var_response.status_code == 200:
-                        variations = var_response.json()
-                        
-                        for variation in variations:
-                            if variation.get('sku') == sku:
-                                # Found it!
-                                if self.update_variation_price(product['id'], variation['id'], price, sku):
-                                    return True
-                
-                page += 1
-                
-                # Safety limit
-                if page > 50:
-                    break
-            
-            return False
+        for product in products:
+            try:
+                if self.update_product_price(product['id'], price, f"{original_sku} (WP SKU: {product['sku']})"):
+                    updated_count += 1
+            except Exception as e:
+                self.stats['errors'].append(f"Error updating product {product['id']} for original SKU {original_sku}: {str(e)}")
         
-        except Exception as e:
-            self.stats['errors'].append(f"Error searching variations for {sku}: {str(e)}")
-            return False
+        return updated_count
     
-    def update_prices(self, df, test_mode=False, test_limit=None):
+    def update_prices_optimized(self, test_mode=False, test_limit=None):
         """
-        Update prices for all products in dataframe
+        Optimized price update: WordPress-first approach
         
         Args:
-            df: DataFrame with pricing data
-            test_mode: If True, only update first N products
-            test_limit: Number of products to update in test mode
+            test_mode: If True, only update first N SKUs
+            test_limit: Number of SKUs to update in test mode
         """
+        
+        # Step 1: Load all products and group by SKU in one go (MUCH FASTER!)
+        products_by_sku = self.get_all_products_needing_pricing()
+        if not products_by_sku:
+            print("❌ No products found in WordPress")
+            return
+        
+        unique_skus = sorted(products_by_sku.keys())
+        self.stats['total_in_db'] = len(unique_skus)
+        
+        # Step 2: Filter for test mode
         if test_mode and test_limit:
-            df = df.head(test_limit)
-            print(f"\n🔧 TEST MODE: Updating first {test_limit} products only\n")
+            unique_skus = unique_skus[:test_limit]
+            print(f"\n🔧 TEST MODE: Processing first {test_limit} SKUs only\n")
         
         print(f"\n{'='*60}")
-        print(f"Updating Prices for {len(df)} Products")
+        print(f"⚡ FAST Batch Processing {len(unique_skus)} Unique SKUs")
         print(f"{'='*60}\n")
         
-        for index, row in tqdm(df.iterrows(), total=len(df), desc="Updating prices"):
-            sku = row['Part Number']
-            price = row['Retail Price']
+        # Step 3: Process each SKU (no individual API calls - data already loaded!)
+        for sku in tqdm(unique_skus, desc="Processing SKUs"):
+            # Fast Excel lookup
+            if sku not in self.pricing_lookup:
+                self.stats['not_found_in_excel'] += 1
+                self.stats['skipped'].append(f"{sku} (no price in Excel)")
+                self.log_no_price_sku(sku)
+                continue
             
-            # First, try to find as simple product
-            product = self.get_product_by_sku(sku)
+            price = self.pricing_lookup[sku]
+            sku_data = products_by_sku[sku]
             
-            if product:
-                # Found as simple product
-                if self.update_product_price(product['id'], price, sku):
-                    self.stats['prices_updated'] += 1
+            # Products that need pricing (already identified in batch load)
+            products_to_update = sku_data['needs_pricing']
+            
+            if products_to_update:
+                # Update all products that need pricing
+                updated_count = self.update_multiple_products_price(products_to_update, price, sku)
+                if updated_count > 0:
+                    self.stats['prices_updated'] += updated_count
             else:
-                # Not found as simple product, search in variations
-                if self.search_in_variations(sku, price):
-                    self.stats['prices_updated'] += 1
-                else:
-                    self.stats['not_found'] += 1
-                    self.stats['skipped'].append(sku)
+                # All products already have pricing
+                if sku_data['total_count'] > 0:
+                    self.stats['no_pricing_needed'] += 1
             
-            # Rate limiting
-            time.sleep(0.3)
+            # Minimal rate limiting since we're not querying, just updating
+            time.sleep(0.1)
         
         print("\n")
     
     def print_summary(self):
         """Print update summary"""
         print(f"\n{'='*60}")
-        print("Price Update Summary")
+        print("WordPress-First Price Update Summary")
         print(f"{'='*60}")
-        print(f"Total SKUs in Excel:     {self.stats['total_in_excel']}")
-        print(f"Prices updated:          {self.stats['prices_updated']}")
-        print(f"Not found in WC:         {self.stats['not_found']}")
-        print(f"Errors:                  {len(self.stats['errors'])}")
+        print(f"Unique SKUs in WordPress:     {self.stats['total_in_db']}")
+        print(f"Pricing records in Excel:     {self.stats['total_in_excel']}")
+        print(f"WordPress products updated:   {self.stats['prices_updated']}")
+        print(f"SKUs not in Excel:            {self.stats['not_found_in_excel']}")
+        print(f"SKUs not found in WP:         {self.stats['not_found_in_wp']}")
+        print(f"Products already priced:      {self.stats['no_pricing_needed']}")
+        print(f"Errors:                       {len(self.stats['errors'])}")
         print(f"{'='*60}\n")
+        print("ℹ️  WordPress-first approach: Only processes SKUs that exist in WordPress")
+        print("   Multiple WordPress products may be updated per Oscar SKU")
         
-        if self.stats['not_found'] > 0:
-            print(f"\n⚠ {self.stats['not_found']} SKUs not found in WooCommerce")
-            print("  (These products may not be imported yet)")
-            if len(self.stats['skipped']) <= 20:
-                print(f"  SKUs: {', '.join(self.stats['skipped'])}")
+        if self.stats['not_found_in_excel'] > 0:
+            print(f"\n⚠ {self.stats['not_found_in_excel']} Oscar SKUs have no pricing in Excel")
+            print(f"   📝 Missing SKUs logged to: {self.no_price_log}")
+            
+        if self.stats['no_pricing_needed'] > 0:
+            print(f"\n✅ {self.stats['no_pricing_needed']} Oscar SKUs already have pricing in WordPress")
+            
+        if self.stats['not_found_in_wp'] > 0:
+            print(f"\n⚠ {self.stats['not_found_in_wp']} SKUs had issues in WordPress")
+            print("  (This should be rare with WordPress-first approach)")
         
         if self.stats['errors']:
             print(f"\n⚠ {len(self.stats['errors'])} errors encountered:")
@@ -217,7 +364,9 @@ class PriceUpdater:
                 print(f"  ... and {len(self.stats['errors']) - 10} more")
         
         if self.stats['prices_updated'] > 0:
-            print(f"\n✓ Successfully updated {self.stats['prices_updated']} product prices!")
+            print(f"\n✅ Successfully updated {self.stats['prices_updated']} WordPress product prices!")
+            efficiency = (self.stats['total_in_db'] - self.stats['not_found_in_excel']) / self.stats['total_in_db'] * 100 if self.stats['total_in_db'] > 0 else 0
+            print(f"📊 Coverage: {efficiency:.1f}% of WordPress SKUs have pricing in Excel")
 
 
 def main():
@@ -255,7 +404,7 @@ def main():
     )
     
     print("\n" + "="*60)
-    print("WooCommerce Price Update - Phase 4")
+    print("WooCommerce Price Update - Phase 4 (WordPress-First)")
     print("="*60)
     print(f"WordPress URL: {WORDPRESS_URL}")
     print(f"Excel file: {excel_file.name}")
@@ -274,49 +423,33 @@ def main():
     # Create updater
     updater = PriceUpdater(excel_file, wcapi)
     
-    # Load pricing data
+    # Load pricing data into memory
     try:
-        df = updater.load_pricing_data()
+        updater.load_pricing_data()
     except Exception as e:
         print(f"\n✗ Error loading Excel file: {str(e)}")
         return
     
-    # Ask user confirmation
-    print(f"\n⚠️  This will update prices for products in WooCommerce")
-    print(f"   Matching {updater.stats['total_in_excel']} SKUs from Excel file")
+    # Ask for test mode
+    test_mode = input("\nRun in test mode? (y/N): ").strip().lower() == 'y'
+    test_limit = None
+    if test_mode:
+        try:
+            test_limit = int(input("Enter number of SKUs to test (default 10): ") or "10")
+        except:
+            test_limit = 10
     
-    # Uncomment for production - require confirmation
-    # confirm = input("\nType 'UPDATE' to confirm: ")
-    # if confirm != 'UPDATE':
-    #     print("\n✗ Cancelled. No prices were updated.")
-    #     return
-    
-    # Get list of imported SKUs to update
-    print("\n🔧 Running in TEST MODE - will update prices for currently imported products only")
-    
-    # Load imported SKUs
-    extracted_file = base_dir / 'data' / 'extracted' / 'extracted_data_test.json'
-    if extracted_file.exists():
-        import json
-        with open(extracted_file, 'r') as f:
-            extracted_data = json.load(f)
-        
-        imported_skus = []
-        for p in extracted_data['products']:
-            if p['type'] == 'simple':
-                imported_skus.append(p['sku'])
-            else:
-                for v in p['variations']:
-                    imported_skus.append(v['sku'])
-        
-        # Filter Excel data to only imported SKUs
-        df = df[df['Part Number'].isin(imported_skus)]
-        print(f"✓ Found {len(df)} pricing records for imported products")
+    print(f"\n⚠️  This will update prices using WordPress-first approach")
+    print(f"   Excel pricing records: {updater.stats['total_in_excel']}")
+    print(f"   Will query WordPress for all imported original_sku metadata")
     
     confirm = input("\nPress Enter to continue or Ctrl+C to cancel: ")
     
-    # Update prices
-    updater.update_prices(df, test_mode=False)
+    # Update prices using optimized approach
+    updater.update_prices_optimized(
+        test_mode=test_mode, 
+        test_limit=test_limit
+    )
     
     # Print summary
     updater.print_summary()
@@ -325,8 +458,8 @@ def main():
     print("Next Steps:")
     print("="*60)
     print("1. Check updated products in WooCommerce")
-    print("2. If everything looks good, run again without test_mode")
-    print("3. Update script line 214 to remove test_mode for full update")
+    print("2. Run without test_mode for full update")
+    print("3. The optimized approach is much faster!")
     print("="*60 + "\n")
 
 
