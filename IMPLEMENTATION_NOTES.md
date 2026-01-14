@@ -104,5 +104,54 @@ def update_pricing_for_oscar_sku(oscar_sku, new_price):
 
 - **Before**: 1,479 concatenated products with complex names
 - **After**: 3,688 individual products with proper hierarchy
-- **Update Scripts**: Must use `original_sku` metadata for matching
+- **Update Scripts**: Must use `skuoriginal_` metadata for matching
 - **Reporting**: Can aggregate by original SKU or report individual usage contexts
+
+## Vector Image Management Strategy
+
+### Image Upload Challenges
+After bulk import with images, some products may have failed image uploads. Key considerations:
+
+1. **Error Handling**: Run reports to identify products with `has_diagram_image=false` or missing images
+2. **Vector Reprocessing**: Can regenerate vectors for failed products using original HTML diagrams
+3. **One Vector = Multiple SKUs**: Each diagram represents multiple parts with different callout numbers
+
+### SKU-to-Vector Mapping
+**Critical Issue**: One vector diagram contains multiple SKUs, so we need tracking for troubleshooting.
+
+**Solution**: During conversion, create mapping files:
+```json
+{
+  "master_Air_filter.png": {
+    "source_html": "LSFAL11A4PA157987/air intake system/Air filter.html",
+    "skus": ["C00041192", "C00017370", "C00074267", ...],
+    "diagram_name": "Air filter",
+    "category": "air intake system"
+  }
+}
+```
+
+### Image Troubleshooting Workflow
+1. **Identify Failed Products**: Query products with missing images
+2. **Group by Original SKU**: Find all WordPress products for each failed Oscar SKU  
+3. **Lookup Vector Source**: Use mapping to find which HTML diagram contains the SKU
+4. **Regenerate Vector**: Convert specific HTML diagram to PNG
+5. **Batch Update**: Apply same image to all products with that original SKU
+
+### Vector Batch Processing
+```python
+# Find products needing images
+failed_products = wcapi.get("products", params={
+    "meta_key": "has_diagram_image", 
+    "meta_value": "false"
+})
+
+# Group by original_sku to minimize vector regeneration
+sku_groups = group_by_original_sku(failed_products)
+
+# For each unique Oscar SKU, find its vector and update all related products
+for oscar_sku, products in sku_groups.items():
+    vector_info = lookup_vector_for_sku(oscar_sku)  # Use mapping file
+    regenerated_image = convert_html_to_png(vector_info['source_html'])
+    update_all_products_with_image(products, regenerated_image)
+```
