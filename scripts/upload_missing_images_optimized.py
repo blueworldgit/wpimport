@@ -15,6 +15,9 @@ import argparse
 import time
 import mimetypes
 import requests
+import html
+import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 from pathlib import Path
 from tqdm import tqdm
@@ -78,6 +81,22 @@ def get_wordpress_api():
 # Global cache for PNG file lookups
 _png_file_cache = {}
 _images_dir_cache = None
+_image_hash_cache = {}  # Cache image file hashes for deduplication
+_uploaded_image_cache = {}  # Cache of already uploaded images hash -> media_id
+_close_matches = []  # Track all close/smart matches for end report
+
+def get_image_hash(image_path):
+    """Get SHA256 hash of image file for deduplication"""
+    if image_path in _image_hash_cache:
+        return _image_hash_cache[image_path]
+    
+    try:
+        with open(image_path, 'rb') as f:
+            file_hash = hashlib.sha256(f.read()).hexdigest()[:16]  # First 16 chars for speed
+        _image_hash_cache[image_path] = file_hash
+        return file_hash
+    except Exception as e:
+        return None
 
 def build_png_cache(images_dir):
     """Build a cache of all PNG files for faster lookups"""
@@ -99,13 +118,31 @@ def build_png_cache(images_dir):
     print(f"   📁 Found {len(png_files)} PNG files")
     
     for png_file in png_files:
-        # Extract SKU and title from filename
+        # Extract SKU from filename (everything before the first non-SKU character after the base)
         filename = png_file.stem  # Remove .png extension
         if '-' in filename:
-            sku = filename.split('-', 1)[0]
-            if sku not in _png_file_cache:
-                _png_file_cache[sku] = []
-            _png_file_cache[sku].append(str(png_file))
+            # For files like "C00073046-blu-BEARING-CRANKSHAFT_LOWER.png"
+            # Extract full SKU including variant: "C00073046-blu"
+            parts = filename.split('-')
+            if len(parts) >= 2:
+                # Try different SKU patterns
+                potential_skus = [
+                    parts[0],  # Base SKU: C00073046
+                    f"{parts[0]}-{parts[1]}",  # Variant SKU: C00073046-blu
+                ]
+                
+                # Only add variant SKU if it looks like a color/variant (short suffix)
+                if len(parts) >= 2 and len(parts[1]) <= 4:  # Short suffixes like "blu", "gre", "bla"
+                    for sku in potential_skus:
+                        if sku not in _png_file_cache:
+                            _png_file_cache[sku] = []
+                        _png_file_cache[sku].append(str(png_file))
+                else:
+                    # Regular SKU without variant
+                    sku = parts[0]
+                    if sku not in _png_file_cache:
+                        _png_file_cache[sku] = []
+                    _png_file_cache[sku].append(str(png_file))
     
     print(f"   🗃️  Cached {len(_png_file_cache)} unique SKUs")
     return _png_file_cache
@@ -139,8 +176,11 @@ def find_sku_png_file(original_sku, product_name, images_dir):
     if not available_files:
         return None
     
-    # Convert WordPress product name to match the PNG file naming convention
-    safe_name = product_name.replace(' ', '_').replace('&', 'and').replace('/', '-').replace('\\', '-')
+    # Decode HTML entities and convert product name to match PNG naming convention
+    decoded_name = html.unescape(product_name)  # Convert &amp; to & etc.
+    
+    # Apply the same transformations as the PNG conversion script
+    safe_name = decoded_name.replace(' ', '_').replace('&', 'and').replace('/', '-').replace('\\', '-')
     safe_name = ''.join(c for c in safe_name if c.isalnum() or c in '_-')  # Remove special chars
     
     # Expected filename format: SKU-TITLE.png
@@ -151,12 +191,15 @@ def find_sku_png_file(original_sku, product_name, images_dir):
         if Path(file_path).name == expected_filename:
             return file_path
     
-    # Try variations
+    # Try variations with different character handling
     variations = [
         f"{original_sku}-{safe_name.replace('_', '-')}.png",
         f"{original_sku}-{safe_name.replace('-', '_')}.png", 
         f"{original_sku}-{safe_name.upper()}.png",
         f"{original_sku}-{safe_name.lower()}.png",
+        # Also try without special character replacements
+        f"{original_sku}-{decoded_name.replace(' ', '_')}.png",
+        f"{original_sku}-{decoded_name.replace(' ', '-')}.png",
     ]
     
     for variation in variations:
@@ -164,9 +207,67 @@ def find_sku_png_file(original_sku, product_name, images_dir):
             if Path(file_path).name == variation:
                 return file_path
     
-    # Return first available file for this SKU (closest match)
+    # Smart fuzzy matching - find the best semantic match
+    def calculate_match_score(filename, search_terms):
+        """Calculate how well a filename matches the search terms"""
+        filename_lower = filename.lower()
+        score = 0
+        
+        # Look for each word in the search terms
+        for term in search_terms:
+            if term.lower() in filename_lower:
+                # Give higher score for longer terms (more specific)
+                score += len(term) * 2
+                # Bonus for exact word boundaries
+                if f" {term.lower()} " in f" {filename_lower} ":
+                    score += len(term)
+        
+        # Penalty for completely unrelated terms
+        unrelated_terms = ["parking", "brake", "wire", "drawing"]
+        for unrelated in unrelated_terms:
+            if unrelated in filename_lower and unrelated not in decoded_name.lower():
+                score -= 50  # Heavy penalty for unrelated matches
+        
+        return score
+    
+    # Extract meaningful terms from the decoded product name
+    search_terms = [word for word in decoded_name.replace('-', ' ').replace('_', ' ').split() 
+                   if len(word) > 2]  # Skip short words like "TO", "OF" etc.
+    
+    # Score all available files and pick the best match
+    scored_files = []
+    for file_path in available_files:
+        filename = Path(file_path).name
+        score = calculate_match_score(filename, search_terms)
+        if score > 0:  # Only consider files with positive scores
+            scored_files.append((score, file_path))
+    
+    if scored_files:
+        # Sort by score (highest first) and return the best match
+        scored_files.sort(key=lambda x: x[0], reverse=True)
+        best_match = scored_files[0][1]
+        # Record smart match for end report
+        _close_matches.append({
+            'type': 'smart_match',
+            'sku': original_sku,
+            'product_name': product_name,
+            'matched_file': Path(best_match).name,
+            'score': scored_files[0][0]
+        })
+        print(f"      🎯 Smart match: {Path(best_match).name} for '{product_name}' (score: {scored_files[0][0]})")
+        return best_match
+    
+    # Last resort: return first available file for this SKU
     if available_files:
         closest_match = available_files[0]
+        # Record closest match for end report
+        _close_matches.append({
+            'type': 'closest_match',
+            'sku': original_sku,
+            'product_name': product_name,
+            'matched_file': Path(closest_match).name,
+            'score': 0
+        })
         print(f"      🔍 Using closest match: {Path(closest_match).name} for '{product_name}'")
         return closest_match
     
@@ -208,7 +309,10 @@ def get_wp_auth():
         raise Exception(f"Could not load WordPress credentials: {e}")
 
 def get_woocommerce_products(limit=None, specific_sku=None):
-    """Get products from WooCommerce that need image processing."""
+    """
+    Get products from WooCommerce that need image processing.
+    Optimized to fetch only required fields for much faster performance.
+    """
     wcapi = get_wordpress_api()
     products = []
     page = 1
@@ -218,7 +322,9 @@ def get_woocommerce_products(limit=None, specific_sku=None):
         params = {
             'page': page,
             'per_page': per_page,
-            'status': 'publish'
+            'status': 'publish',
+            # OPTIMIZATION: Only fetch fields we actually need - reduces payload by ~80-90%
+            '_fields': 'id,name,images,meta_data'
         }
         
         if specific_sku:
@@ -270,9 +376,17 @@ def should_process_product(product, force_overwrite=False):
     
     return False
 
-def upload_image_to_wordpress(wcapi, image_path):
-    """Upload image to WordPress media library using REST API (exact copy of working original)"""
+def upload_image_to_wordpress_optimized(image_path):
+    """Optimized image upload with hash-based deduplication"""
     try:
+        # Check if we've already uploaded this exact image content
+        image_hash = get_image_hash(image_path)
+        if image_hash and image_hash in _uploaded_image_cache:
+            return _uploaded_image_cache[image_hash]
+        
+        # Get WordPress API instance
+        wcapi = get_wordpress_api()
+        
         # Determine MIME type
         mime_type, _ = mimetypes.guess_type(str(image_path))
         if not mime_type:
@@ -282,7 +396,12 @@ def upload_image_to_wordpress(wcapi, image_path):
         with open(image_path, 'rb') as f:
             image_data = f.read()
         
-        # Upload to WordPress using REST API directly (not WooCommerce API)
+        # Skip very large files (>2MB) - compress or skip
+        if len(image_data) > 2 * 1024 * 1024:  # 2MB limit
+            tqdm.write(f"      ⚠️  Skipping large file: {Path(image_path).name} ({len(image_data)//1024}KB)")
+            return None
+        
+        # Upload to WordPress using REST API directly
         headers = {
             'Content-Disposition': f'attachment; filename={os.path.basename(image_path)}',
             'Content-Type': mime_type
@@ -293,20 +412,27 @@ def upload_image_to_wordpress(wcapi, image_path):
             data=image_data,
             headers=headers,
             auth=get_wp_auth(),
-            timeout=60
+            timeout=30  # Reduced timeout for faster failure detection
         )
         
         if response.status_code == 201:
             media_data = response.json()
-            return media_data['id']
+            media_id = media_data['id']
+            # Cache the result to avoid re-uploading identical images
+            if image_hash:
+                _uploaded_image_cache[image_hash] = media_id
+            return media_id
         else:
-            print(f"      ❌ Image upload failed: HTTP {response.status_code}")
-            print(f"      Response: {response.text}")
+            tqdm.write(f"      ❌ Upload failed: {Path(image_path).name} - HTTP {response.status_code}")
             return None
             
     except Exception as e:
-        print(f"      ❌ Image upload error: {e}")
+        tqdm.write(f"      ❌ Upload error: {Path(image_path).name} - {str(e)[:100]}")
         return None
+
+def upload_image_to_wordpress(wcapi, image_path):
+    """Wrapper for backward compatibility"""
+    return upload_image_to_wordpress_optimized(image_path)
 
 def upload_images_optimized(products, images_dir, dry_run=False, force_overwrite=False):
     """
@@ -395,34 +521,52 @@ def upload_images_optimized(products, images_dir, dry_run=False, force_overwrite
         if len(products_without_images) > 5:
             print(f"     ... and {len(products_without_images) - 5} more")
     
-    # Step 2: Upload unique images and get media IDs
-    print(f"\n🔄 Uploading {len(image_upload_plan)} unique images...")
+    # Step 2: Upload unique images with concurrent processing
+    print(f"\n🔄 Uploading {len(image_upload_plan)} unique images with concurrent processing...")
+    
+    # Build hash-based deduplication map
+    hash_to_paths = defaultdict(list)
+    for image_path in image_upload_plan.keys():
+        image_hash = get_image_hash(image_path)
+        if image_hash:
+            hash_to_paths[image_hash].append(image_path)
+    
+    print(f"   📊 Deduplication: {len(image_upload_plan)} files → {len(hash_to_paths)} unique images")
     
     image_to_media_id = {}  # image_path -> media_id
     upload_success_count = 0
     
-    # Add progress bar for image uploads
-    upload_items = list(image_upload_plan.items())
-    
-    for image_path, products_needing_it in tqdm(upload_items, desc="Uploading images", unit="images"):
-        image_name = os.path.basename(image_path)
-        
-        if dry_run:
-            print(f"      🔍 DRY RUN: Would upload {image_path}")
-            image_to_media_id[image_path] = f"mock_media_id_{len(image_to_media_id)+1}"
+    if dry_run:
+        # Simulate uploads for dry run
+        for i, image_path in enumerate(image_upload_plan.keys()):
+            image_to_media_id[image_path] = f"mock_media_id_{i+1}"
             upload_success_count += 1
-        else:
-            try:
-                media_id = upload_image_to_wordpress(wcapi, image_path)
-                if media_id:
-                    image_to_media_id[image_path] = media_id
-                    upload_success_count += 1
-                else:
-                    tqdm.write(f"      ❌ Failed to upload {image_name}")
-            except Exception as e:
-                tqdm.write(f"      ❌ Error uploading {image_name}: {e}")
+        print(f"   🔍 DRY RUN: Would upload {len(hash_to_paths)} unique images")
+    else:
+        # Use ThreadPoolExecutor for concurrent uploads (limit to 3 concurrent for API safety)
+        unique_images = [paths[0] for paths in hash_to_paths.values()]  # Take first path for each hash
+        
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            # Submit upload tasks
+            future_to_path = {executor.submit(upload_image_to_wordpress_optimized, path): path 
+                            for path in unique_images}
+            
+            # Process completed uploads with progress bar
+            for future in tqdm(as_completed(future_to_path), total=len(unique_images), desc="Uploading"):
+                image_path = future_to_path[future]
+                try:
+                    media_id = future.result()
+                    if media_id:
+                        # Map the media_id to all images with the same hash
+                        image_hash = get_image_hash(image_path)
+                        if image_hash and image_hash in hash_to_paths:
+                            for duplicate_path in hash_to_paths[image_hash]:
+                                image_to_media_id[duplicate_path] = media_id
+                        upload_success_count += 1
+                except Exception as e:
+                    tqdm.write(f"      ❌ Upload failed: {Path(image_path).name}: {e}")
     
-    print(f"   📊 Successfully uploaded {upload_success_count}/{len(image_upload_plan)} unique images")
+    print(f"   📊 Successfully processed {upload_success_count}/{len(hash_to_paths)} unique images")
     
     # Step 3: Batch update products with their media IDs
     print(f"\n🔄 Updating products with uploaded images...")
@@ -482,13 +626,14 @@ def upload_images_optimized(products, images_dir, dry_run=False, force_overwrite
                 tqdm.write(f"      ❌ Error in batch update: {e}")
             
             # Ultra-minimal delay between batches for speed
-            time.sleep(0.05)
+            time.sleep(0.01)  # 10ms instead of 50ms for maximum speed
     
     return {
         'unique_images': upload_success_count,
         'total_products': product_update_success,
         'products_without_images': len(products_without_images),
-        'success_rate': (product_update_success / total_update_attempts * 100) if total_update_attempts > 0 else 0
+        'success_rate': (product_update_success / total_update_attempts * 100) if total_update_attempts > 0 else 0,
+        'close_matches': _close_matches.copy()  # Return copy of close matches for reporting
     }
 
 def main():
@@ -547,6 +692,45 @@ def main():
     if total_products_processed > 0 and results['unique_images'] > 0:
         efficiency_ratio = total_products_processed / results['unique_images']
         print(f"Efficiency: {efficiency_ratio:.1f}x (uploaded {results['unique_images']} images for {total_products_processed} products)")
+    
+    # Report close matches at the end
+    close_matches = results.get('close_matches', [])
+    if close_matches:
+        print(f"\n⚠️  CLOSE MATCHES REPORT ({len(close_matches)} products)")
+        print("=" * 50)
+        
+        # Group by type
+        smart_matches = [m for m in close_matches if m['type'] == 'smart_match']
+        closest_matches = [m for m in close_matches if m['type'] == 'closest_match']
+        
+        if smart_matches:
+            print(f"\n🎯 Smart Matches ({len(smart_matches)} products):")
+            print("   These used semantic matching but may not be perfect:")
+            for match in smart_matches[:10]:  # Show first 10
+                print(f"   • {match['sku']}: '{match['product_name'][:50]}...' → {match['matched_file']}")
+            if len(smart_matches) > 10:
+                print(f"   ... and {len(smart_matches) - 10} more smart matches")
+        
+        if closest_matches:
+            print(f"\n🔍 Closest Matches ({len(closest_matches)} products):")
+            print("   These used fallback matching and may be incorrect:")
+            for match in closest_matches[:10]:  # Show first 10
+                print(f"   • {match['sku']}: '{match['product_name'][:50]}...' → {match['matched_file']}")
+            if len(closest_matches) > 10:
+                print(f"   ... and {len(closest_matches) - 10} more closest matches")
+        
+        print(f"\n💡 Consider reviewing these {len(close_matches)} matches for accuracy.")
+        print("   Exact matches are preferred over smart/closest matches.")
+        
+        # Save close matches report to file if not dry run
+        if not args.dry_run:
+            report_file = Path("close_matches_report.json")
+            with open(report_file, 'w', encoding='utf-8') as f:
+                json.dump(close_matches, f, indent=2, ensure_ascii=False)
+            print(f"\n📋 Close matches report saved to: {report_file}")
+            print(f"   Review this file to identify products that may need better image matches.")
+    else:
+        print(f"\n✅ All products found exact image matches!")
     
     if args.dry_run:
         print("\n🔍 This was a DRY RUN - no actual changes were made")

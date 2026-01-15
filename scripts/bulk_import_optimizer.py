@@ -264,10 +264,20 @@ class BulkImportOptimizer:
                 params.append(serial_filter)
             
             # Exclude already processed SKUs from database query
+            # NOTE: processed_skus contains WordPress SKUs (with suffixes), not original_skus
+            # We need to extract original_skus from processed WordPress SKUs
+            processed_original_skus = set()
             if self.processed_skus:
-                placeholders = ','.join(['%s'] * len(self.processed_skus))
-                where_conditions.append(f"p.part_number NOT IN ({placeholders})")
-                params.extend(list(self.processed_skus))
+                for wp_sku in self.processed_skus:
+                    # Extract original SKU by removing the hash suffix (e.g., "B00001234-A1B2" -> "B00001234")
+                    if '-' in wp_sku:
+                        original_sku = wp_sku.rsplit('-', 1)[0]  # Remove last part after final dash
+                        processed_original_skus.add(original_sku)
+                
+                if processed_original_skus:
+                    placeholders = ','.join(['%s'] * len(processed_original_skus))
+                    where_conditions.append(f"p.part_number NOT IN ({placeholders})")
+                    params.extend(list(processed_original_skus))
             
             where_clause = "WHERE " + " AND ".join(where_conditions) if where_conditions else ""
             limit_clause = f"LIMIT {limit}" if limit else ""
@@ -300,10 +310,10 @@ class BulkImportOptimizer:
             cursor.execute(query, params)
             results = cursor.fetchall()
             
-            excluded_count = len(self.processed_skus) if self.processed_skus else 0
+            excluded_count = len(processed_original_skus) if processed_original_skus else 0
             self.log_message(f"✅ Found {len(results)} individual parts for serial {serial_filter}")
             if excluded_count > 0:
-                self.log_message(f"   ⏭️ Excluded {excluded_count} already processed SKUs from database query")
+                self.log_message(f"   ⏭️ Excluded {excluded_count} already processed original SKUs from database query")
             
             # Convert to WooCommerce format - each part becomes separate product
             products = []

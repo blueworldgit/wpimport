@@ -1,130 +1,40 @@
-     ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00004025-BOLT-SCREW-CLUSTER_INSTRUMENT_ASSEMBLY.png
-   📸 [128/169] Uploading B00003510-BOLT-SCREW-AIR_CONDITIONING_TUBE_ASSEMBLY_TO_BODY.png (for 6 products)       
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003510-BOLT-SCREW-AIR_CONDITIONING_TUBE_ASSEMBLY_TO_BODY.png
-   📸 [129/169] Uploading B00003511-BLOT-PARKING_BRAKE_WIRE_DRAWING.png (for 12 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003511-BLOT-PARKING_BRAKE_WIRE_DRAWING.png
-   📸 [130/169] Uploading B00004020-BOLT-WIPER_MOTOR_ASSEMBLY.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00004020-BOLT-WIPER_MOTOR_ASSEMBLY.png
-   📸 [131/169] Uploading B00003510-BOLT-NOX_SENSOR.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003510-BOLT-NOX_SENSOR.png
-   📸 [132/169] Uploading B00003510-BLOT-PARKING_BRAKE_WIRE_DRAWING.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003510-BLOT-PARKING_BRAKE_WIRE_DRAWING.png
-   📸 [133/169] Uploading B00003514-BOLT-FRONT_ABSORBER_SENSOR_BRACKET.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003514-BOLT-FRONT_ABSORBER_SENSOR_BRACKET.png
-   📸 [134/169] Uploading B00003511-BOLT-ENGINE_COVER.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003511-BOLT-ENGINE_COVER.png
-   📸 [135/169] Uploading B00003512-BOLT-REAR_BRAKE_HOSE_BRACKET.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003512-BOLT-REAR_BRAKE_HOSE_BRACKET.png
-   📸 [136/169] Uploading B00003510-BOLT-ELECTRONIC_CONTROL_UNIT.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003510-BOLT-ELECTRONIC_CONTROL_UNIT.png
-   📸 [137/169] Uploading B00003511-BOLT-VACUUM_ADJUSTER_BRACKET.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003511-BOLT-VACUUM_ADJUSTER_BRACKET.png
-   📸 [138/169] Uploading B00003509-BOLT-BRAKE_BACKPLATE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-BRAKE_BACKPLATE.png
-   📸 [139/169] Uploading B00003509-BOLT-SCREW-WATER_OUTLET_PIPE_TO_BLOCK_LADDER_FRAME.png (for 2 products)      
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-SCREW-WATER_OUTLET_PIPE_TO_BLOCK_LADDER_FRAME.png
-   📸 [140/169] Uploading B00003508-NUT-ENGINE_CMPT_HARNESS.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-ENGINE_CMPT_HARNESS.png
-   📸 [141/169] Uploading B00003509-BOLT-SCREW-INSTRUMENT_PANEL_RELAY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-SCREW-INSTRUMENT_PANEL_RELAY.png
-   📸 [142/169] Uploading B00003507-NUT-SWITCH_HARNESS_TO_STARTER.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-SWITCH_HARNESS_TO_STARTER.png
-   📸 [143/169] Uploading B00003508-NUT-PARKING_BRAKE_CONTROL_MECHANISM.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-PARKING_BRAKE_CONTROL_MECHANISM.png
-   📸 [144/169] Uploading B00003507-NUT-NOX_SENSOR.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-NOX_SENSOR.png
-   📸 [145/169] Uploading B00003508-NUT-TRNS_CONTROL_ROD_ASSEMBLY_TO_BODY.png (for 6 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-TRNS_CONTROL_ROD_ASSEMBLY_TO_BODY.png
-   📸 [146/169] Uploading B00003507-NUT-AIR_CONDITIONING_PIPE_PLATE.png (for 16 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-AIR_CONDITIONING_PIPE_PLATE.png
-   📸 [147/169] Uploading B00003509-BOLT-SCREW-BODY_CONTROL_MODULE_BRACKET_ASSEMBLY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-SCREW-BODY_CONTROL_MODULE_BRACKET_ASSEMBLY.png
-   📸 [148/169] Uploading B00003509-BLOT-PARKING_BRAKE_WIRE_DRAWING.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BLOT-PARKING_BRAKE_WIRE_DRAWING.png
-   📸 [149/169] Uploading B00003508-NUT-ENGINE_FRONT_COMPARTMENT_HINGE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-ENGINE_FRONT_COMPARTMENT_HINGE.png
-   📸 [150/169] Uploading B00003508-NUT-BRAKE_PEDAL.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-BRAKE_PEDAL.png
-   📸 [151/169] Uploading B00003509-BOLT-LAMP_EXHAUST_GAS_RECIRCULATION_PRESSURE_SENSOR_OUTLET_PIPE_BRACKET_TO_CYLINDER_BLOCK.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-LAMP_EXHAUST_GAS_RECIRCULATION_PRESSURE_SENSOR_OUTLET_PIPE_BRACKET_TO_CYL
-INDER_BLOCK.png
-   📸 [152/169] Uploading B00003507-NUT-AIR_CONDITIONING_TUBE_ASSEMBLY_TO_BODY.png (for 8 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-AIR_CONDITIONING_TUBE_ASSEMBLY_TO_BODY.png
-   📸 [153/169] Uploading B00003509-SCREW-BOLT-BRAKE_ROTOR_MUDGUARD_TO_STEERING.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-SCREW-BOLT-BRAKE_ROTOR_MUDGUARD_TO_STEERING.png
-   📸 [154/169] Uploading B00003507-NUT-PLENUM_TO_BODY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-PLENUM_TO_BODY.png
-   📸 [155/169] Uploading B00003509-BOLT-4G_ANTENA_ASSEMBLY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-4G_ANTENA_ASSEMBLY.png
-   📸 [156/169] Uploading B00003508-NUT-ACCELERATOR_PEDAL_ASSEMBLY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003508-NUT-ACCELERATOR_PEDAL_ASSEMBLY.png
-   📸 [157/169] Uploading B00003509-BOLT-SCREW-CRANKSHAFT_SPEED_SENSOR.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003509-BOLT-SCREW-CRANKSHAFT_SPEED_SENSOR.png
-   📸 [158/169] Uploading B00003507-NUT-BODY_CONTROL_MODULE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-BODY_CONTROL_MODULE.png
-   📸 [159/169] Uploading B00003507-NUT-FRONT_SIDE_DOOR_CHECK.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-FRONT_SIDE_DOOR_CHECK.png
-   📸 [160/169] Uploading B00003507-NUT-CLUTCH_OIL_TUBE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-CLUTCH_OIL_TUBE.png
-   📸 [161/169] Uploading B00003507-NUT-HEATER_HOSE_ASSEMBLY_TO_BODY.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-HEATER_HOSE_ASSEMBLY_TO_BODY.png
-   📸 [162/169] Uploading B00003507-NUT-TELEMATICS_MODULE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-TELEMATICS_MODULE.png
-   📸 [163/169] Uploading B00003507-NUT-UREA_PUMP_COVER.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-UREA_PUMP_COVER.png
-   📸 [164/169] Uploading B00003507-NUT-WASHER_TO_BODY.png (for 4 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-WASHER_TO_BODY.png
-   📸 [165/169] Uploading B00003507-NUT-WIPER_MOTOR_SLEEVE.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-WIPER_MOTOR_SLEEVE.png
-   📸 [166/169] Uploading B00003507-NUT-TAIL_LAMP.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-TAIL_LAMP.png
-   📸 [167/169] Uploading B00003507-NUT-INSTRUMENT_PANEL_RELAY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-INSTRUMENT_PANEL_RELAY.png
-   📸 [168/169] Uploading B00003507-NUT-DIRECT_CURRENT_REGULATOR_ASSEMBLY.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-DIRECT_CURRENT_REGULATOR_ASSEMBLY.png
-   📸 [169/169] Uploading B00003507-NUT-POWER_TOTAL_SWITCH.png (for 2 products)
-      ❌ Error uploading image: Data must not be a string.
-      ❌ Failed to upload B00003507-NUT-POWER_TOTAL_SWITCH.png
-   📊 Successfully uploaded 0/169 unique images
+📂 Images directory: images/converted
+
+🔄 Fetching products from WooCommerce...
+✅ Found 1005 total products
+🔍 Filtering products that need images...
+📦 Found 505 products needing images
+📋 Building optimized upload plan...
+📋 Building PNG file cache from images/converted...
+   📁 Found 1843 PNG files
+   🗃️  Cached 1471 unique SKUs
+Finding images: 100%|████████████████████████████████████████████████| 505/505 [00:00<00:00, 50500.05products/s] 
+📊 Upload plan created:
+   Unique images to upload: 214
+   Total products with images: 473
+   Products without images: 32
+
+⚠️  Products without matching images:
+     - C00073046-blu: BEARING-CRANKSHAFT LOWER
+     - C00073046-blu: BEARING-CRANKSHAFT LOWER
+     - C00073046-bla: BEARING-CRANKSHAFT LOWER
+     - C00073046-bla: BEARING-CRANKSHAFT LOWER
+     - C00073045-gre: BEARING-CRANKSHAFT UPPER
+     ... and 27 more
+
+🔄 Uploading 214 unique images with concurrent processing...
+   📊 Deduplication: 214 files → 70 unique images
+Uploading: 100%|████████████████████████████████████████████████████████████████| 70/70 [02:41<00:00,  2.30s/it]
+   📊 Successfully processed 70/70 unique images
+
+🔄 Updating products with uploaded images...
+Updating products: 100%|█████████████████████████████████████████████████████| 5/5 [00:28<00:00,  5.73s/batches] 
+
+==================================================
+📊 OPTIMIZED UPLOAD SUMMARY
+==================================================
+Unique images uploaded: 70
+Products updated successfully: 473
+Products without images: 32
+Success rate: 100.0%
+Efficiency: 7.2x (uploaded 70 images for 505 products)
