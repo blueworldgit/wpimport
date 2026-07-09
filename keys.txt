@@ -1,0 +1,13 @@
+
+
+WORDPRESS_URL = "http://localhost/shanemaxus/shanemaxus/"
+
+Consumer key
+ck_f1afc5dfb58879e9f5cb2a00e2d0a80c3d72275c
+
+Consumer secret
+cs_4d5dd541b8f50d4c562462bd4fc0c1c814c7c4b3
+
+
+
+

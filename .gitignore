@@ -11,14 +11,12 @@ dist/
 build/
 
 # Sensitive files
-keys.txt
+
 config_local.py
 productioncreds.txt
 config.py
 
-# Data files (too large for git)
-*.xlsx
-LSFAL11A4PA157987/
+
 
 # Output files
 images/converted/*.png
