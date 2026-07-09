@@ -15,12 +15,15 @@ Required Excel Columns:
 
 Optional Excel Columns:
 - New Part Number: Replacement SKU (sets replacement_avail to 'yes' if present)
-- Updated: Resume tracking column - rows marked "written" are skipped
+- Updated: Resume tracking column - rows marked "written" or "NOT_FOUND" are skipped
 
 Features:
-- Batch processing for speed (configurable batch size)
+- Parallel batch processing for maximum speed (up to 3 batches simultaneously)
+- Configurable batch size (default: 99 products per batch)
 - Resume capability: marks rows as "written" after successful update
 - Automatically saves progress to Excel file
+- CSV logging of all updated post IDs
+- Graceful shutdown with Ctrl+C - saves progress before exiting
 """
 import os
 import json
@@ -31,6 +34,28 @@ import openpyxl
 from pathlib import Path
 from datetime import datetime
 from woocommerce import API
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import signal
+import sys
+
+# Global shutdown flag
+shutdown_requested = False
+
+def signal_handler(sig, frame):
+    """Handle Ctrl+C gracefully"""
+    global shutdown_requested
+    if not shutdown_requested:
+        shutdown_requested = True
+        logger.warning("\n" + "="*80)
+        logger.warning("SHUTDOWN REQUESTED - Finishing current batch and saving progress...")
+        logger.warning("Press Ctrl+C again to force quit (may corrupt Excel file)")
+        logger.warning("="*80 + "\n")
+    else:
+        logger.error("\nFORCE QUIT - Excel file may be corrupted!")
+        sys.exit(1)
+
+# Register signal handler
+signal.signal(signal.SIGINT, signal_handler)
 
 # Load site URL and credentials from config.py / keys.txt
 _base_dir = Path(__file__).resolve().parent
@@ -78,8 +103,8 @@ wcapi = API(
 _CUSTOM_BASE = WP_URL.rstrip('/') + '/wp-json/custom/v1/products-by-sku'
 
 # Batch configuration
-MAX_BATCH_PRODUCTS = 90  # WooCommerce batch API limit is 100, use 90 for safety margin
-
+MAX_BATCH_PRODUCTS = 99  # WooCommerce batch API limit is 100, use 99 for maximum throughput
+MAX_PARALLEL_BATCHES = 4  # Number of batches to process in parallel (optimal: 3-4 for fast servers)
 
 def find_products_by_original_sku(sku):
     """
@@ -196,6 +221,18 @@ def batch_update_products(batch_updates, post_ids_file=None):
     return success_count, failed_count
 
 
+def process_batch_wrapper(batch_data):
+    """
+    Wrapper for parallel batch processing
+    Returns: (batch_id, success_count, failed_count, row_indices)
+    """
+    batch_id, updates, row_indices, post_ids_file = batch_data
+    logger.info(f"[Batch {batch_id}] Processing {len(updates)} products...")
+    success, failed = batch_update_products(updates, post_ids_file)
+    logger.info(f"[Batch {batch_id}] Complete - Success: {success}, Failed: {failed}")
+    return batch_id, success, failed, row_indices
+
+
 def mark_row_as_written(excel_path, row_index, updated_col_index):
     """Mark a row as 'written' in the Excel file"""
     try:
@@ -208,6 +245,20 @@ def mark_row_as_written(excel_path, row_index, updated_col_index):
         wb.close()
     except Exception as e:
         logger.error(f"Failed to mark row {row_index} as written: {e}")
+
+
+def mark_row_as_none(excel_path, row_index, updated_col_index):
+    """Mark a row as 'NOT_FOUND' in the Excel file when no products found"""
+    try:
+        wb = openpyxl.load_workbook(excel_path)
+        ws = wb.active
+        # openpyxl uses 1-based indexing, pandas uses 0-based
+        # row_index is from pandas (0-based), so add 2 (1 for header, 1 for 0-based)
+        ws.cell(row=row_index + 2, column=updated_col_index + 1, value='NOT_FOUND')
+        wb.save(excel_path)
+        wb.close()
+    except Exception as e:
+        logger.error(f"Failed to mark row {row_index} as NOT_FOUND: {e}")
 
 
 def prepare_product_updates(sku, price, new_part_number=None):
@@ -289,7 +340,7 @@ def process_excel_file(excel_path):
             logger.info("No 'New Part Number' column found - replacement fields will be set to 'no'")
         
         if has_updated_column:
-            logger.info("Found 'Updated' column - will skip rows marked 'written' and track progress")
+            logger.info("Found 'Updated' column - will skip rows marked 'written' or 'NOT_FOUND' and track progress")
             updated_col_index = df.columns.get_loc('Updated')
         else:
             logger.info("No 'Updated' column found - adding it for progress tracking")
@@ -307,10 +358,10 @@ def process_excel_file(excel_path):
             df['New Part Number'] = df['New Part Number'].astype(str).str.strip()
             df['New Part Number'] = df['New Part Number'].replace('nan', '')
         
-        # Filter out already processed rows
+        # Filter out already processed rows (written or not_found)
         if has_updated_column:
             df['Updated'] = df['Updated'].astype(str).str.strip().str.lower()
-            pending_df = df[df['Updated'] != 'written'].copy()
+            pending_df = df[~df['Updated'].isin(['written', 'not_found', 'none'])].copy()
             already_done = len(df) - len(pending_df)
             logger.info(f"Total rows: {len(df)}, Already processed: {already_done}, Pending: {len(pending_df)}")
         else:
@@ -345,9 +396,53 @@ def process_excel_file(excel_path):
             
             batch_updates = []
             batch_row_indices = []
+            pending_batches = []  # Queue of batches ready for parallel processing
+            batch_counter = 0
+            
+            def submit_pending_batches():
+                """Submit all pending batches for parallel processing"""
+                nonlocal success_count, error_count, batch_counter
+                
+                if not pending_batches:
+                    return
+                
+                logger.info(f"\n{'='*60}")
+                logger.info(f"Submitting {len(pending_batches)} batches for parallel processing...")
+                logger.info(f"{'='*60}")
+                
+                with ThreadPoolExecutor(max_workers=MAX_PARALLEL_BATCHES) as executor:
+                    # Submit all batches
+                    futures = {}
+                    for batch_data in pending_batches:
+                        future = executor.submit(process_batch_wrapper, batch_data)
+                        futures[future] = batch_data
+                    
+                    # Collect results as they complete
+                    for future in as_completed(futures):
+                        try:
+                            batch_id, success, failed, row_indices = future.result()
+                            success_count += success
+                            error_count += failed
+                            
+                            # Mark rows as written if successful
+                            if success > 0:
+                                for row_idx in row_indices:
+                                    mark_row_as_written(excel_path, row_idx, updated_col_index)
+                        except Exception as e:
+                            logger.error(f"Batch processing error: {e}")
+                            error_count += len(futures[future][1])  # Count all as errors
+                
+                logger.info(f"Parallel batch complete. Total success: {success_count}, Total failed: {error_count}\n")
+                pending_batches.clear()
             
             # Process each row
             for index, row in pending_df.iterrows():
+                # Check for graceful shutdown request
+                if shutdown_requested:
+                    logger.warning(f"Shutdown requested - stopping after current batch")
+                    logger.warning(f"Processed {index} rows before shutdown")
+                    break
+                
                 sku = row['Part Number']
                 price = row['Retail Price']
                 
@@ -376,7 +471,8 @@ def process_excel_file(excel_path):
                 try:
                     updates = prepare_product_updates(sku, price, new_part_number)
                     if not updates:
-                        logger.warning(f"No products found with original_sku: {sku}")
+                        logger.warning(f"No products found with original_sku: {sku} - marking as NOT_FOUND")
+                        mark_row_as_none(excel_path, index, updated_col_index)
                         skipped_count += 1
                         continue
                     
@@ -398,22 +494,20 @@ def process_excel_file(excel_path):
                     
                     # Check if adding these products would exceed the batch limit
                     if batch_updates and (len(batch_updates) + len(updates)) > MAX_BATCH_PRODUCTS:
-                        # Process current batch first
-                        logger.info(f"\nProcessing batch of {len(batch_updates)} products (limit reached)...")
-                        success, failed = batch_update_products(batch_updates, post_ids_file)
-                        success_count += success
-                        error_count += failed
+                        # Batch is full - add to pending queue
+                        batch_counter += 1
+                        pending_batches.append((batch_counter, batch_updates, batch_row_indices, post_ids_file))
+                        logger.info(f"Batch {batch_counter} ready with {len(batch_updates)} products")
                         
-                        # Mark successfully processed rows as written
-                        if success > 0:
-                            for row_idx in batch_row_indices:
-                                mark_row_as_written(excel_path, row_idx, updated_col_index)
-                        
+                        # Reset for next batch
                         batch_updates = []
                         batch_row_indices = []
-                        logger.info(f"Batch complete. Total success: {success_count}, Total failed: {error_count}")
+                        
+                        # If we have enough batches, submit them for parallel processing
+                        if len(pending_batches) >= MAX_PARALLEL_BATCHES:
+                            submit_pending_batches()
                     
-                    # Add to batch
+                    # Add to current batch
                     batch_updates.extend(updates)
                     batch_row_indices.append(index)
                     
@@ -425,29 +519,37 @@ def process_excel_file(excel_path):
                     error_count += 1
                     continue
             
-            # Process remaining batch
+            # Add any remaining batch to pending queue
             if batch_updates:
-                logger.info(f"\nProcessing final batch of {len(batch_updates)} products...")
-                success, failed = batch_update_products(batch_updates, post_ids_file)
-                success_count += success
-                error_count += failed
-                
-                # Mark successfully processed rows as written
-                if success > 0:
-                    for row_idx in batch_row_indices:
-                        mark_row_as_written(excel_path, row_idx, updated_col_index)
+                batch_counter += 1
+                pending_batches.append((batch_counter, batch_updates, batch_row_indices, post_ids_file))
+                logger.info(f"Final batch {batch_counter} ready with {len(batch_updates)} products")
+            
+            # Process all remaining batches
+            if pending_batches:
+                submit_pending_batches()
             
             # Write summary
             report_file.write("\n" + "=" * 80 + "\n")
-            report_file.write(f"Processing Summary:\n")
+            if shutdown_requested:
+                report_file.write(f"Processing Summary (INTERRUPTED):\n")
+            else:
+                report_file.write(f"Processing Summary:\n")
             report_file.write(f"  Total pending rows: {len(pending_df)}\n")
             report_file.write(f"  Successfully updated: {success_count}\n")
             report_file.write(f"  Skipped (no match/invalid): {skipped_count}\n")
             report_file.write(f"  Errors: {error_count}\n")
+            if shutdown_requested:
+                report_file.write(f"\n  NOTE: Processing was interrupted by user.\n")
+                report_file.write(f"  Run the script again to continue from where it stopped.\n")
         
         logger.info(f"\n{'='*80}")
         logger.info(f"Post IDs log saved to: {post_ids_log_path}")
-        logger.info(f"Processing complete!")
+        if shutdown_requested:
+            logger.warning(f"Processing INTERRUPTED by user - progress saved safely!")
+            logger.warning(f"Run the script again to continue processing remaining rows")
+        else:
+            logger.info(f"Processing complete!")
         logger.info(f"  Pending rows processed: {len(pending_df)}")
         logger.info(f"  Successfully updated: {success_count}")
         logger.info(f"  Skipped: {skipped_count}")
@@ -480,9 +582,11 @@ def main():
         print("  - replacement_sku meta field (from New Part Number)")
         print("  - date_updated meta field (current date)")
         print("\nFeatures:")
-        print(f"  - Batch processing ({MAX_BATCH_PRODUCTS} products per batch)")
-        print("  - Resume capability (skips rows marked 'written' in Updated column)")
+        print(f"  - Parallel batch processing ({MAX_BATCH_PRODUCTS} products per batch)")
+        print(f"  - Up to {MAX_PARALLEL_BATCHES} batches processed simultaneously for maximum speed")
+        print("  - Resume capability (skips rows marked 'written' or 'NOT_FOUND' in Updated column)")
         print("  - Automatic progress saving to Excel file")
+        print("  - Graceful shutdown with Ctrl+C (saves progress before exiting)")
         sys.exit(1)
     
     excel_path = sys.argv[1]
@@ -495,7 +599,11 @@ def main():
     
     try:
         process_excel_file(excel_path)
-        logger.info("WordPress pricing data loading completed successfully")
+        if shutdown_requested:
+            logger.warning("WordPress pricing data loading interrupted safely - progress saved")
+            sys.exit(0)
+        else:
+            logger.info("WordPress pricing data loading completed successfully")
     except Exception as e:
         logger.error(f"Fatal error during processing: {str(e)}")
         sys.exit(1)

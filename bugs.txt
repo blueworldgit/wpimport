@@ -1,13 +1,5 @@
-  File "C:\Users\User\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
-    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 35: character maps to <undefined>
-Call stack:
-  File "C:\pythonstuff\wpimport\wppriceloader.py", line 505, in <module>
-    main()
-  File "C:\pythonstuff\wpimport\wppriceloader.py", line 497, in main
-    process_excel_file(excel_path)
-  File "C:\pythonstuff\wpimport\wppriceloader.py", line 403, in process_excel_file
-    success, failed = batch_update_products(batch_updates, post_ids_file)
-  File "C:\pythonstuff\wpimport\wppriceloader.py", line 158, in batch_update_products
-    logger.info(f"  ✓ Successfully updated simple products: {updated_ids}")
+2026-07-09 16:08:54,455 - INFO - Preparing SKU AA660 for batch update
+2026-07-09 16:08:55,318 - WARNING - No products found with original_sku: AA660 - marking as None
+2026-07-09 16:08:57,795 - INFO - Preparing SKU BB450 for batch update
+2026-07-09 16:08:58,615 - WARNING - No products found with original_sku: BB450 - marking as None
+2026-07-09 16:09:01,119 - INFO - Preparing SKU BLT200013 for batch update
