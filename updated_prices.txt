@@ -1,0 +1,362 @@
+WordPress Price Update Report (Batch Mode)
+================================================================================
+Date: 2026-07-09 11:51:01
+Excel File: C:\pythonstuff\wpimport\latest.xlsx
+Max Batch Size: 90 products
+Updates: Price + Custom Meta Fields (original_sku, replacement_avail, replacement_sku, date_updated)
+================================================================================
+
+SKU: B00004034 | Price: £0.98 | Products: 59
+SKU: B00004035 | Price: £0.98 | Products: 44
+SKU: B00004037 | Price: £1.49 | Products: 6
+SKU: B00004038 | Price: £1.49 | Products: 7
+SKU: B00004039 | Price: £2.01 | Products: 7
+SKU: B00004040 | Price: £0.98 | Products: 52
+SKU: B00004043 | Price: £0.98 | Products: 3
+SKU: B00004084 | Price: £0.35 | Replacement: B00004035 | Products: 3
+SKU: B00004085 | Price: £0.98 | Products: 339 (split into chunks)
+SKU: B00004086 | Price: £1.54 | Products: 7
+SKU: B00004087 | Price: £0.98 | Products: 20
+SKU: B00004088 | Price: £1.49 | Products: 16
+SKU: B00004090 | Price: £0.98 | Products: 45
+SKU: B00004093 | Price: £2.57 | Products: 3
+SKU: B00004096 | Price: £0.51 | Products: 36
+SKU: B00004097 | Price: £0.51 | Products: 11
+SKU: B00004098 | Price: £0.98 | Products: 8
+SKU: B00004101 | Price: £0.98 | Products: 26
+SKU: B00004105 | Price: £0.98 | Products: 57
+SKU: B00004106 | Price: £0.98 | Products: 22
+SKU: B00004108 | Price: £1.49 | Products: 48
+SKU: B00004110 | Price: £0.98 | Products: 35
+SKU: B00004111 | Price: £0.98 | Products: 32
+SKU: B00004116 | Price: £0.98 | Products: 5
+SKU: B00004121 | Price: £0.1 | Products: 2
+SKU: B00004122 | Price: £0.51 | Products: 5
+SKU: B00004124 | Price: £1.34 | Products: 5
+SKU: B00004125 | Price: £1.8 | Products: 4
+SKU: B00004128 | Price: £1.49 | Products: 22
+SKU: B00004134 | Price: £2.01 | Products: 31
+SKU: B00004135 | Price: £1.49 | Products: 13
+SKU: B00004137 | Price: £0.98 | Products: 7
+SKU: B00004142 | Price: £0.98 | Products: 23
+SKU: B00004144 | Price: £2.01 | Products: 3
+SKU: B00004145 | Price: £2.01 | Products: 5
+SKU: B00004146 | Price: £1.8 | Products: 4
+SKU: B00004147 | Price: £0.98 | Products: 7
+SKU: B00004149 | Price: £0.98 | Products: 3
+SKU: B00004150 | Price: £0.98 | Products: 3
+SKU: B00004151 | Price: £1.49 | Products: 35
+SKU: B00004152 | Price: £0.98 | Products: 46
+SKU: B00004153 | Price: £1.49 | Products: 35
+SKU: B00004191 | Price: £2.01 | Products: 11
+SKU: B00004199 | Price: £0.98 | Products: 29
+SKU: B00004204 | Price: £0.98 | Products: 12
+SKU: B00004209 | Price: £0.98 | Products: 34
+SKU: B00004212 | Price: £1.24 | Products: 4
+SKU: B00004213 | Price: £1.8 | Products: 13
+SKU: B00004268 | Price: £0.98 | Products: 4
+SKU: B00004272 | Price: £0.98 | Products: 3
+SKU: B00004273 | Price: £1.24 | Products: 47
+SKU: B00004274 | Price: £0.23 | Replacement: B00004041 | Products: 8
+SKU: B00004303 | Price: £0.98 | Products: 95 (split into chunks)
+SKU: B00004305 | Price: £1.49 | Products: 1
+SKU: B00004428 | Price: £0.98 | Products: 7
+SKU: B00004455 | Price: £1.49 | Products: 16
+SKU: B00004541 | Price: £2.01 | Products: 2
+SKU: B00004606 | Price: £0.51 | Products: 11
+SKU: B00004623 | Price: £0.98 | Products: 107 (split into chunks)
+SKU: B00004624 | Price: £0.51 | Products: 61
+SKU: B00004653 | Price: £1.03 | Products: 265 (split into chunks)
+SKU: B00004678 | Price: £0.51 | Products: 12
+SKU: B00004679 | Price: £1.49 | Products: 21
+SKU: B00004680 | Price: £0.62 | Products: 1
+SKU: B00004681 | Price: £0.98 | Products: 25
+SKU: B00004682 | Price: £0.98 | Products: 30
+SKU: B00004683 | Price: £0.98 | Products: 23
+SKU: B00004685 | Price: £0.98 | Products: 7
+SKU: B00004727 | Price: £2.57 | Products: 5
+SKU: B00004729 | Price: £4.58 | Products: 21
+SKU: B00004748 | Price: £3.55 | Products: 26
+SKU: B00004761 | Price: £0.98 | Products: 10
+SKU: B00004762 | Price: £0.98 | Products: 99 (split into chunks)
+SKU: B00004765 | Price: £0.98 | Products: 13
+SKU: B00004793 | Price: £0.98 | Products: 27
+SKU: B00004794 | Price: £1.49 | Products: 16
+SKU: B00004796 | Price: £0.98 | Products: 38
+SKU: B00004797 | Price: £5.05 | Products: 7
+SKU: B00004798 | Price: £4.73 | Products: 5
+SKU: B00004799 | Price: £2.42 | Products: 100 (split into chunks)
+SKU: B00004820 | Price: £2.37 | Products: 6
+SKU: B00004838 | Price: £0.98 | Products: 3
+SKU: B00004839 | Price: £0.98 | Products: 137 (split into chunks)
+SKU: B00004840 | Price: £1.24 | Products: 18
+SKU: B00004845 | Price: £0.98 | Products: 7
+SKU: B00004848 | Price: £1.8 | Products: 30
+SKU: B00004849 | Price: £1.8 | Products: 13
+SKU: B00004851 | Price: £2.37 | Products: 20
+SKU: B00004852 | Price: £1.24 | Products: 9
+SKU: B00004856 | Price: £1.24 | Products: 13
+SKU: B00004861 | Price: £0.98 | Products: 103 (split into chunks)
+SKU: B00004865 | Price: £0.98 | Products: 59
+SKU: B00004878 | Price: £1.24 | Products: 5
+SKU: B00004906 | Price: £2.37 | Products: 27
+SKU: B00004936 | Price: £1.24 | Products: 5
+SKU: B00004938 | Price: £0.98 | Replacement: B00004957 | Products: 3
+SKU: B00004939 | Price: £1.8 | Products: 5
+SKU: B00004940 | Price: £1.54 | Products: 58
+SKU: B00004941 | Price: £1.49 | Products: 20
+SKU: B00004953 | Price: £0.98 | Products: 40
+SKU: B00004955 | Price: £0.98 | Products: 127 (split into chunks)
+SKU: B00004956 | Price: £1.8 | Products: 16
+SKU: B00004957 | Price: £1.8 | Products: 24
+SKU: B00004966 | Price: £3.04 | Products: 10
+SKU: B00004979 | Price: £0.98 | Products: 39
+SKU: B00004983 | Price: £1.49 | Products: 20
+SKU: B00004986 | Price: £1.24 | Products: 4
+SKU: B00004988 | Price: £1.8 | Products: 11
+SKU: B00005001 | Price: £2.37 | Products: 4
+SKU: B00005005 | Price: £0.98 | Products: 1
+SKU: B00005167 | Price: £1.24 | Products: 5
+SKU: B00005177 | Price: £0.98 | Products: 76
+SKU: B00005178 | Price: £1.24 | Products: 3
+SKU: B00005180 | Price: £5.05 | Products: 22
+SKU: B00005194 | Price: £0.75 | Products: 5
+SKU: B00005204 | Price: £2.37 | Products: 15
+SKU: B00005206 | Price: £0.98 | Products: 37
+SKU: B00005209 | Price: £1.8 | Products: 20
+SKU: B00005212 | Price: £1.8 | Products: 23
+SKU: B00005213 | Price: £1.8 | Products: 8
+SKU: B00005233 | Price: £1.24 | Products: 12
+SKU: B00005235 | Price: £0.98 | Products: 11
+SKU: B00005245 | Price: £2.01 | Products: 18
+SKU: B00005247 | Price: £1.49 | Products: 4
+SKU: B00005249 | Price: £1.24 | Products: 30
+SKU: B00005251 | Price: £0.98 | Products: 70
+SKU: B00005252 | Price: £1.24 | Products: 3
+SKU: B00005253 | Price: £0.98 | Products: 79
+SKU: B00005254 | Price: £3.04 | Products: 19
+SKU: B00005255 | Price: £3.04 | Products: 20
+SKU: B00005257 | Price: £0.98 | Products: 9
+SKU: B00005299 | Price: £1.24 | Products: 72
+SKU: B00005301 | Price: £1.51 | Products: 30
+SKU: B00005308 | Price: £1.8 | Products: 12
+SKU: B00005309 | Price: £1.8 | Products: 4
+SKU: B00005310 | Price: £2.37 | Products: 4
+SKU: B00005316 | Price: £1.24 | Products: 18
+SKU: B00005318 | Price: £6.16 | Products: 7
+SKU: B00005325 | Price: £2.57 | Products: 7
+SKU: B00005330 | Price: £1.24 | Products: 39
+SKU: B00005331 | Price: £1.24 | Products: 13
+SKU: B00005347 | Price: £0.57 | Products: 5
+SKU: B00005351 | Price: £2.37 | Products: 8
+SKU: B00005355 | Price: £0.98 | Products: 5
+SKU: B00005356 | Price: £5.58 | Products: 4
+SKU: B00005363 | Price: £2.37 | Products: 4
+SKU: B00005365 | Price: £1.8 | Products: 11
+SKU: B00005366 | Price: £1.24 | Products: 14
+SKU: B00005370 | Price: £1.24 | Products: 21
+SKU: B00005372 | Price: £0.98 | Products: 21
+SKU: B00005376 | Price: £0.98 | Products: 13
+SKU: B00005378 | Price: £1.24 | Products: 11
+SKU: B00005379 | Price: £1.49 | Products: 7
+SKU: B00005384 | Price: £1.24 | Products: 5
+SKU: B00005385 | Price: £3.04 | Products: 4
+SKU: B00005391 | Price: £0.98 | Products: 36
+SKU: B00005392 | Price: £1.24 | Products: 9
+SKU: B00005404 | Price: £0.98 | Products: 42
+SKU: B00005405 | Price: £1.24 | Products: 4
+SKU: B00005409 | Price: £3.04 | Products: 56
+SKU: B00005410 | Price: £3.6 | Products: 16
+SKU: B00005412 | Price: £1.24 | Products: 12
+SKU: B00005419 | Price: £0.98 | Products: 12
+SKU: B00005432 | Price: £1.8 | Products: 1
+SKU: B00005438 | Price: £1.24 | Products: 1
+SKU: B00005440 | Price: £0.51 | Products: 4
+SKU: B00005441 | Price: £1.24 | Products: 13
+SKU: B00005444 | Price: £4.17 | Products: 17
+SKU: B00005445 | Price: £0.98 | Products: 5
+SKU: B00005476 | Price: £2.57 | Products: 1
+SKU: B00005477 | Price: £6.73 | Products: 16
+SKU: B00005501 | Price: £1.24 | Products: 12
+SKU: B00005677 | Price: £0.98 | Products: 36
+SKU: B00005714 | Price: £4.17 | Products: 24
+SKU: B00005775 | Price: £1.24 | Products: 14
+SKU: B00005783 | Price: £3.04 | Products: 12
+SKU: B00005789 | Price: £3.6 | Products: 12
+SKU: B00005799 | Price: £3.6 | Products: 12
+SKU: B00005800 | Price: £3.6 | Products: 3
+SKU: B00005805 | Price: £2.37 | Products: 30
+SKU: B00005810 | Price: £2.37 | Products: 1
+SKU: B00005819 | Price: £0.57 | Products: 2
+SKU: B00005820 | Price: £4.17 | Products: 2
+SKU: B00005823 | Price: £4.73 | Products: 2
+SKU: B00005828 | Price: £1.8 | Products: 11
+SKU: B00005834 | Price: £5.05 | Products: 3
+SKU: B00005847 | Price: £3.04 | Products: 4
+SKU: B00005848 | Price: £3.04 | Products: 5
+SKU: B00005854 | Price: £3.04 | Products: 4
+SKU: B00005858 | Price: £2.37 | Products: 3
+SKU: B00005883 | Price: £2.57 | Products: 2
+SKU: B00005895 | Price: £2.01 | Products: 8
+SKU: B00005903 | Price: £0.57 | Products: 2
+SKU: B00005905 | Price: £1.24 | Products: 2
+SKU: B00005956 | Price: £3.04 | Products: 4
+SKU: B00005964 | Price: £0.62 | Products: 2
+SKU: B00006002 | Price: £1.24 | Products: 29
+SKU: B00006003 | Price: £2.37 | Products: 13
+SKU: B00006005 | Price: £1.24 | Products: 126 (split into chunks)
+SKU: B00006008 | Price: £1.24 | Products: 41
+SKU: B00006009 | Price: £1.24 | Products: 27
+SKU: B00006012 | Price: £1.24 | Products: 14
+SKU: B00006013 | Price: £1.8 | Products: 26
+SKU: B00006014 | Price: £1.24 | Products: 15
+SKU: B00006019 | Price: £1.8 | Products: 19
+SKU: B00006020 | Price: £1.8 | Products: 29
+SKU: B00006022 | Price: £1.24 | Products: 17
+SKU: B00006023 | Price: £1.24 | Products: 27
+SKU: B00006026 | Price: £1.24 | Products: 57
+SKU: B00006028 | Price: £1.24 | Products: 91 (split into chunks)
+SKU: B00006031 | Price: £2.37 | Products: 13
+SKU: B00006032 | Price: £1.8 | Products: 31
+SKU: B00006034 | Price: £1.8 | Products: 14
+SKU: B00006041 | Price: £1.24 | Products: 58
+SKU: B00006042 | Price: £1.24 | Products: 18
+SKU: B00006043 | Price: £1.24 | Products: 24
+SKU: B00006046 | Price: £1.8 | Products: 15
+SKU: B00006047 | Price: £2.37 | Products: 14
+SKU: B00006049 | Price: £3.04 | Products: 3
+SKU: B00006050 | Price: £2.37 | Products: 14
+SKU: B00006062 | Price: £1.24 | Products: 2
+SKU: B00006064 | Price: £1.24 | Products: 8
+SKU: B00006073 | Price: £1.24 | Products: 2
+SKU: B00006116 | Price: £5.58 | Products: 15
+SKU: B00006150 | Price: £4.17 | Products: 2
+SKU: B00006213 | Price: £1.24 | Products: 4
+SKU: B00006215 | Price: £0.57 | Products: 6
+SKU: B00006278 | Price: £1.8 | Products: 2
+SKU: B00006323 | Price: £3.6 | Products: 5
+SKU: B00006324 | Price: £3.6 | Products: 1
+SKU: B00006539 | Price: £1.24 | Products: 4
+SKU: B00006571 | Price: £2.37 | Products: 1
+SKU: B00007039 | Price: £4.17 | Products: 3
+SKU: B00011503 | Price: £3.04 | Products: 1
+SKU: B00011518 | Price: £0.41 | Products: 1
+SKU: B90000033 | Price: £0.05 | Products: 3
+SKU: B90000035 | Price: £0.57 | Products: 5
+SKU: B90000149 | Price: £0.57 | Products: 2
+SKU: B90000621 | Price: £0.05 | Products: 16
+SKU: B90000639 | Price: £0.57 | Products: 2
+SKU: B90001103 | Price: £0.77 | Products: 2
+SKU: B90001171 | Price: £1.24 | Products: 2
+SKU: B90001194 | Price: £4.17 | Products: 6
+SKU: B90001229 | Price: £2.37 | Products: 2
+SKU: B90001240 | Price: £1.8 | Products: 4
+SKU: B90001243 | Price: £3.6 | Products: 2
+SKU: B90001298 | Price: £1.24 | Products: 2
+SKU: C00000019-A007 | Price: £21.29 | Replacement: C00086144-A007 | Products: 1
+SKU: C00000022-A007 | Price: £51.63 | Products: 7
+SKU: C00000041 | Price: £5.24 | Products: 3
+SKU: C00000042 | Price: £6.73 | Products: 3
+SKU: C00000047 | Price: £235.29 | Products: 5
+SKU: C00000050 | Price: £8.13 | Products: 5
+SKU: C00000058-A013 | Price: £11.83 | Products: 5
+SKU: C00000068 | Price: £14.15 | Products: 3
+SKU: C00000075 | Price: £457.95 | Products: 3
+SKU: C00000076 | Price: £169.95 | Replacement: C00213320 | Products: 3
+SKU: C00000097 | Price: £133.6 | Products: 1
+SKU: C00000099 | Price: £5.25 | Products: 3
+SKU: C00000101 | Price: £5.25 | Products: 3
+SKU: C00000119 | Price: £4.27 | Replacement: C00104691 | Products: 1
+SKU: C00000120 | Price: £4.27 | Replacement: C00104693 | Products: 1
+SKU: C00000125 | Price: £3.09 | Products: 2
+SKU: C00000127 | Price: £3.09 | Products: 2
+SKU: C00000129 | Price: £6.49 | Replacement: C00104696 | Products: 1
+SKU: C00000130 | Price: £6.66 | Replacement: C00104697 | Products: 1
+SKU: C00000453 | Price: £11.88 | Products: 1
+SKU: C00000454 | Price: £11.88 | Products: 1
+SKU: C00000511 | Price: £58.1 | Products: 2
+SKU: C00000512-F004 | Price: £28.26 | Products: 1
+SKU: C00000536 | Price: £34.85 | Replacement: C00108830 | Products: 1
+SKU: C00000601-A133 | Price: £1.8 | Products: 3
+SKU: C00000730 | Price: £3.12 | Products: 1
+SKU: C00000731 | Price: £3.12 | Products: 1
+SKU: C00001040-4100 | Price: £499.94 | Products: 3
+SKU: C00001086 | Price: £28.88 | Products: 7
+SKU: C00001088 | Price: £17.57 | Replacement: C00625620 | Products: 7
+SKU: C00001105 | Price: £64.99 | Products: 3
+SKU: C00001115 | Price: £78.85 | Products: 6
+SKU: C00001133 | Price: £8.56 | Products: 1
+SKU: C00001192 | Price: £5.72 | Products: 2
+SKU: C00001205 | Price: £5.72 | Products: 3
+SKU: C00001207 | Price: £7.07 | Products: 3
+SKU: C00001208 | Price: £27.03 | Replacement: C00107680 | Products: 3
+SKU: C00001209 | Price: £129.77 | Products: 3
+SKU: C00001210 | Price: £4.07 | Products: 3
+SKU: C00001211 | Price: £5.19 | Products: 3
+SKU: C00001264 | Price: £249.49 | Products: 5
+SKU: C00001271 | Price: £13.47 | Replacement: C00211221 | Products: 3
+SKU: C00001287 | Price: £5.1 | Products: 1
+SKU: C00001291 | Price: £25.02 | Products: 2
+SKU: C00001302 | Price: £134.72 | Products: 7
+SKU: C00001305-4100 | Price: £855.36 | Products: 3
+SKU: C00001339 | Price: £105.6 | Products: 22
+SKU: C00001351 | Price: £38.18 | Products: 3
+SKU: C00001352 | Price: £26.85 | Products: 3
+SKU: C00001375 | Price: £8.06 | Replacement: C00073587 | Products: 1
+SKU: C00001496 | Price: £306.66 | Products: 5
+SKU: C00001501 | Price: £12.73 | Products: 1
+SKU: C00001524 | Price: £136.98 | Products: 5
+SKU: C00001525 | Price: £41.32 | Replacement: C00194441 | Products: 5
+SKU: C00001529 | Price: £17.58 | Products: 3
+SKU: C00001531 | Price: £45.25 | Products: 5
+SKU: C00001532 | Price: £5.19 | Products: 3
+SKU: C00001536-4100 | Price: £488.5 | Products: 3
+SKU: C00001631 | Price: £11.44 | Products: 3
+SKU: C00001668 | Price: £0.98 | Products: 19
+SKU: C00001672 | Price: £0.98 | Products: 3
+SKU: C00001687 | Price: £0.98 | Products: 7
+SKU: C00001692 | Price: £0.98 | Products: 7
+SKU: C00001701 | Price: £0.98 | Products: 3
+SKU: C00001705 | Price: £0.98 | Products: 2
+SKU: C00001715-F006 | Price: £19.15 | Products: 3
+SKU: C00001729 | Price: £17.57 | Replacement: C00370949 | Products: 3
+SKU: C00001758 | Price: £28.97 | Products: 3
+SKU: C00001824 | Price: £21.43 | Products: 1
+SKU: C00001825 | Price: £46.47 | Products: 1
+SKU: C00001882-4100 | Price: £112.66 | Replacement: C00185139-4100 | Products: 1
+SKU: C00002009-F003 | Price: £19.08 | Replacement: C00108785-F003 | Products: 1
+SKU: C00002010-F003 | Price: £20.02 | Replacement: C00108786-F003 | Products: 1
+SKU: C00002046 | Price: £112.95 | Products: 1
+SKU: C00002081-4100 | Price: £70.8 | Products: 3
+SKU: C00002083-4100 | Price: £70.8 | Products: 3
+SKU: C00002095 | Price: £2.01 | Products: 5
+SKU: C00002096 | Price: £0.77 | Products: 7
+SKU: C00002097 | Price: £8.56 | Products: 3
+SKU: C00002109 | Price: £0.98 | Products: 3
+SKU: C00002129 | Price: £4.11 | Replacement: C00154978 | Products: 1
+SKU: C00002136 | Price: £5.57 | Replacement: C00062935 | Products: 1
+SKU: C00002144-A006 | Price: £59.98 | Products: 1
+SKU: C00002151 | Price: £7.07 | Products: 3
+SKU: C00002152 | Price: £7.07 | Products: 3
+SKU: C00002217 | Price: £22.16 | Products: 3
+SKU: C00002247 | Price: £6.64 | Products: 3
+SKU: C00002248 | Price: £6.17 | Replacement: C00116888 | Products: 1
+SKU: C00002249 | Price: £5.68 | Products: 3
+SKU: C00002256 | Price: £4.07 | Products: 3
+SKU: C00002262 | Price: £1.2 | Products: 3
+SKU: C00002263 | Price: £3.55 | Products: 3
+SKU: C00002264 | Price: £4.07 | Products: 3
+SKU: C00002265 | Price: £9.36 | Replacement: C00069007 | Products: 1
+SKU: C00002268 | Price: £4.05 | Products: 3
+SKU: C00002270-F001 | Price: £10.44 | Products: 3
+SKU: C00002272 | Price: £1.2 | Products: 7
+SKU: C00002273-F001 | Price: £10.44 | Products: 3
+SKU: C00002274 | Price: £1.2 | Products: 3
+SKU: C00002275 | Price: £4.07 | Products: 3
+SKU: C00002277 | Price: £5.19 | Products: 3
+SKU: C00002280 | Price: £19.09 | Products: 3
+SKU: C00002281 | Price: £18.87 | Products: 3
+SKU: C00002284 | Price: £11.69 | Replacement: C00069009 | Products: 1
+SKU: C00002289 | Price: £2.57 | Products: 3
+SKU: C00002291 | Price: £1.49 | Products: 5
+SKU: C00002296 | Price: £6.64 | Products: 3

@@ -1,0 +1,105 @@
+<?php
+
+function mobex_enovathemes_child_scripts() {
+    wp_enqueue_style( 'mobex_enovathemes-parent-style', get_template_directory_uri(). '/style.css' );
+}
+add_action( 'wp_enqueue_scripts', 'mobex_enovathemes_child_scripts' );
+
+add_action('after_switch_theme', 'mobex_child_repair_theme_mods_and_kirki_css');
+add_action('admin_init', 'mobex_child_repair_theme_mods_and_kirki_css_once');
+
+function mobex_child_repair_theme_mods_and_kirki_css_once() {
+    // If we already repaired, skip.
+    if (get_option('mobex_child_theme_mods_repaired')) {
+        return;
+    }
+    $did = mobex_child_repair_theme_mods_and_kirki_css();
+    if ($did) {
+        update_option('mobex_child_theme_mods_repaired', 1);
+    }
+}
+
+/**
+ * Returns true if it actually migrated/changed anything.
+ */
+function mobex_child_repair_theme_mods_and_kirki_css() {
+    $parent = get_template();
+    $child  = get_stylesheet();
+    if ($parent === $child) {
+        // Not a child setup.
+        return false;
+    }
+}
+
+/**
+ * Custom REST API endpoint to find products NOT in a specific category
+ */
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/products-not-in-category', array(
+        'methods' => 'GET',
+        'callback' => 'get_products_not_in_category',
+        'permission_callback' => function() {
+            return current_user_can('edit_products');
+        }
+    ));
+});
+
+function get_products_not_in_category($request) {
+    $exclude_category = $request->get_param('exclude_category');
+    $page = $request->get_param('page') ?: 1;
+    $per_page = 100;
+    
+    if (!$exclude_category) {
+        return new WP_Error('missing_param', 'exclude_category parameter required', array('status' => 400));
+    }
+    
+    global $wpdb;
+    
+    // Find all product IDs that DO NOT have the specified category
+    // This excludes products that have this category in their term relationships
+    $offset = ($page - 1) * $per_page;
+    
+    $query = "
+        SELECT DISTINCT p.ID 
+        FROM {$wpdb->posts} p
+        WHERE p.post_type = 'product'
+        AND p.post_status = 'publish'
+        AND p.ID NOT IN (
+            SELECT object_id 
+            FROM {$wpdb->term_relationships} tr
+            INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+            WHERE tt.term_id = %d
+            AND tt.taxonomy = 'product_cat'
+        )
+        ORDER BY p.ID
+        LIMIT %d OFFSET %d
+    ";
+    
+    $product_ids = $wpdb->get_col($wpdb->prepare($query, $exclude_category, $per_page, $offset));
+    
+    // Get total count
+    $count_query = "
+        SELECT COUNT(DISTINCT p.ID) 
+        FROM {$wpdb->posts} p
+        WHERE p.post_type = 'product'
+        AND p.post_status = 'publish'
+        AND p.ID NOT IN (
+            SELECT object_id 
+            FROM {$wpdb->term_relationships} tr
+            INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+            WHERE tt.term_id = %d
+            AND tt.taxonomy = 'product_cat'
+        )
+    ";
+    
+    $total = $wpdb->get_var($wpdb->prepare($count_query, $exclude_category));
+    $total_pages = ceil($total / $per_page);
+    
+    return array(
+        'ids' => array_map('intval', $product_ids),
+        'total' => (int)$total,
+        'page' => (int)$page,
+        'per_page' => $per_page,
+        'total_pages' => (int)$total_pages
+    );
+}

@@ -2,7 +2,7 @@
 
 python clearloader.py
 
-  python scripts/bulk_import_optimizer.py --serial LSFAL11A4PA157987 --limit-per-serial 1 --batch-size 2 
+  python scripts/bulk_import_optimizer.py --serial LSFAL11A4PA --limit-per-serial 1 --batch-size 2 
 
   python scripts/upload_missing_images_optimized.py --force-overwrite
 

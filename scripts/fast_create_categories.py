@@ -18,6 +18,12 @@ from datetime import datetime
 # Add parent directory to path for imports
 base_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(base_dir))
+
+# Windows: fix emoji output encoding and aiohttp event loop
+sys.stdout.reconfigure(encoding='utf-8')
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 from config import WORDPRESS_URL
 
 # Database connection parameters
@@ -87,7 +93,7 @@ class FastCategoryCreator:
         
         # Replace problematic characters but keep full length
         sanitized = name.replace('&', 'and').replace('/', '-').replace('\\', '-')
-        sanitized = sanitized.replace('(', '').replace(')', '').replace(',', '')
+        sanitized = sanitized.replace('(', '').replace(')', '').replace(',', ' ')
         
         # Clean up extra spaces and dashes
         sanitized = re.sub(r'\s+', ' ', sanitized)
@@ -96,56 +102,71 @@ class FastCategoryCreator:
         return sanitized.strip(' -')
     
     async def preload_existing_categories(self):
-        """Preload all existing categories to avoid creating duplicates"""
+        """Preload existing categories scoped to this serial's subtree only.
+
+        The site has many VINs sharing category names (e.g. 'Brakes', 'Suspension').
+        Loading ALL categories into the cache by name would cause the script to reuse
+        another VIN's category IDs instead of creating new ones under this VIN.
+        So when a serial filter is set, we only cache categories that already exist
+        under THIS serial's subtree, leaving the cache empty for other VINs' names.
+        """
         print("📂 Preloading existing WordPress categories...")
-        
-        # Clear any existing cache first
         self.category_cache.clear()
-        
+
         try:
-            # Use sync requests for initial load
-            page = 1
-            all_categories = []
-            
-            while True:
-                url = f"{WORDPRESS_URL}/wp-json/wc/v3/products/categories"
-                params = {'per_page': 100, 'page': page, '_': int(time.time())}  # Add cache buster
-                
-                response = requests.get(url, params=params, auth=(self.consumer_key, self.consumer_secret))
-                if response.status_code != 200:
-                    if response.status_code == 404:  # No more pages
+            auth = (self.consumer_key, self.consumer_secret)
+            url = f"{WORDPRESS_URL}/wp-json/wc/v3/products/categories"
+
+            if self.serial_filter:
+                # Find the serial's own WP category (if it exists already)
+                r = requests.get(url, params={'search': self.serial_filter, 'per_page': 10}, auth=auth)
+                serial_cat_id = None
+                if r.status_code == 200:
+                    for cat in r.json():
+                        if cat['name'] == self.serial_filter:
+                            serial_cat_id = cat['id']
+                            self.category_cache[cat['name']] = cat['id']
+                            break
+
+                if not serial_cat_id:
+                    print(f"✅ No existing WP category for '{self.serial_filter}' — fresh import, cache empty")
+                    return
+
+                # Load all categories that are descendants of this serial
+                all_cats = []
+                page = 1
+                while True:
+                    r2 = requests.get(url, params={'per_page': 100, 'page': page}, auth=auth)
+                    if r2.status_code != 200 or not r2.json():
                         break
-                    print(f"⚠️ HTTP {response.status_code}: {response.text}")
-                    break
-                
-                categories = response.json()
-                if not categories:
-                    break
-                
-                all_categories.extend(categories)
-                page += 1
-            
-            # Build category cache and show what was found
-            print(f"🔍 Found {len(all_categories)} total categories:")
-            
-            if len(all_categories) <= 5:  # Show details if few categories
+                    all_cats.extend(r2.json())
+                    page += 1
+
+                # Find direct children (parents) and grandchildren (children)
+                child_ids = {c['id'] for c in all_cats if c.get('parent') == serial_cat_id}
+                grandchild_ids = {c['id'] for c in all_cats if c.get('parent') in child_ids}
+
+                cached = 0
+                for cat in all_cats:
+                    if cat['id'] in child_ids or cat['id'] in grandchild_ids:
+                        self.category_cache[cat['name']] = cat['id']
+                        cached += 1
+
+                print(f"✅ Cached {cached} existing categories under '{self.serial_filter}' subtree")
+            else:
+                # No serial filter — load everything (original behaviour for full-site import)
+                all_categories = []
+                page = 1
+                while True:
+                    r = requests.get(url, params={'per_page': 100, 'page': page}, auth=auth)
+                    if r.status_code != 200 or not r.json():
+                        break
+                    all_categories.extend(r.json())
+                    page += 1
                 for cat in all_categories:
                     self.category_cache[cat['name']] = cat['id']
-                    print(f"   🔍 Found existing: {cat['name']} (ID: {cat['id']}, Parent: {cat.get('parent', 0)})")
-            else:
-                for cat in all_categories:
-                    self.category_cache[cat['name']] = cat['id']
-                    print(f"   🔍 Found existing: {cat['name']} (ID: {cat['id']}, Parent: {cat.get('parent', 0)})")
-            
-            print(f"✅ Cached {len(all_categories)} existing categories")
-            
-            if len(all_categories) == 0:
-                print("✅ Perfect! No existing categories found")
-            elif len(all_categories) == 1 and 'Uncategorized' in [c['name'] for c in all_categories]:
-                print("✅ Perfect! Only 'Uncategorized' found (as expected)")
-            else:
-                print(f"⚠️ WARNING: {len(all_categories)} existing categories found - expected 1 (Uncategorized)")
-            
+                print(f"✅ Cached {len(all_categories)} existing categories (full site)")
+
         except Exception as e:
             print(f"⚠️ Category preloading failed: {e}")
             import traceback
@@ -257,7 +278,15 @@ class FastCategoryCreator:
                     # Category might already exist
                     error_data = await response.json()
                     if 'term_exists' in str(error_data):
-                        # Try to find existing category
+                        # First try to get resource_id directly from error response
+                        resource_id = error_data.get('data', {}).get('resource_id')
+                        if resource_id:
+                            self.category_cache[name] = resource_id
+                            self.stats['categories_found'] += 1
+                            print(f"   🔍 FOUND EXISTING (from error): '{name}' (ID: {resource_id}, Parent: {parent_id})")
+                            return resource_id
+                        
+                        # Fall back to search if resource_id not in error
                         search_url = f"{WORDPRESS_URL}/wp-json/wc/v3/products/categories"
                         params = {'search': name, 'per_page': 10}
                         
@@ -268,7 +297,7 @@ class FastCategoryCreator:
                                     if cat['name'] == name:
                                         self.category_cache[name] = cat['id']
                                         self.stats['categories_found'] += 1
-                                        print(f"   🔍 SEARCH FOUND EXISTING: '{name}' (ID: {cat['id']}, Parent: {cat.get('parent', 0)}) - CREATION FAILED BUT CATEGORY EXISTS")
+                                        print(f"   🔍 SEARCH FOUND EXISTING: '{name}' (ID: {cat['id']}, Parent: {cat.get('parent', 0)})")
                                         return cat['id']
                     
                     self.error_log.append(f"Category creation failed for '{name}': {error_data}")

@@ -7,9 +7,9 @@ from woocommerce import API
 import json
 
 # API Credentials
-WP_URL = "http://localhost/maxusparts/"
-CONSUMER_KEY = "ck_0f052d660fb7a35efb0d7589468bc0e20717bd5f"
-CONSUMER_SECRET = "cs_59e9e0e3e858b010f6c7e744cbcfdfd21c53657d"
+WP_URL = "https://maxusvanparts.acstestweb.co.uk/"
+CONSUMER_KEY = "ck_25e08d3d9ab1625648f25ccefa4080e8497f7c69"
+CONSUMER_SECRET = "cs_d493ee9d22846bb489fd20e7a07b494199b3cfd2"
 
 def test_connection():
     """

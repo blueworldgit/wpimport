@@ -20,6 +20,11 @@ import base64
 # Add parent directory to path for imports
 base_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(base_dir))
+
+# aiohttp on Windows requires SelectorEventLoop
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 from config import WORDPRESS_URL
 
 # Database connection parameters
@@ -32,12 +37,13 @@ DB_CONFIG = {
 }
 
 class BulkImportOptimizer:
-    def __init__(self, batch_size=50, concurrent_requests=10):
+    def __init__(self, batch_size=100, concurrent_requests=30, dry_run=False):
         # Set base directory
         self.base_dir = Path(__file__).resolve().parent.parent
         
         self.batch_size = batch_size  # WooCommerce batch API can handle 100 items
         self.concurrent_requests = concurrent_requests
+        self.dry_run = dry_run
         self.processed_skus = set()
         self.category_cache = {}
         self.stats = {
@@ -142,7 +148,8 @@ class BulkImportOptimizer:
                     checkpoint_data = json.load(f)
                 
                 self.processed_skus = set(checkpoint_data.get('processed_skus', []))
-                self.stats.update(checkpoint_data.get('stats', {}))
+                # Don't load stats - they should reset for each run to show current run's progress
+                # Only load processed_skus to prevent duplicates
                 self.category_cache.update(checkpoint_data.get('category_cache', {}))
                 
                 self.log_message(f"Checkpoint loaded: {len(self.processed_skus)} SKUs already processed")
@@ -315,9 +322,28 @@ class BulkImportOptimizer:
             if excluded_count > 0:
                 self.log_message(f"   ⏭️ Excluded {excluded_count} already processed original SKUs from database query")
             
+            # Check for database duplicates (same part_id appearing multiple times)
+            part_ids = [row['part_id'] for row in results]
+            if len(part_ids) != len(set(part_ids)):
+                duplicate_count = len(part_ids) - len(set(part_ids))
+                self.log_message(f"   ⚠️  WARNING: {duplicate_count} duplicate part_ids in database results!", "ERROR")
+            
             # Convert to WooCommerce format - each part becomes separate product
             products = []
+            seen_part_ids = set()
+            skipped_duplicates = 0
+            
             for row in results:
+                part_id = row['part_id']
+                
+                # Skip if we've already processed this part_id
+                if part_id in seen_part_ids:
+                    skipped_duplicates += 1
+                    self.log_message(f"   ⚠️  Skipping duplicate part_id {part_id} in database results", "ERROR")
+                    continue
+                    
+                seen_part_ids.add(part_id)
+                
                 # Generate unique SKU using hash
                 import hashlib
                 hash_input = f"{row['original_sku']}-{row['part_id']}"
@@ -351,6 +377,9 @@ class BulkImportOptimizer:
                     'short_description': f'Callout: {row["callout_number"] or "N/A"} | Qty: {row["unit_qty"] or "1"}'
                 }
                 products.append(product)
+            
+            if skipped_duplicates > 0:
+                self.log_message(f"   ⚠️  Skipped {skipped_duplicates} duplicate part_ids from database", "ERROR")
             
             cursor.close()
             conn.close()
@@ -467,12 +496,18 @@ class BulkImportOptimizer:
         # Step 1: Check for existing SKUs and separate into create vs update
         products_to_create = []
         products_to_update = []
+        already_processed = []
         
         skus_in_batch = [p['sku'] for p in products_batch]
         self.log_message(f"Starting batch {batch_id+1}: {len(products_batch)} products {skus_in_batch[:3]}...")
         
         # Check each SKU for existing products
         for product in products_batch:
+            # First check local processed_skus set to avoid race conditions
+            if product['sku'] in self.processed_skus:
+                already_processed.append(product['sku'])
+                continue
+            
             existing_product = await self.check_existing_sku(session, product['sku'])
             if existing_product:
                 # SKU exists - merge categories
@@ -483,13 +518,22 @@ class BulkImportOptimizer:
                 # SKU doesn't exist - create new
                 products_to_create.append(product)
         
+        # Log already processed SKUs
+        if already_processed:
+            self.log_message(f"   ⏭️  Skipped {len(already_processed)} already processed SKUs from checkpoint")
+        
         # Step 2: Only proceed with batch create if we have products to create
         if not products_to_create:
-            self.log_message(f"Batch {batch_id+1} SKIPPED: All {len(products_to_update)} SKUs already exist")
-            # Mark all as "processed" since we updated their categories
+            # Mark all as "processed" since we updated their categories (or they were already processed)
             for sku in products_to_update:
                 self.processed_skus.add(sku)
-            return batch_id, 0, 0  # batch_id, created_count, failed_count
+            
+            if products_to_update:
+                self.log_message(f"Batch {batch_id+1} SKIPPED: All {len(products_to_update)} SKUs already exist, updated categories")
+                return batch_id, len(products_to_update), 0  # batch_id, created_count, failed_count
+            else:
+                self.log_message(f"Batch {batch_id+1} SKIPPED: All {len(already_processed)} SKUs already processed from checkpoint")
+                return batch_id, 0, 0  # batch_id, created_count, failed_count
         
         # Step 3: Process category mappings for new products only
         batch_data = {'create': []}  # Start with empty list
@@ -546,6 +590,22 @@ class BulkImportOptimizer:
         
         self.log_message(f"   Creating {len(batch_data['create'])} new products, updated {len(products_to_update)} existing")
         
+        # DRY RUN: Simulate success without actually creating products
+        if self.dry_run:
+            self.log_message(f"   \ud83d\udd0d DRY RUN: Simulating creation of {len(batch_data['create'])} products", "WARNING")
+            successful_skus = [p['sku'] for p in products_to_create]
+            for sku in successful_skus:
+                self.processed_skus.add(sku)
+            for sku in products_to_update:
+                self.processed_skus.add(sku)
+            
+            created_count = len(successful_skus)
+            updated_count = len(products_to_update)
+            self.stats['products_created'] += created_count
+            self.stats['products_updated'] += updated_count
+            
+            return batch_id, created_count + updated_count, len(skipped_products)
+        
         try:
             url = f"{WORDPRESS_URL}/wp-json/wc/v3/products/batch"
             auth = aiohttp.BasicAuth(self.consumer_key, self.consumer_secret)
@@ -570,15 +630,20 @@ class BulkImportOptimizer:
                         original_sku = products_to_create[i]['sku'] if i < len(products_to_create) else 'unknown'
                         
                         if 'error' in product_result:
-                            # Product failed
+                            # Product failed with explicit error
                             error_info = product_result['error']
                             error_msg = f"SKU {original_sku}: {error_info.get('code', 'unknown')} - {error_info.get('message', 'No message')}"
                             failed_skus.append((original_sku, error_msg))
                             self.log_error(f"Product creation failed: {error_msg}", products_to_create[i])
-                        else:
-                            # Product succeeded
+                        elif 'id' in product_result and product_result['id']:
+                            # Product succeeded - has valid ID from WordPress
                             successful_skus.append(original_sku)
                             self.processed_skus.add(original_sku)
+                        else:
+                            # Product has no error but also no ID - treat as failed
+                            error_msg = f"SKU {original_sku}: No ID returned (silent failure)"
+                            failed_skus.append((original_sku, error_msg))
+                            self.log_error(f"Product creation failed: {error_msg}", product_result)
                     
                     # Add updated SKUs to processed list
                     for sku in products_to_update:
@@ -607,10 +672,6 @@ class BulkImportOptimizer:
                         if len(failed_skus) > 3:
                             self.log_message(f"   ... and {len(failed_skus)-3} more failures")
                     
-                    # Save checkpoint every few batches
-                    if batch_id % 3 == 0:
-                        self.save_checkpoint(created_products)
-                    
                     return batch_id, created_count + updated_count, failed_count
                     
                 else:
@@ -634,9 +695,10 @@ class BulkImportOptimizer:
             self.log_error(f"Batch {batch_id+1} exception: {error_msg}", skus_in_batch)
             return batch_id, 0, len(skus_in_batch)
 
-    async def import_products_async(self, products, concurrent_batches=5):
+    async def import_products_async(self, products, concurrent_batches=30):
         """Import products using async batch processing for maximum speed"""
-        self.log_message(f"🚀 Starting ASYNC import of {len(products)} products")
+        mode = "DRY RUN" if self.dry_run else "LIVE"
+        self.log_message(f"🚀 Starting ASYNC import of {len(products)} products [{mode}]")
         self.log_message(f"   Batch size: {self.batch_size}, Concurrent batches: {concurrent_batches}")
         
         # Split into batches
@@ -679,12 +741,20 @@ class BulkImportOptimizer:
             
             # Process with progress bar
             total_failed = 0
+            completed_batches = 0
             with tqdm(total=len(batches), desc="Processing async batches") as pbar:
                 for coro in asyncio.as_completed(tasks):
                     batch_id, created_count, failed_count = await coro
                     
                     if failed_count > 0:
                         total_failed += failed_count
+                    
+                    completed_batches += 1
+                    
+                    # Save checkpoint after every batch completes (especially important with high concurrency)
+                    if completed_batches % 5 == 0 or completed_batches == len(batches):
+                        if not self.dry_run:
+                            self.save_checkpoint()
                     
                     pbar.set_postfix({
                         'batch': f"{batch_id+1}/{len(batches)}", 
@@ -696,7 +766,7 @@ class BulkImportOptimizer:
         
         # Log final batch summary
         self.log_message(f"✅ Async import completed")
-        self.log_message(f"   Products created: {self.stats['products_created']}")
+        self.log_message(f"   Products created this run: {self.stats['products_created']}")
         self.log_message(f"   Products failed: {total_failed}")
         self.log_message(f"   Total errors: {self.stats['errors']}")
         
@@ -706,8 +776,20 @@ class BulkImportOptimizer:
         """Run import processing one serial at a time"""
         start_time = time.time()
         
-        self.log_message("🎯 SERIAL-BY-SERIAL BULK IMPORT STARTED")
+        # Track stats for this run only (not loaded from checkpoint)
+        initial_processed_count = len(self.processed_skus)
+        
+        mode_msg = " [DRY RUN MODE]" if self.dry_run else ""
+        self.log_message(f"🎯 SERIAL-BY-SERIAL BULK IMPORT STARTED{mode_msg}")
         self.log_message("=" * 60)
+        
+        if self.dry_run:
+            self.log_message("⚠️  DRY RUN: Products will be simulated, not created in WordPress", "WARNING")
+            self.log_message("⚠️  DRY RUN: Checkpoint will NOT be saved", "WARNING")
+            self.log_message("=" * 60)
+        
+        if initial_processed_count > 0:
+            self.log_message(f"📋 Resuming from checkpoint: {initial_processed_count} SKUs already in system")
         
         # Get list of serials to process
         if specific_serial:
@@ -729,13 +811,15 @@ class BulkImportOptimizer:
         self.preload_categories()
         
         total_processed = 0
-        total_created = 0
         
         # Process each serial
         for serial_idx, serial_info in enumerate(serials_to_process):
             serial_number = serial_info['serial']
             self.log_message(f"\n🚗 Processing Serial {serial_idx+1}/{len(serials_to_process)}: {serial_number}")
             self.log_message("-" * 50)
+            
+            # Track stats before processing this serial
+            stats_before = self.stats['products_created']
             
             # Extract products for this serial
             products = self.extract_unique_skus(serial_filter=serial_number, limit=limit_per_serial)
@@ -757,9 +841,8 @@ class BulkImportOptimizer:
             
             # Import products for this serial
             try:
-                asyncio.run(self.import_products_async(new_products, concurrent_batches=3))
-                serial_created = self.stats['products_created'] - total_created
-                total_created = self.stats['products_created']
+                asyncio.run(self.import_products_async(new_products, concurrent_batches=30))
+                serial_created = self.stats['products_created'] - stats_before
                 total_processed += len(new_products)
                 
                 self.log_message(f"   ✅ Serial {serial_number} completed: {serial_created} products created")
@@ -772,14 +855,21 @@ class BulkImportOptimizer:
         elapsed = time.time() - start_time
         rate = total_processed / elapsed if elapsed > 0 else 0
         
+        products_created_this_run = self.stats['products_created']
+        total_in_checkpoint = len(self.processed_skus)
+        
         self.log_message("\n🎉 SERIAL-BY-SERIAL IMPORT COMPLETED", "SUCCESS")
         self.log_message(f"   Total time: {elapsed:.1f}s")
         self.log_message(f"   Serials processed: {len(serials_to_process)}")
-        self.log_message(f"   Products created: {total_created}")
+        self.log_message(f"   Products created this run: {products_created_this_run}")
+        self.log_message(f"   Total products in checkpoint: {total_in_checkpoint}")
         self.log_message(f"   Average rate: {rate:.1f} products/second")
         
-        # Save final checkpoint
-        self.save_checkpoint()
+        # Save final checkpoint (skip in dry-run mode)
+        if not self.dry_run:
+            self.save_checkpoint()
+        else:
+            self.log_message("\ud83d\udd0d DRY RUN: Checkpoint not saved", "WARNING")
         
         self.log_message(f"📄 Detailed logs saved:")
         self.log_message(f"   Import log: {self.import_log}")
@@ -788,14 +878,15 @@ class BulkImportOptimizer:
         
         return {
             'serials_processed': len(serials_to_process),
-            'products_created': total_created,
-            'total_processed': len(self.processed_skus),
+            'products_created': products_created_this_run,
+            'total_processed': total_in_checkpoint,
             'rate': rate
         }
 
-    def import_products_bulk(self, products, concurrent_batches=3):
+    def import_products_bulk(self, products, concurrent_batches=30):
         """Import products using optimized batch processing (legacy sync method)"""
-        print(f"\n🚀 Starting bulk import of {len(products)} products")
+        mode = "DRY RUN" if self.dry_run else "LIVE"
+        print(f"\n🚀 Starting bulk import of {len(products)} [{mode}]")
         print(f"   Batch size: {self.batch_size}")
         print(f"   Concurrent batches: {concurrent_batches}")
         
@@ -877,16 +968,52 @@ class BulkImportOptimizer:
 def main():
     """Main execution"""
     import argparse
+    import os
     
     parser = argparse.ArgumentParser(description='Serial-by-Serial Bulk Import for Oscar to WooCommerce')
     parser.add_argument('--serial', help='Process specific vehicle serial only')
     parser.add_argument('--limit-per-serial', type=int, help='Limit SKUs per serial (for testing)')
-    parser.add_argument('--batch-size', type=int, default=20, help='Batch size (default: 20)')
+    parser.add_argument('--batch-size', type=int, default=100, help='Batch size (default: 100)')
+    parser.add_argument('--dry-run', action='store_true', help='Simulate import without creating products')
     parser.add_argument('--list-serials', action='store_true', help='List all available serials')
+    parser.add_argument('--clear-checkpoint', action='store_true', help='Clear checkpoint and start fresh')
+    parser.add_argument('--show-checkpoint', action='store_true', help='Show checkpoint status')
     
     args = parser.parse_args()
     
-    optimizer = BulkImportOptimizer(batch_size=args.batch_size)
+    # Handle checkpoint clearing before creating optimizer
+    if args.clear_checkpoint:
+        checkpoint_file = Path(__file__).resolve().parent.parent / 'data' / 'checkpoints' / 'bulk_import_checkpoint.json'
+        if checkpoint_file.exists():
+            os.remove(checkpoint_file)
+            print("✅ Checkpoint cleared! Starting fresh on next import.")
+        else:
+            print("ℹ️  No checkpoint file found.")
+        return
+    
+    # Initialize optimizer with specified batch size and dry-run mode
+    optimizer = BulkImportOptimizer(batch_size=args.batch_size, dry_run=args.dry_run)
+    
+    if args.show_checkpoint:
+        print("📊 CHECKPOINT STATUS")
+        print("=" * 60)
+        print(f"   Total SKUs processed: {len(optimizer.processed_skus)}")
+        print(f"   Categories cached: {len(optimizer.category_cache)}")
+        
+        # Extract unique original SKUs
+        processed_original_skus = set()
+        for wp_sku in optimizer.processed_skus:
+            if '-' in wp_sku:
+                original_sku = wp_sku.rsplit('-', 1)[0]
+                processed_original_skus.add(original_sku)
+        
+        print(f"   Unique original part numbers: {len(processed_original_skus)}")
+        print(f"\n   Sample WordPress SKUs:")
+        for i, sku in enumerate(list(optimizer.processed_skus)[:10]):
+            print(f"      {i+1}. {sku}")
+        if len(optimizer.processed_skus) > 10:
+            print(f"      ... and {len(optimizer.processed_skus)-10} more")
+        return
     
     if args.list_serials:
         print("📋 Available vehicle serials:")
@@ -905,7 +1032,8 @@ def main():
     if result:
         print(f"\n🎯 Import completed successfully!")
         print(f"   Serials processed: {result['serials_processed']}")
-        print(f"   Products created: {result['products_created']}")
+        print(f"   Products created this run: {result['products_created']}")
+        print(f"   Total products in checkpoint: {result['total_processed']}")
         print(f"   Processing rate: {result['rate']:.1f} products/second")
 
 if __name__ == "__main__":

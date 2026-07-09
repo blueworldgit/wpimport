@@ -308,7 +308,38 @@ def get_wp_auth():
     except Exception as e:
         raise Exception(f"Could not load WordPress credentials: {e}")
 
-def get_woocommerce_products(limit=None, specific_sku=None):
+def get_serial_category_id(serial_name):
+    """Look up the WooCommerce category ID for a serial number by name."""
+    keys_file = Path(__file__).parent.parent / 'keys.txt'
+    ck = cs = None
+    with open(keys_file, 'r', encoding='utf-8') as f:
+        lines = [l.strip() for l in f if l.strip()]
+    for i, line in enumerate(lines):
+        if 'Consumer key' in line and i + 1 < len(lines):
+            ck = lines[i + 1]
+        if 'Consumer secret' in line and i + 1 < len(lines):
+            cs = lines[i + 1]
+
+    page = 1
+    while True:
+        r = requests.get(
+            f"{WORDPRESS_URL}/wp-json/wc/v3/products/categories",
+            params={'per_page': 100, 'page': page, 'search': serial_name},
+            auth=(ck, cs), timeout=30
+        )
+        if r.status_code != 200:
+            break
+        cats = r.json()
+        if not cats:
+            break
+        for cat in cats:
+            if cat['name'] == serial_name:
+                return cat['id']
+        page += 1
+    return None
+
+
+def get_woocommerce_products(limit=None, specific_sku=None, serial_filter=None, category_id=None):
     """
     Get products from WooCommerce that need image processing.
     Optimized to fetch only required fields for much faster performance.
@@ -317,7 +348,16 @@ def get_woocommerce_products(limit=None, specific_sku=None):
     products = []
     page = 1
     per_page = 100
-    
+
+    # Resolve serial name to category ID for fast server-side filtering
+    if serial_filter and not category_id:
+        print(f"   🔍 Looking up category ID for serial '{serial_filter}'...")
+        category_id = get_serial_category_id(serial_filter)
+        if category_id:
+            print(f"   ✅ Found category ID: {category_id}")
+        else:
+            print(f"   ⚠️  Category not found for serial '{serial_filter}', fetching all products (slow)")
+
     while True:
         params = {
             'page': page,
@@ -326,10 +366,12 @@ def get_woocommerce_products(limit=None, specific_sku=None):
             # OPTIMIZATION: Only fetch fields we actually need - reduces payload by ~80-90%
             '_fields': 'id,name,images,meta_data'
         }
-        
+
         if specific_sku:
             params['meta_key'] = 'original_sku'
             params['meta_value'] = specific_sku
+        elif category_id:
+            params['category'] = category_id
         
         try:
             response = wcapi.get("products", params=params)
@@ -641,6 +683,8 @@ def main():
     parser.add_argument('--limit', type=int, help='Limit number of products to process')
     parser.add_argument('--dry-run', action='store_true', help='Show what would be done without making changes')
     parser.add_argument('--original-sku', type=str, help='Process only products with specific original_sku')
+    parser.add_argument('--serial', type=str, help='Process only products for a specific vehicle serial (e.g. LSH14C4C5NA129710)')
+    parser.add_argument('--category-id', type=int, help='WooCommerce category ID for the serial (skips name lookup, faster)')
     parser.add_argument('--images-dir', type=str, default='images/converted', help='Directory containing converted PNG files')
     parser.add_argument('--force-overwrite', action='store_true', help='Process ALL products and overwrite existing images')
     
@@ -655,13 +699,20 @@ def main():
     if args.force_overwrite:
         print("⚠️  FORCE OVERWRITE MODE - Will process ALL products and replace existing images")
     
+    if args.serial:
+        print(f"🚗 Serial filter: {args.serial}")
+    if args.category_id:
+        print(f"🏷️  Category ID: {args.category_id}")
+
     print(f"📂 Images directory: {args.images_dir}")
     
     # Get products from WooCommerce
     print("\n🔄 Fetching products from WooCommerce...")
     products = get_woocommerce_products(
         limit=args.limit,
-        specific_sku=args.original_sku
+        specific_sku=args.original_sku,
+        serial_filter=args.serial,
+        category_id=args.category_id
     )
     
     if not products:

@@ -1,0 +1,1581 @@
+# WordPress Blank Pot
+# Copyright (C) 2014 ...
+# This file is distributed under the GNU General Public License v2 or later.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Mobex Pot v1.0.0\n"
+"Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
+"POT-Creation-Date: 2024-01-23 20:11+0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Enovathemes Team <enovathemesthemes@gmail.com>\n"
+"Language-Team: Enovathemes <support@enovathemes.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: 404.php:24
+msgid "Page not found"
+msgstr "Page introuvable"
+
+#: 404.php:25
+msgid "The page you are looking for could not be found."
+msgstr "La page que vous recherchez est introuvable."
+
+#: 404.php:27
+msgid "Go to home"
+msgstr "Rentre à la maison"
+
+#: 404.php:27
+msgid "Homepage"
+msgstr "page d'accueil"
+
+#: comments.php:6
+msgid "See comments"
+msgstr "Voir commentaires"
+
+#: comments.php:11
+#, php-format
+msgctxt "comments title"
+msgid "1 comment"
+msgid_plural "%1$s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:28
+msgid "Pingback:"
+msgstr "Ping :"
+
+#: comments.php:28 comments.php:53
+msgid "Edit"
+msgstr "Modifier"
+
+#: comments.php:35
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération."
+
+#: comments.php:36
+msgid "Reply"
+msgstr "Répondre"
+
+#: comments.php:42
+msgid "Post author"
+msgstr "Auteur du message"
+
+#: comments.php:49
+#, php-format
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: comments.php:75
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: comments.php:76
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: comments.php:82
+msgid "Comments are closed"
+msgstr ""
+
+#: comments.php:95
+msgid "Name *"
+msgstr ""
+
+#: comments.php:96
+msgid "E-Mail *"
+msgstr ""
+
+#: comments.php:97
+msgid "Website"
+msgstr ""
+
+#: comments.php:104
+msgid "Post Comment"
+msgstr ""
+
+#: functions.php:33
+msgid ""
+"Importing demo data (post, pages, images, theme settings, ...) is the "
+"easiest way to setup your theme."
+msgstr ""
+
+#: functions.php:34
+msgid ""
+"It will allow you to quickly edit everything instead of creating content "
+"from scratch."
+msgstr ""
+
+#: functions.php:37
+msgid "Important things to know before starting demo import"
+msgstr ""
+
+#: functions.php:39
+msgid ""
+"No existing posts, pages, categories, images, custom post types or any other "
+"data will be deleted or modified."
+msgstr ""
+
+#: functions.php:40
+msgid ""
+"Posts, pages, images, widgets, menus and other theme settings will get "
+"imported."
+msgstr ""
+
+#: functions.php:41
+msgid ""
+"Please click on the Import button only once and wait, it can take a couple "
+"of minutes."
+msgstr ""
+
+#: functions.php:42
+msgid ""
+"If you want to change the homepage version after import, do not import "
+"another demo, go to WordPress settings >> Reading and choose different "
+"homepage version as your front-page."
+msgstr ""
+
+#: functions.php:43
+msgid ""
+"If you want to import pages/posts/custom post type/menu etc. separately use "
+"regular WordPress importer"
+msgstr ""
+
+#: functions.php:44
+msgid ""
+"Sometimes not all widgets are displayed after the import, this is known "
+"issue, you will need to replace these plugins or re-save one more time"
+msgstr ""
+
+#: functions.php:47
+msgid "What to do after import"
+msgstr "Que faire après l'importation"
+
+#: functions.php:49
+msgid ""
+"All the images will be imported with original sizes without cropping. This "
+"way your import process will be quicker and your server will have less work "
+"to do. After the import completed go to the WordPress >> Tools and use the "
+"Regenerate thumbnails plugin to crop images to theme supported sizes. !!! "
+"Important, regenerate only Featured images"
+msgstr ""
+"Toutes les images seront importées avec leurs tailles originales sans "
+"recadrage. "
+
+#: functions.php:50
+#, fuzzy
+#| msgid ""
+#| "Also change permalinks from default to whatever you want. (WordPress "
+#| "settings >> permalinks)"
+msgid ""
+"Also re-save permalinks from default to whatever you want. (WordPress "
+"settings >> permalinks)"
+msgstr "Modifiez également les permaliens par défaut par ce que vous voulez. "
+
+#: functions.php:53
+msgid "Troubleshooting"
+msgstr "Dépannage"
+
+#: functions.php:54
+msgid ""
+"If you will have any issues with the import process, please update these "
+"option on your server (edit your php.ini file)"
+msgstr ""
+"Si vous rencontrez des problèmes avec le processus d'importation, veuillez "
+"mettre à jour ces options sur votre serveur (modifiez votre fichier php.ini)"
+
+#: functions.php:56
+msgid "upload_max_filesize (256M)"
+msgstr "upload_max_filesize (256 Mo)"
+
+#: functions.php:57
+msgid "max_input_time (300)"
+msgstr ""
+
+#: functions.php:58
+msgid "memory_limit (256M)"
+msgstr "limite_mémoire (256 Mo)"
+
+#: functions.php:59
+msgid "max_execution_time (300)"
+msgstr "temps_d'exécution_maximum (300)"
+
+#: functions.php:60
+msgid "post_max_size (512M)"
+msgstr "post_max_size (512 M)"
+
+#: functions.php:62
+msgid ""
+"These defaults are not perfect and it depends on how large of an import you "
+"are making. So the bigger the import, the higher the numbers should be."
+msgstr ""
+"Ces valeurs par défaut ne sont pas parfaites et cela dépend de l'ampleur de "
+"l'importation que vous effectuez. "
+
+#: functions.php:73
+msgid "Full demo"
+msgstr "Démo complète"
+
+#: functions.php:78
+msgid ""
+"Import process can take up to 10 minutes, so please be patient and do not "
+"interrupt the import process"
+msgstr ""
+"Le processus d'importation peut prendre jusqu'à 10 minutes, alors soyez "
+"patient et n'interrompez pas le processus d'importation."
+
+#: functions.php:93
+msgid "Elementor Website Builder"
+msgstr "Créateur de sites Web Elementor"
+
+#: functions.php:97
+msgid "Contact Form 7"
+msgstr ""
+
+#: functions.php:101
+msgid "Safe SVG"
+msgstr "SVG sécurisé"
+
+#: functions.php:105
+msgid "One Click Demo Import"
+msgstr "Importation de démonstration en un clic"
+
+#: functions.php:109
+msgid "Envato market master"
+msgstr "Maître du marché Envato"
+
+#: functions.php:114
+msgid "Revolution slider"
+msgstr "Curseur de révolution"
+
+#: functions.php:120
+msgid "Enovathemes add-ons"
+msgstr "modules complémentaires Enovathemes"
+
+#: functions.php:127
+msgid "Regenerate Thumbnails"
+msgstr "Régénérer les vignettes"
+
+#: functions.php:133
+msgid "WooCommerce"
+msgstr ""
+
+#: functions.php:143
+msgid "Variation Swatches for WooCommerce"
+msgstr "Échantillons de variations pour WooCommerce"
+
+#: functions.php:147
+msgid "Currency Switcher for WooCommerce"
+msgstr "Sélecteur de devises pour WooCommerce"
+
+#: functions.php:163 includes/class-tgm-plugin-activation.php:340
+msgid "Install Required Plugins"
+msgstr "Installer les plugins requis"
+
+#: functions.php:164 includes/class-tgm-plugin-activation.php:341
+msgid "Install Plugins"
+msgstr "Installer les plugins"
+
+#: functions.php:165 includes/class-tgm-plugin-activation.php:343
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr "Installation du plug-in : %s"
+
+#: functions.php:166 includes/class-tgm-plugin-activation.php:346
+msgid "Something went wrong with the plugin API."
+msgstr "Un problème s'est produit avec l'API du plugin."
+
+#: functions.php:167 includes/class-tgm-plugin-activation.php:349
+#, php-format
+msgid "This theme requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:168 includes/class-tgm-plugin-activation.php:355
+#, php-format
+msgid "This theme recommends the following plugin: %1$s."
+msgid_plural "This theme recommends the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:169
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to install the %s plugin. "
+"Contact the administrator of this site for help on getting the plugin "
+"installed."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to install the %s "
+"plugins. Contact the administrator of this site for help on getting the "
+"plugins installed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:170 includes/class-tgm-plugin-activation.php:373
+#, php-format
+msgid "The following required plugin is currently inactive: %1$s."
+msgid_plural "The following required plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:171 includes/class-tgm-plugin-activation.php:379
+#, php-format
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgid_plural "The following recommended plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:172
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to activate the %s "
+"plugin. Contact the administrator of this site for help on getting the "
+"plugin activated."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to activate the %s "
+"plugins. Contact the administrator of this site for help on getting the "
+"plugins activated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:173 includes/class-tgm-plugin-activation.php:361
+#, php-format
+msgid ""
+"The following plugin needs to be updated to its latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgid_plural ""
+"The following plugins need to be updated to their latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:174
+#, php-format
+msgid ""
+"Sorry, but you do not have the correct permissions to update the %s plugin. "
+"Contact the administrator of this site for help on getting the plugin "
+"updated."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to update the %s plugins. "
+"Contact the administrator of this site for help on getting the plugins "
+"updated."
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:175 includes/class-tgm-plugin-activation.php:384
+msgid "Begin installing plugin"
+msgid_plural "Begin installing plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:176
+msgid "Activate installed plugin"
+msgid_plural "Activate installed plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:177 includes/class-tgm-plugin-activation.php:398
+msgid "Return to Required Plugins Installer"
+msgstr "Retour au programme d'installation des plugins requis"
+
+#: functions.php:178 includes/class-tgm-plugin-activation.php:400
+#: includes/class-tgm-plugin-activation.php:3311
+msgid "Plugin activated successfully."
+msgstr "Plugin activé avec succès."
+
+#: functions.php:179
+#, php-format
+msgid "All plugins installed and activated successfully. %s"
+msgstr "Tous les plugins installés et activés avec succès. %s"
+
+#: functions.php:541
+msgid "Header menu"
+msgstr "Menu d'en-tête"
+
+#: functions.php:558
+msgid "Blog widgets"
+msgstr "widgets de blog"
+
+#: functions.php:560
+msgid ""
+"Add your blog widgets here. This is the main blog widget area. It is visible "
+"only in blog archive pages."
+msgstr "Ajoutez vos widgets de blog ici. "
+
+#: functions.php:570
+msgid "Blog single post page widgets"
+msgstr "widgets de page de publication unique de blog"
+
+#: functions.php:572
+msgid ""
+"Add your blog single post widgets here. This widget area is only visible in "
+"the single post page."
+msgstr "Ajoutez ici les widgets de publication unique de votre blog. "
+
+#: functions.php:582
+msgid "Blog after single post widgets"
+msgstr "Blog après les widgets de publication unique"
+
+#: functions.php:584
+msgid ""
+"This widget area is only visible after the single post, before comments."
+msgstr ""
+"Cette zone de widget n'est visible qu'après la publication unique, avant les "
+"commentaires."
+
+#: functions.php:596
+msgid "Shop widgets"
+msgstr "Acheter des widgets"
+
+#: functions.php:598
+msgid ""
+"Add your shop widgets here. This widget area is visible in shop arhive pages "
+"only."
+msgstr "Ajoutez les widgets de votre boutique ici. "
+
+#: functions.php:608
+msgid "Shop single product description next widget area"
+msgstr "Boutique, description du produit unique, zone de widget suivante"
+
+#: functions.php:610
+msgid ""
+"Add your shop single product widgets here. This widget area is only visible "
+"in single product page."
+msgstr "Ajoutez ici les widgets de produit unique de votre boutique. "
+
+#: functions.php:620
+msgid "Shop before products widget area"
+msgstr "Zone du widget \"Acheter avant les produits\""
+
+#: functions.php:622
+msgid ""
+"Add your shop widgets here. This widget area is visible in shop arhive pages "
+"only. And appears before products list"
+msgstr "Ajoutez les widgets de votre boutique ici. "
+
+#: functions.php:632
+msgid "Shop after products widget area"
+msgstr "Zone de widget \"Acheter après les produits\""
+
+#: functions.php:634
+msgid ""
+"Add your shop widgets here. This widget area is visible in shop arhive pages "
+"only. And appears after products list"
+msgstr "Ajoutez les widgets de votre boutique ici. "
+
+#: functions.php:760 sidebar-shop-single.php:3 sidebar-shop.php:14
+#: sidebar-single.php:3 sidebar.php:3
+msgid "Toggle sidebar"
+msgstr "basculer la barre latérale"
+
+#: functions.php:771
+msgid "Only products on sale"
+msgstr "Uniquement les produits en vente"
+
+#: functions.php:790
+msgid "Category"
+msgstr "Catégorie"
+
+#: functions.php:929 woocommerce/content-product-loop.php:59
+msgid "Can't find your part or vehicle?"
+msgstr ""
+
+#: functions.php:930 woocommerce/content-product-loop.php:60
+msgid ""
+"No worries. Our team is here to help you find the perfect part for your car. "
+"Just provide us with some details and we will get to work!"
+msgstr ""
+
+#: functions.php:955 functions.php:976
+msgid "View "
+msgstr "Afficher"
+
+#: functions.php:1039 includes/enovathemes-functions.php:825
+msgid "Add to wishlist"
+msgstr "Ajouter à la liste de souhaits"
+
+#: functions.php:1052 functions.php:2184 includes/enovathemes-functions.php:835
+msgid "In wishlist"
+msgstr "Dans la liste de souhaits"
+
+#: functions.php:1062 functions.php:1204 functions.php:1959
+#: includes/enovathemes-functions.php:846
+msgid "Compare"
+msgstr "Comparer"
+
+#: functions.php:1062 includes/enovathemes-functions.php:846
+msgid "Add to compare"
+msgstr "Ajouter pour comparer"
+
+#: functions.php:1126
+msgid "SKU"
+msgstr "UGS"
+
+#: functions.php:1157
+msgid "Out of stock"
+msgstr "En rupture de stock"
+
+#: functions.php:1160
+msgid "On backorder"
+msgstr "En rupture de stock"
+
+#: functions.php:1163
+msgid "In stock"
+msgstr "En stock"
+
+#: functions.php:1178 functions.php:2278
+msgid "Image"
+msgstr ""
+
+#: functions.php:1182
+msgid "Info"
+msgstr "Informations"
+
+#: functions.php:1191
+msgid "Linked products"
+msgstr "Produits liés"
+
+#: functions.php:1195 functions.php:1316
+#: includes/menu/edit_custom_walker.php:176
+msgid "Description"
+msgstr ""
+
+#: functions.php:1199
+msgid "Vehicles"
+msgstr "Véhicules"
+
+#: functions.php:1208
+msgid "Reviews"
+msgstr "avis"
+
+#: functions.php:1212
+msgid "FAQ"
+msgstr ""
+
+#: functions.php:1311 includes/enovathemes-functions.php:1151
+msgid "Product information"
+msgstr "Informations sur le produit"
+
+#: functions.php:1325
+msgid "Features"
+msgstr "Caractéristiques"
+
+#: functions.php:1362 functions.php:1936
+msgid "Supersession"
+msgstr ""
+
+#: functions.php:1429
+msgid "Buy now"
+msgstr ""
+
+#: functions.php:1504
+msgid "Compatible vehicles"
+msgstr "Véhicules compatibles"
+
+#: functions.php:1505
+msgid "Search for vehicle"
+msgstr ""
+
+#: functions.php:1530
+msgid "Compare products"
+msgstr "Comparer les produits"
+
+#: functions.php:1579
+msgid "Customer reviews"
+msgstr "Avis clients"
+
+#: functions.php:1581
+msgid "out of 5 Stars"
+msgstr "sur 5 étoiles"
+
+#: functions.php:1589
+msgid "5 Stars"
+msgstr "5 étoiles"
+
+#: functions.php:1598
+msgid "4 Stars"
+msgstr "4 étoiles"
+
+#: functions.php:1607
+msgid "3 Stars"
+msgstr "3 étoiles"
+
+#: functions.php:1616
+msgid "2 Stars"
+msgstr "2 étoiles"
+
+#: functions.php:1625
+msgid "1 Star"
+msgstr "1 étoile"
+
+#: functions.php:1633
+msgid "Write a review"
+msgstr "Écrire un avis"
+
+#: functions.php:1667
+msgid "Questions and Answers"
+msgstr "Questions et réponses"
+
+#: functions.php:1678
+msgid "Still have questions?"
+msgstr "Vous avez encore des questions ?"
+
+#: functions.php:1679
+msgid "Ask a question"
+msgstr "Poser une question"
+
+#: functions.php:1745
+msgid "Recently viewed products"
+msgstr "Produits récemment consultés"
+
+#: functions.php:1800 includes/enovathemes-functions.php:928
+#: includes/enovathemes-functions.php:1331
+msgid "Sale"
+msgstr "Vente"
+
+#: functions.php:1873
+msgid "Labels"
+msgstr "Étiquettes"
+
+#: functions.php:1888
+msgid "Label 1"
+msgstr "Étiquette 1"
+
+#: functions.php:1893
+msgid "Label 1 color code in hex"
+msgstr "Code couleur de l'étiquette 1 en hexadécimal"
+
+#: functions.php:1898
+msgid "Label 2"
+msgstr "Étiquette 2"
+
+#: functions.php:1903
+msgid "Label 2 color code in hex"
+msgstr "Code couleur de l'étiquette 2 en hexadécimal"
+
+#: functions.php:1913
+msgid "Frequently bought"
+msgstr "Fréquemment acheté"
+
+#: functions.php:1914 functions.php:1937 functions.php:1960
+msgid "Search for a product&hellip;"
+msgstr "Rechercher un produit"
+
+#: functions.php:1929 functions.php:1952
+msgid ""
+"Frequently bought are products which you recommend with the currently viewed "
+"product."
+msgstr ""
+
+#: functions.php:1975
+msgid ""
+"Compare are products which you recommend comapred to the currently viewed "
+"product."
+msgstr ""
+
+#: functions.php:2039
+msgid "No product found"
+msgstr ""
+
+#: functions.php:2149
+msgid "Does not fit your"
+msgstr ""
+
+#: functions.php:2150 functions.php:2183
+msgid "Added to wishlist"
+msgstr ""
+
+#: functions.php:2151 functions.php:2199
+msgid "Added to compare"
+msgstr ""
+
+#: functions.php:2157
+msgid "No products found, something was wrong"
+msgstr ""
+
+#: functions.php:2158
+msgid "No posts found, something was wrong"
+msgstr ""
+
+#: functions.php:2159 functions.php:2295
+msgid "No more"
+msgstr ""
+
+#: functions.php:2160 functions.php:2186 functions.php:2202
+msgid "No products found"
+msgstr ""
+
+#: functions.php:2161
+msgid "All items added"
+msgstr ""
+
+#: functions.php:2162
+msgid "Choose category"
+msgstr ""
+
+#: functions.php:2163
+msgid "Product already added"
+msgstr ""
+
+#: functions.php:2164
+msgid ""
+"You can configure languages on you site using WPML or Polyland plugins. "
+"Theme supports both!"
+msgstr ""
+"Vous pouvez configurer les langues sur votre site à l'aide des plugins WPML "
+"ou Polyland. "
+
+#: functions.php:2167
+msgid "Something was wrong, please try later or contact site administrator"
+msgstr ""
+"Quelque chose n'allait pas, veuillez réessayer plus tard ou contacter "
+"l'administrateur du site"
+
+#: functions.php:2185
+msgid "Something went wrong, could not add to wishlist"
+msgstr "Une erreur s'est produite. Impossible d'ajouter à la liste de souhaits"
+
+#: functions.php:2187
+msgid "Remove the item from wishlist?"
+msgstr "Supprimer l'article de la liste de souhaits ?"
+
+#: functions.php:2200
+msgid "In compare"
+msgstr "En comparaison"
+
+#: functions.php:2201
+msgid "Something went wrong, could not add to compare"
+msgstr "Quelque chose s'est mal passé, impossible d'ajouter pour comparer"
+
+#: functions.php:2203
+msgid "Remove the item"
+msgstr "Supprimer l'élément"
+
+#: functions.php:2269
+msgid "Limit to category"
+msgstr "Limiter à la catégorie"
+
+#: functions.php:2270
+msgid "Hide on category"
+msgstr "Masquer sur la catégorie"
+
+#: functions.php:2271 functions.php:2273
+msgid "Include child categories?"
+msgstr "Inclure les catégories enfants ?"
+
+#: functions.php:2272
+msgid "All"
+msgstr "Tous"
+
+#: functions.php:2274 includes/menu/edit_custom_walker.php:280
+msgid "Remove"
+msgstr "Supprimer"
+
+#: functions.php:2275
+msgid "Display type"
+msgstr "Type d'affichage"
+
+#: functions.php:2276
+msgid "Select"
+msgstr "Sélectionner"
+
+#: functions.php:2277
+msgid "List"
+msgstr "Liste"
+
+#: functions.php:2279
+msgid "Image list"
+msgstr "Liste d'images"
+
+#: functions.php:2280
+msgid "Label"
+msgstr "Étiquette"
+
+#: functions.php:2281
+msgid "Color"
+msgstr "Couleur"
+
+#: functions.php:2282
+msgid "Lock this attribute?"
+msgstr ""
+
+#: functions.php:2283
+msgid "If active, filter results will not affect attribute data"
+msgstr ""
+
+#: functions.php:2284
+msgid "Slider"
+msgstr "Curseur"
+
+#: functions.php:2285
+msgid "Columns"
+msgstr "Colonnes"
+
+#: functions.php:2286
+msgid ""
+"For color, image display types make sure you set the correct type from this "
+"attribute settings, found under products / attributes. For slider display "
+"types, make sure your attribute is numeric"
+msgstr ""
+"Pour la couleur, les types d'affichage des images, assurez-vous de définir "
+"le type correct à partir des paramètres de cet attribut, trouvés sous "
+"produits/attributs. "
+
+#: functions.php:2287
+msgid ""
+"For image display type make sure you set the product category image from the "
+"Products / Categories"
+msgstr ""
+"Pour le type d'affichage d'image, assurez-vous de définir l'image de la "
+"catégorie de produit dans Produits/Catégories."
+
+#: functions.php:2296
+msgid "Please select CSV file"
+msgstr "Veuillez sélectionner un fichier CSV"
+
+#: functions.php:2297
+msgid "Please map atleast one column"
+msgstr "Veuillez mapper au moins une colonne"
+
+#: functions.php:2298
+msgid "Something went wrong, please contact the developer"
+msgstr "Quelque chose s’est mal passé, veuillez contacter le développeur"
+
+#: functions.php:2299
+msgid "No results, try a different search"
+msgstr "Aucun résultat, essayez une autre recherche"
+
+#: functions.php:2300
+msgid "Vehicle search"
+msgstr "Recherche de véhicule"
+
+#: functions.php:2301
+msgid "Updated product vehicles"
+msgstr "Véhicules de produits mis à jour"
+
+#: functions.php:2302
+msgid "Importing vehicle data..."
+msgstr "Importation des données du véhicule..."
+
+#: functions.php:2303
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: functions.php:2304
+#, fuzzy
+#| msgid "Vehicles"
+msgid "Assign vehicles"
+msgstr "Véhicules"
+
+#: functions.php:2305
+#, fuzzy
+#| msgid "%1$s installed successfully."
+msgid "Vehicles assigned successfully!"
+msgstr "%1$s installé avec succès."
+
+#: functions.php:2306
+msgid "Importing complete!"
+msgstr "Importation terminée !"
+
+#: functions.php:2307
+msgid ""
+"Process can take a couple of minutes, don't close the tab, wait for message"
+msgstr ""
+"Le processus peut prendre quelques minutes, ne fermez pas l'onglet, attendez "
+"le message"
+
+#: includes/blog/content-blog-related-posts.php:43
+msgid "Related posts"
+msgstr "Messages associés"
+
+#: includes/blog/content-blog-single-code.php:183
+#: includes/enovathemes-functions.php:538 page.php:27
+msgid "Continue reading"
+msgstr "Continuer la lecture"
+
+#: includes/blog/content-blog-single-code.php:184
+#: includes/enovathemes-functions.php:539 page.php:28
+msgid "Go back"
+msgstr "Revenir en arrière"
+
+#: includes/blog/content-blog-single-code.php:197
+msgid "Tags:"
+msgstr "Étiquettes :"
+
+#: includes/class-tgm-plugin-activation.php:345
+#, php-format
+msgid "Updating Plugin: %s"
+msgstr "Mise à jour du plug-in : %s"
+
+#: includes/class-tgm-plugin-activation.php:367
+#, php-format
+msgid "There is an update available for: %1$s."
+msgid_plural "There are updates available for the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:389
+msgid "Begin updating plugin"
+msgid_plural "Begin updating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:394
+msgid "Begin activating plugin"
+msgid_plural "Begin activating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:399
+msgid "Return to the Dashboard"
+msgstr "Retour au tableau de bord"
+
+#: includes/class-tgm-plugin-activation.php:401
+#, fuzzy
+#| msgid "Plugin was activated successfully:"
+msgid "The following plugin was activated successfully!"
+msgstr "Le plugin a été activé avec succès :"
+
+#: includes/class-tgm-plugin-activation.php:403
+#, php-format
+msgid "No action taken. Plugin %1$s was already active."
+msgstr "Pas d'action prise. Le plugin %1$s était déjà actif."
+
+#: includes/class-tgm-plugin-activation.php:405
+#, php-format
+msgid ""
+"Plugin not activated. A higher version of %s is needed for this theme. "
+"Please update the plugin."
+msgstr ""
+"Plugin non activé. Une version supérieure de %s est nécessaire pour ce "
+"thème. Veuillez mettre à jour le plugin."
+
+#: includes/class-tgm-plugin-activation.php:407
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr "Tous les plugins installés et activés avec succès. %1$s"
+
+#: includes/class-tgm-plugin-activation.php:408
+msgid "Dismiss this notice"
+msgstr "Rejeter cet avis"
+
+#: includes/class-tgm-plugin-activation.php:409
+msgid ""
+"There are one or more required or recommended plugins to install, update or "
+"activate."
+msgstr ""
+"Il existe un ou plusieurs plugins requis ou recommandés à installer, mettre "
+"à jour ou activer."
+
+#: includes/class-tgm-plugin-activation.php:410
+msgid "Please contact the administrator of this site for help."
+msgstr "Veuillez contacter l'administrateur de ce site pour obtenir de l'aide."
+
+#: includes/class-tgm-plugin-activation.php:616
+msgid "This plugin needs to be updated to be compatible with your theme."
+msgstr "Ce plugin doit être mis à jour pour être compatible avec votre thème."
+
+#: includes/class-tgm-plugin-activation.php:617
+msgid "Update Required"
+msgstr "mise à jour requise"
+
+#: includes/class-tgm-plugin-activation.php:735
+msgid "Set the parent_slug config variable instead."
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:1042
+msgid ""
+"The remote plugin package does not contain a folder with the desired slug "
+"and renaming did not work."
+msgstr ""
+"Le package du plugin distant ne contient pas de dossier avec le slug "
+"souhaité et le changement de nom n'a pas fonctionné."
+
+#: includes/class-tgm-plugin-activation.php:1042
+#: includes/class-tgm-plugin-activation.php:1052
+msgid ""
+"Please contact the plugin provider and ask them to package their plugin "
+"according to the WordPress guidelines."
+msgstr ""
+"Veuillez contacter le fournisseur du plugin et demandez-lui de conditionner "
+"son plugin conformément aux directives de WordPress."
+
+#: includes/class-tgm-plugin-activation.php:1052
+msgid ""
+"The remote plugin package consists of more than one file, but the files are "
+"not packaged in a folder."
+msgstr ""
+"Le package du plug-in distant se compose de plusieurs fichiers, mais les "
+"fichiers ne sont pas regroupés dans un dossier."
+
+#: includes/class-tgm-plugin-activation.php:1243
+#: includes/class-tgm-plugin-activation.php:3099
+msgctxt "plugin A *and* plugin B"
+msgid "and"
+msgstr "et"
+
+#: includes/class-tgm-plugin-activation.php:2112
+#, php-format
+msgid "TGMPA v%s"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2421
+msgid "Required"
+msgstr "obligatoire"
+
+#: includes/class-tgm-plugin-activation.php:2424
+msgid "Recommended"
+msgstr "recommandé"
+
+#: includes/class-tgm-plugin-activation.php:2440
+msgid "WordPress Repository"
+msgstr "référentiel WordPress"
+
+#: includes/class-tgm-plugin-activation.php:2443
+msgid "External Source"
+msgstr "source externe"
+
+#: includes/class-tgm-plugin-activation.php:2446
+msgid "Pre-Packaged"
+msgstr "Pré-emballé"
+
+#: includes/class-tgm-plugin-activation.php:2463
+msgid "Not Installed"
+msgstr "Non installé"
+
+#: includes/class-tgm-plugin-activation.php:2467
+msgid "Installed But Not Activated"
+msgstr "installé mais non activé"
+
+#: includes/class-tgm-plugin-activation.php:2469
+msgid "Active"
+msgstr "Actif"
+
+#: includes/class-tgm-plugin-activation.php:2475
+msgid "Required Update not Available"
+msgstr "Mise à jour requise non disponible"
+
+#: includes/class-tgm-plugin-activation.php:2478
+msgid "Requires Update"
+msgstr "nécessite une mise à jour"
+
+#: includes/class-tgm-plugin-activation.php:2481
+msgid "Update recommended"
+msgstr "Mise à jour recommandée"
+
+#: includes/class-tgm-plugin-activation.php:2490
+#, php-format
+msgctxt "Install/Update Status"
+msgid "%1$s, %2$s"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2536
+#, php-format
+msgctxt "plugins"
+msgid "All <span class=\"count\">(%s)</span>"
+msgid_plural "All <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:2540
+#, php-format
+msgid "To Install <span class=\"count\">(%s)</span>"
+msgid_plural "To Install <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:2544
+#, php-format
+msgid "Update Available <span class=\"count\">(%s)</span>"
+msgid_plural "Update Available <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:2548
+#, php-format
+msgid "To Activate <span class=\"count\">(%s)</span>"
+msgid_plural "To Activate <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:2630
+msgctxt "as in: \"version nr unknown\""
+msgid "unknown"
+msgstr "inconnu"
+
+#: includes/class-tgm-plugin-activation.php:2638
+msgid "Installed version:"
+msgstr "Version installée :"
+
+#: includes/class-tgm-plugin-activation.php:2646
+msgid "Minimum required version:"
+msgstr "Version minimale requise :"
+
+#: includes/class-tgm-plugin-activation.php:2658
+msgid "Available version:"
+msgstr "Version disponible :"
+
+#: includes/class-tgm-plugin-activation.php:2681
+msgid "No plugins to install, update or activate."
+msgstr "Aucun plugin à installer, mettre à jour ou activer."
+
+#: includes/class-tgm-plugin-activation.php:2695
+msgid "Plugin"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2696
+msgid "Source"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2697
+msgid "Type"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2701
+msgid "Version"
+msgstr ""
+
+#: includes/class-tgm-plugin-activation.php:2702
+msgid "Status"
+msgstr "Statut"
+
+#: includes/class-tgm-plugin-activation.php:2751
+#, php-format
+msgid "Install %2$s"
+msgstr "Installer %2$s"
+
+#: includes/class-tgm-plugin-activation.php:2756
+#, php-format
+msgid "Update %2$s"
+msgstr "Mise à jour %2$s"
+
+#: includes/class-tgm-plugin-activation.php:2762
+#, php-format
+msgid "Activate %2$s"
+msgstr "Activer %2$s"
+
+#: includes/class-tgm-plugin-activation.php:2834
+msgid "Upgrade message from the plugin author:"
+msgstr "Message de mise à niveau de l'auteur du plugin :"
+
+#: includes/class-tgm-plugin-activation.php:2867
+msgid "Install"
+msgstr "Installer"
+
+#: includes/class-tgm-plugin-activation.php:2873
+msgid "Update"
+msgstr "Mise à jour"
+
+#: includes/class-tgm-plugin-activation.php:2876
+msgid "Activate"
+msgstr "Activer"
+
+#: includes/class-tgm-plugin-activation.php:2907
+msgid "No plugins were selected to be installed. No action taken."
+msgstr "Aucun plugin n'a été sélectionné pour être installé. "
+
+#: includes/class-tgm-plugin-activation.php:2909
+msgid "No plugins were selected to be updated. No action taken."
+msgstr "Aucun plugin n'a été sélectionné pour être mis à jour. "
+
+#: includes/class-tgm-plugin-activation.php:2950
+msgid "No plugins are available to be installed at this time."
+msgstr "Aucun plugin n'est disponible pour être installé pour le moment."
+
+#: includes/class-tgm-plugin-activation.php:2952
+msgid "No plugins are available to be updated at this time."
+msgstr "Aucun plugin n'est disponible pour être mis à jour pour le moment."
+
+#: includes/class-tgm-plugin-activation.php:3059
+msgid "No plugins were selected to be activated. No action taken."
+msgstr "Aucun plugin n'a été sélectionné pour être activé. "
+
+#: includes/class-tgm-plugin-activation.php:3085
+msgid "No plugins are available to be activated at this time."
+msgstr "Aucun plugin n'est disponible pour être activé pour le moment."
+
+#: includes/class-tgm-plugin-activation.php:3103
+msgid "The following plugin was activated successfully:"
+msgid_plural "The following plugins were activated successfully:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-tgm-plugin-activation.php:3310
+msgid "Plugin activation failed."
+msgstr "L’activation du plug-in a échoué."
+
+#: includes/class-tgm-plugin-activation.php:3655
+#, php-format
+msgid "Updating Plugin %1$s (%2$d/%3$d)"
+msgstr "Mise à jour du plug-in %1$s (%2$d/%3$d)"
+
+#: includes/class-tgm-plugin-activation.php:3658
+#, php-format
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr ""
+"Une erreur s'est produite lors de l'installation de %1$s : <strong>%2$s</"
+"strong>."
+
+#: includes/class-tgm-plugin-activation.php:3660
+#, php-format
+msgid "The installation of %1$s failed."
+msgstr "L'installation de %1$s a échoué."
+
+#: includes/class-tgm-plugin-activation.php:3664
+msgid ""
+"The installation and activation process is starting. This process may take a "
+"while on some hosts, so please be patient."
+msgstr "Le processus d'installation et d'activation démarre. "
+
+#: includes/class-tgm-plugin-activation.php:3666
+#, php-format
+msgid "%1$s installed and activated successfully."
+msgstr "%1$s installé et activé avec succès."
+
+#: includes/class-tgm-plugin-activation.php:3667
+msgid "All installations and activations have been completed."
+msgstr "Toutes les installations et activations sont terminées."
+
+#: includes/class-tgm-plugin-activation.php:3669
+#, php-format
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr "Installation et activation du plug-in %1$s (%2$d/%3$d)"
+
+#: includes/class-tgm-plugin-activation.php:3672
+msgid ""
+"The installation process is starting. This process may take a while on some "
+"hosts, so please be patient."
+msgstr "Le processus d'installation démarre. "
+
+#: includes/class-tgm-plugin-activation.php:3674
+#, php-format
+msgid "%1$s installed successfully."
+msgstr "%1$s installé avec succès."
+
+#: includes/class-tgm-plugin-activation.php:3675
+msgid "All installations have been completed."
+msgstr "Toutes les installations sont terminées."
+
+#: includes/class-tgm-plugin-activation.php:3677
+#, php-format
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr "Installation du plug-in %1$s (%2$d/%3$d)"
+
+#: includes/class-tgm-plugin-activation.php:3682
+msgid "Show Details"
+msgstr "Afficher les détails"
+
+#: includes/class-tgm-plugin-activation.php:3682
+msgid "Hide Details"
+msgstr "Masquer les détails"
+
+#: includes/enovathemes-functions.php:63 includes/enovathemes-functions.php:513
+#: includes/enovathemes-functions.php:564
+#: includes/enovathemes-functions.php:578
+#: includes/enovathemes-functions.php:587
+msgid "Read more about"
+msgstr "En savoir plus sur"
+
+#: includes/enovathemes-functions.php:126
+msgid "Previous"
+msgstr "Précédent"
+
+#: includes/enovathemes-functions.php:127
+msgid "Next"
+msgstr "Suivant"
+
+#: includes/enovathemes-functions.php:134
+msgid "Previous "
+msgstr "Précédent"
+
+#: includes/enovathemes-functions.php:135
+msgid "Next "
+msgstr "Suivant"
+
+#: includes/enovathemes-functions.php:168
+msgid "Load more"
+msgstr "Charger plus"
+
+#: includes/enovathemes-functions.php:564
+#: includes/enovathemes-functions.php:578
+#: includes/enovathemes-functions.php:587 search.php:31
+msgid "Read more"
+msgstr "Lire la suite"
+
+#: includes/enovathemes-functions.php:635
+msgid "No products found."
+msgstr "Aucun produit trouvé."
+
+#: includes/enovathemes-functions.php:639
+msgid "No search results found. Try a different search"
+msgstr "Aucun résultat de recherche trouvé. "
+
+#: includes/enovathemes-functions.php:643
+msgid "No posts found."
+msgstr "Aucun message trouvé."
+
+#: includes/enovathemes-functions.php:711
+msgid "Dashboard"
+msgstr ""
+
+#: includes/enovathemes-functions.php:720
+msgid "Hello Guest"
+msgstr ""
+
+#: includes/enovathemes-functions.php:721
+msgid "For better experience"
+msgstr ""
+
+#: includes/enovathemes-functions.php:724
+msgid "Login"
+msgstr ""
+
+#: includes/enovathemes-functions.php:802
+msgid "Copyright"
+msgstr "droit d'auteur"
+
+#: includes/enovathemes-functions.php:822
+#: includes/enovathemes-functions.php:879
+msgid "Quick view"
+msgstr "Vue rapide"
+
+#: includes/enovathemes-functions.php:1082
+#: includes/enovathemes-functions.php:1167
+#: includes/enovathemes-functions.php:1356
+msgid "Read more avbout"
+msgstr "En savoir plus sur"
+
+#: includes/enovathemes-functions.php:1088
+msgid "SKU:"
+msgstr "SKU :"
+
+#: includes/enovathemes-functions.php:1102
+msgid "Weight"
+msgstr "Poids"
+
+#: includes/enovathemes-functions.php:1109
+msgid "Dimensions"
+msgstr ""
+
+#: includes/enovathemes-functions.php:1167
+msgid "Details..."
+msgstr "Détails..."
+
+#: includes/enovathemes-functions.php:1233
+msgid "Quantity"
+msgstr "Quantité"
+
+#: includes/enovathemes-functions.php:1233
+msgid "Only"
+msgstr "uniquement"
+
+#: includes/enovathemes-functions.php:1233
+msgid "left in stock!"
+msgstr "laissé en stock !"
+
+#: includes/enovathemes-functions.php:1297
+msgid "Frequently bought together"
+msgstr "Fréquemment achetés ensemble"
+
+#: includes/enovathemes-functions.php:1458
+msgid "Buy selected for"
+msgstr "Acheter sélectionné pour"
+
+#: includes/enovathemes-functions.php:1460
+msgid "Add all to cart"
+msgstr "Ajouter tout au panier"
+
+#: includes/menu/edit_custom_walker.php:85
+#, php-format
+msgid "%s (Invalid)"
+msgstr "%s (invalide)"
+
+#: includes/menu/edit_custom_walker.php:89
+#, php-format
+msgid "%s (Pending)"
+msgstr "%s (en attente)"
+
+#: includes/menu/edit_custom_walker.php:113
+msgid "Move up"
+msgstr "Monter"
+
+#: includes/menu/edit_custom_walker.php:126
+msgid "Move down"
+msgstr "Descendre"
+
+#: includes/menu/edit_custom_walker.php:139
+msgid "URL"
+msgstr ""
+
+#: includes/menu/edit_custom_walker.php:146
+msgid "Navigation Label"
+msgstr "Étiquette de navigation"
+
+#: includes/menu/edit_custom_walker.php:152
+msgid "Title Attribute"
+msgstr "Attribut de titre"
+
+#: includes/menu/edit_custom_walker.php:159
+msgid "Open link in a new window/tab"
+msgstr "Ouvrir le lien dans une nouvelle fenêtre/un nouvel onglet"
+
+#: includes/menu/edit_custom_walker.php:164
+msgid "CSS Classes (optional)"
+msgstr "Classes CSS (facultatif)"
+
+#: includes/menu/edit_custom_walker.php:170
+msgid "Link Relationship (XFN)"
+msgstr "Relation de lien (XFN)"
+
+#: includes/menu/edit_custom_walker.php:178
+msgid ""
+"The description will be displayed in the menu if the current theme supports "
+"it."
+msgstr ""
+"La description sera affichée dans le menu si le thème actuel la prend en "
+"charge."
+
+#: includes/menu/edit_custom_walker.php:189
+msgid "Megamenu"
+msgstr "Mégamenu"
+
+#: includes/menu/edit_custom_walker.php:191
+#: includes/menu/edit_custom_walker.php:229
+msgid "false"
+msgstr "faux"
+
+#: includes/menu/edit_custom_walker.php:192
+#: includes/menu/edit_custom_walker.php:230
+msgid "true"
+msgstr "vrai"
+
+#: includes/menu/edit_custom_walker.php:197
+msgid "Megamenu content"
+msgstr "Contenu du mégamenu"
+
+#: includes/menu/edit_custom_walker.php:216
+msgid "-- Select -- "
+msgstr "-- Sélectionner --"
+
+#: includes/menu/edit_custom_walker.php:224
+msgid "First you must create a megamenu from "
+msgstr "Vous devez d'abord créer un mégamenu à partir de"
+
+#: includes/menu/edit_custom_walker.php:224
+msgid "here"
+msgstr "ici"
+
+#: includes/menu/edit_custom_walker.php:226
+msgid "Load megamenu asynchronous?"
+msgstr "Charger le mégamenu de manière asynchrone ?"
+
+#: includes/menu/edit_custom_walker.php:236
+msgid "Submenu item label text"
+msgstr "Texte de l'étiquette de l'élément de sous-menu"
+
+#: includes/menu/edit_custom_walker.php:242
+msgid "Submenu item label text color"
+msgstr "Couleur du texte de l'étiquette de l'élément de sous-menu"
+
+#: includes/menu/edit_custom_walker.php:249
+msgid "Submenu item label color"
+msgstr "Couleur de l'étiquette de l'élément de sous-menu"
+
+#: includes/menu/edit_custom_walker.php:256
+msgid "SVG icon url"
+msgstr "URL de l'icône SVG"
+
+#: includes/menu/edit_custom_walker.php:267
+#, php-format
+msgid "Original: %s"
+msgstr "Original : %s"
+
+#: includes/menu/edit_custom_walker.php:281
+msgid "Cancel"
+msgstr "Annuler"
+
+#: includes/title-section.php:40
+msgid "Search"
+msgstr "Recherche"
+
+#: search.php:11
+msgid " search results for"
+msgstr "résultats de recherche pour"
+
+#: search.php:23
+msgid "Go to"
+msgstr "Aller à"
+
+#: search.php:40
+msgid "Suggestions:"
+msgstr "Suggestions :"
+
+#: search.php:42
+msgid "Make sure that all words are spelled correctly"
+msgstr "Assurez-vous que tous les mots sont correctement orthographiés"
+
+#: search.php:43
+msgid "Try different keywords"
+msgstr "Essayez différents mots-clés"
+
+#: search.php:44
+msgid "Try more general keywords"
+msgstr "Essayez des mots-clés plus généraux"
+
+#: search.php:45
+msgid "Try fewer keywords"
+msgstr "Essayez moins de mots-clés"
+
+#: searchform.php:3
+msgid "Type a keyword"
+msgstr "saisissez un mot-clé"
+
+#: woocommerce/content-product-loop.php:70
+msgid "Go back to shop"
+msgstr "Retourner au magasin"
+
+#, fuzzy
+#~| msgid ""
+#~| "Also you need to clear the WooCommerce cache: go to WooCommerce >> "
+#~| "Status >> Tools and clear the WooCommerce transients and regenerate "
+#~| "product lookup tables"
+#~ msgid ""
+#~ "Also you need to clear the WooCommerce cache: go to WooCommerce >> Status "
+#~ ">> Tools and clear the WooCommerce transients, regenerate product lookup "
+#~ "tables, recount terms and rRegenerate the product attributes lookup table"
+#~ msgstr ""
+#~ "Vous devez également vider le cache WooCommerce : accédez à WooCommerce "
+#~ ">> Statut >> Outils, effacez les transitoires WooCommerce et régénérez "
+#~ "les tables de recherche de produits."
+
+#~ msgid ""
+#~ "Sometimes not all images are imported during import process, this is "
+#~ "known issue, you just need before import uncheck the 'Organize my uploads "
+#~ "into month- and year-based folders' option from WordPress dashboard >> "
+#~ "settings >> media"
+#~ msgstr ""
+#~ "Parfois, toutes les images ne sont pas importées pendant le processus "
+#~ "d'importation. Il s'agit d'un problème connu. Avant l'importation, il "
+#~ "vous suffit de décocher l'option \"Organiser mes téléchargements dans des "
+#~ "dossiers mensuels et annuels\" dans le tableau de bord WordPress >> "
+#~ "paramètres >> médias."
+
+#~ msgid ""
+#~ "Also do not forget to set the shop page from the WooCommerce >> Products "
+#~ "settings, make sure it is the one that comes with the theme"
+#~ msgstr ""
+#~ "N'oubliez pas non plus de définir la page de la boutique depuis les "
+#~ "paramètres WooCommerce >> Produits, assurez-vous que c'est celle qui "
+#~ "accompagne le thème"

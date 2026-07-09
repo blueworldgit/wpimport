@@ -1,0 +1,31 @@
+<wpml-config>
+    <custom-fields>
+        <custom-field action="copy_once">enovathemes_addons_sticky</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_header_type</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_sidebar_align</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_transparent</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_shadow</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_megamenu_width</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_megamenu_position</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_megamenu_offset</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_link</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_gallery</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_video</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_video_embed</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_gallery_type</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_gallery_columns</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_gallery</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_video</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_video_embed</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_tabbed</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_tabs_background_color</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_tabs_content_background_color</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_tabs_text_color</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_tabs_text_color_active</custom-field>
+        <custom-field action="copy_once">enovathemes_addons_title_section</custom-field>
+        <custom-field action="translate">enovathemes_addons_mobile_header</custom-field>
+        <custom-field action="translate">enovathemes_addons_desktop_header</custom-field>
+        <custom-field action="translate">enovathemes_addons_footer</custom-field>
+        <custom-field action="translate">enovathemes_addons_quote</custom-field>
+    </custom-fields>
+</wpml-config>

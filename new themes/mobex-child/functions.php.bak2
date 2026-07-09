@@ -1,0 +1,727 @@
+<?php
+
+function mobex_enovathemes_child_scripts() {
+    wp_enqueue_style( 'mobex_enovathemes-parent-style', get_template_directory_uri(). '/style.css' );
+}
+add_action( 'wp_enqueue_scripts', 'mobex_enovathemes_child_scripts' );
+
+add_action('after_switch_theme', 'mobex_child_repair_theme_mods_and_kirki_css');
+add_action('admin_init', 'mobex_child_repair_theme_mods_and_kirki_css_once');
+
+function mobex_child_repair_theme_mods_and_kirki_css_once() {
+    // If we already repaired, skip.
+    if (get_option('mobex_child_theme_mods_repaired')) {
+        return;
+    }
+    $did = mobex_child_repair_theme_mods_and_kirki_css();
+    if ($did) {
+        update_option('mobex_child_theme_mods_repaired', 1);
+    }
+}
+
+/**
+ * Returns true if it actually migrated/changed anything.
+ */
+function mobex_child_repair_theme_mods_and_kirki_css() {
+    $parent = get_template();
+    $child  = get_stylesheet();
+    if ($parent === $child) {
+        // Not a child setup.
+        return false;
+    }
+}
+
+/**
+ * Custom REST API endpoint to find products NOT in a specific category
+ */
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/products-not-in-category', array(
+        'methods' => 'GET',
+        'callback' => 'get_products_not_in_category',
+        'permission_callback' => function() {
+            return current_user_can('edit_products');
+        }
+    ));
+});
+
+function get_products_not_in_category($request) {
+    $exclude_category = $request->get_param('exclude_category');
+    $page = $request->get_param('page') ?: 1;
+    $per_page = 100;
+    
+    if (!$exclude_category) {
+        return new WP_Error('missing_param', 'exclude_category parameter required', array('status' => 400));
+    }
+    
+    global $wpdb;
+    
+    // Find all product IDs that DO NOT have the specified category
+    // This excludes products that have this category in their term relationships
+    $offset = ($page - 1) * $per_page;
+    
+    $query = "
+        SELECT DISTINCT p.ID 
+        FROM {$wpdb->posts} p
+        WHERE p.post_type = 'product'
+        AND p.post_status = 'publish'
+        AND p.ID NOT IN (
+            SELECT object_id 
+            FROM {$wpdb->term_relationships} tr
+            INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+            WHERE tt.term_id = %d
+            AND tt.taxonomy = 'product_cat'
+        )
+        ORDER BY p.ID
+        LIMIT %d OFFSET %d
+    ";
+    
+    $product_ids = $wpdb->get_col($wpdb->prepare($query, $exclude_category, $per_page, $offset));
+    
+    // Get total count
+    $count_query = "
+        SELECT COUNT(DISTINCT p.ID) 
+        FROM {$wpdb->posts} p
+        WHERE p.post_type = 'product'
+        AND p.post_status = 'publish'
+        AND p.ID NOT IN (
+            SELECT object_id 
+            FROM {$wpdb->term_relationships} tr
+            INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+            WHERE tt.term_id = %d
+            AND tt.taxonomy = 'product_cat'
+        )
+    ";
+    
+    $total = $wpdb->get_var($wpdb->prepare($count_query, $exclude_category));
+    $total_pages = ceil($total / $per_page);
+    
+    return array(
+        'ids' => array_map('intval', $product_ids),
+        'total' => (int)$total,
+        'page' => (int)$page,
+        'per_page' => $per_page,
+        'total_pages' => (int)$total_pages
+    );
+}
+
+/**
+ * Maxus Van Parts — Homepage Facelift
+ *
+ * Transforms shane.maxusvanparts.co.uk homepage to match
+ * the maxusvanparts.acstestweb.co.uk design.
+ *
+ * Approach: CSS hides unwanted Elementor sections, JS injects
+ * hero banner + vehicle carousel into correct DOM position.
+ */
+
+// ============================================================
+// 1. HOMEPAGE CSS — Hide unwanted sections & inject styles
+// ============================================================
+add_action( 'wp_head', 'mvp_facelift_css', 999 );
+function mvp_facelift_css() {
+    if ( ! is_front_page() && ! is_home() ) return;
+    ?>
+    <style id="mvp-facelift-css">
+    /* === HIDE: RevSlider widget (inside elementor section a40da3e) === */
+    body.home .elementor-element-a40da3e,
+    body.home sr7-module,
+    body.home .wp-block-themepunch-revslider,
+    body.home .elementor-widget-slider_revolution {
+        display: none !important;
+    }
+
+    /* === HIDE: Department category icons row === */
+    body.home .elementor-element-099500a {
+        display: none !important;
+    }
+
+    /* === HIDE: Featured manufacturers heading + logos === */
+    body.home .elementor-element-9f85e6f,
+    body.home .elementor-element-e540d81 {
+        display: none !important;
+    }
+
+    /* === HIDE: Promo banners (Engine Oil, Tools, Batteries) === */
+    body.home .elementor-element-23763df {
+        display: none !important;
+    }
+
+    /* === HIDE: "Know what you pay for" section === */
+    body.home .elementor-element-20e40c9 {
+        display: none !important;
+    }
+
+    /* === HIDE: "Car repairs have never been so easy" section === */
+    body.home .elementor-element-7033a3b {
+        display: none !important;
+    }
+
+    /* === HIDE: Empty spacer section === */
+    body.home .elementor-element-9e19027 {
+        display: none !important;
+    }
+
+    /* ── Hero Banner ── */
+    .mvp-hero {
+        position: relative;
+        width: 100%;
+        min-height: 380px;
+        background: linear-gradient(135deg, #F29F05 0%, #e88f00 30%, #034C8C 70%, #022d54 100%);
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
+    .mvp-hero::before {
+        content: '';
+        position: absolute;
+        right: -5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 55%;
+        height: 120%;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .mvp-hero::after {
+        content: '';
+        position: absolute;
+        right: 5%;
+        bottom: 0;
+        width: 420px;
+        height: 200px;
+        background: linear-gradient(to right, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+        clip-path: polygon(5% 100%, 5% 40%, 15% 20%, 30% 15%, 35% 25%, 60% 25%, 65% 15%, 80% 15%, 90% 25%, 95% 40%, 95% 100%);
+        pointer-events: none;
+    }
+    .mvp-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        padding: 60px 40px;
+        text-align: left;
+    }
+    .mvp-hero-content h1 {
+        font-size: 42px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.15;
+        margin: 0 0 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .mvp-hero-content p {
+        font-size: 18px;
+        color: rgba(255,255,255,0.92);
+        line-height: 1.6;
+        margin: 0 0 28px;
+        max-width: 520px;
+    }
+    .mvp-hero-btn {
+        display: inline-block;
+        padding: 14px 36px;
+        background: #fff;
+        color: #034C8C;
+        font-size: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .mvp-hero-btn:hover {
+        background: #F29F05;
+        color: #fff;
+    }
+    @media (max-width: 768px) {
+        .mvp-hero { min-height: 280px; }
+        .mvp-hero-content { padding: 40px 20px; text-align: center; }
+        .mvp-hero-content h1 { font-size: 28px; }
+        .mvp-hero-content p { font-size: 15px; }
+        .mvp-hero::after { display: none; }
+    }
+
+    /* ── Vehicle Carousel ── */
+    .mvp-vehicles {
+        background: #fff;
+        padding: 15px 0 10px;
+        text-align: center;
+    }
+    .mvp-carousel-wrapper {
+        position: relative;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 60px;
+    }
+    .mvp-carousel-track {
+        display: flex;
+        gap: 15px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 10px 15px;
+    }
+    .mvp-carousel-track::-webkit-scrollbar { display: none; }
+    .mvp-vehicle-card {
+        flex: 0 0 120px;
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        padding: 5px;
+        transition: all 0.3s ease;
+    }
+    .mvp-vehicle-card:hover { transform: translateY(-3px); }
+    .mvp-vehicle-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid #ddd;
+        background: #fff;
+        margin: 0 auto 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 800;
+        color: #034C8C;
+        transition: all 0.3s ease;
+    }
+    .mvp-vehicle-card:hover .mvp-vehicle-circle {
+        border-color: #F29F05;
+        box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+    }
+    .mvp-vehicle-card:hover .mvp-vehicle-name { color: #F29F05; }
+    .mvp-vehicle-name {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 2px;
+        color: #333;
+        transition: color 0.3s ease;
+    }
+    .mvp-vehicle-years {
+        font-size: 12px;
+        color: #666;
+    }
+    .mvp-carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 40px;
+        background: transparent;
+        color: #333;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s;
+    }
+    .mvp-carousel-nav:hover { color: #F29F05; }
+    .mvp-carousel-nav.prev { left: 15px; }
+    .mvp-carousel-nav.next { right: 15px; }
+    @media (max-width: 767px) {
+        .mvp-carousel-wrapper { padding: 0 40px; }
+        .mvp-carousel-track { gap: 10px; }
+        .mvp-vehicle-card { flex: 0 0 90px; }
+        .mvp-vehicle-circle { width: 70px; height: 70px; font-size: 18px; }
+        .mvp-vehicle-name { font-size: 12px; }
+        .mvp-carousel-nav { width: 24px; height: 30px; font-size: 20px; }
+        .mvp-carousel-nav.prev { left: 10px; }
+        .mvp-carousel-nav.next { right: 10px; }
+    }
+
+    /* ── Why Use Us ── */
+    .mvp-why-us {
+        background: #f9f9f9;
+        padding: 50px 20px;
+        text-align: center;
+    }
+    .mvp-why-us h2 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 30px;
+    }
+    .mvp-why-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .mvp-why-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 30px 20px 25px;
+        flex: 1 1 170px;
+        max-width: 190px;
+        min-width: 160px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .mvp-why-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .mvp-why-icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .mvp-why-icon svg {
+        width: 40px;
+        height: 40px;
+        fill: none;
+        stroke: #034C8C;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .mvp-why-card h3 {
+        font-size: 13px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 8px;
+    }
+    .mvp-why-card p {
+        font-size: 12px;
+        color: #888;
+        line-height: 1.5;
+        margin: 0;
+    }
+    @media (max-width: 768px) {
+        .mvp-why-grid { gap: 12px; }
+        .mvp-why-card { flex: 1 1 140px; max-width: 48%; padding: 20px 14px 18px; }
+    }
+
+    /* ── Custom Footer ── */
+    .mvp-footer * { box-sizing: border-box; }
+    .mvp-footer {
+        background: #1a1a2e;
+        color: #ccc;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 14px;
+        line-height: 1.7;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+    .mvp-footer-main {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 50px 30px 40px;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 30px;
+    }
+    .mvp-footer-col h4 {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 18px 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #F29F05;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    .mvp-footer-col ul { list-style: none; margin: 0; padding: 0; }
+    .mvp-footer-col ul li { margin-bottom: 8px; }
+    .mvp-footer-col ul li a {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .mvp-footer-col ul li a:hover { color: #F29F05; }
+    .mvp-footer-company-name {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+    }
+    .mvp-footer-trading {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 16px;
+    }
+    .mvp-footer-contact { margin-bottom: 16px; }
+    .mvp-footer-contact p { margin: 0 0 6px 0; color: #ccc; font-size: 13px; line-height: 1.6; }
+    .mvp-footer-contact a { color: #F29F05; text-decoration: none; }
+    .mvp-footer-contact a:hover { color: #fff; }
+    .mvp-footer-phone { font-size: 16px !important; font-weight: 600; color: #fff !important; }
+    .mvp-footer-reg { font-size: 12px; color: #888; margin-bottom: 16px; }
+    .mvp-footer-reg p { margin: 0 0 2px 0; }
+    .mvp-footer-payments { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .mvp-footer-payments .pay-icon {
+        background: #fff;
+        color: #333;
+        border-radius: 4px;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+    }
+    .mvp-footer-bottom {
+        border-top: 1px solid #2a2a3e;
+        background: #151525;
+    }
+    .mvp-footer-bottom-inner {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 18px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .mvp-footer-copyright { color: #888; font-size: 13px; margin: 0; }
+    .mvp-footer-bottom-links { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+    .mvp-footer-bottom-links a { color: #888; text-decoration: none; transition: color 0.2s ease; }
+    .mvp-footer-bottom-links a:hover { color: #F29F05; }
+    .mvp-footer-bottom-links .sep { color: #555; }
+    @media (max-width: 1024px) {
+        .mvp-footer-main { grid-template-columns: 1fr 1fr; gap: 30px 40px; padding: 40px 24px 30px; }
+        .mvp-footer-col:first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 600px) {
+        .mvp-footer-main { grid-template-columns: 1fr; gap: 24px; padding: 30px 20px 24px; }
+        .mvp-footer-bottom-inner { flex-direction: column; text-align: center; padding: 14px 20px; }
+    }
+
+    /* === Product loop tweaks to match target === */
+    body.home ul.products .product .button,
+    body.home ul.products .product .added_to_cart {
+        background-color: transparent !important;
+        color: #888 !important;
+        box-shadow: none !important;
+    }
+    body.home ul.products .product .button:hover,
+    body.home ul.products .product .added_to_cart:hover {
+        background-color: transparent !important;
+        color: #333 !important;
+    }
+    body.home ul.products .product .button:before,
+    body.home ul.products .product .button:after,
+    body.home ul.products .product .added_to_cart:before,
+    body.home ul.products .product .added_to_cart:after {
+        display: none !important;
+    }
+    body.home ul.products .product .star-rating-wrap {
+        display: none !important;
+    }
+    </style>
+    <?php
+}
+
+// ============================================================
+// 2. INJECT HERO + VEHICLE CAROUSEL via JavaScript
+//    (places them inside #wrap after the header, before content)
+// ============================================================
+add_action( 'wp_footer', 'mvp_facelift_inject_hero_and_carousel', 1 );
+function mvp_facelift_inject_hero_and_carousel() {
+    if ( ! is_front_page() && ! is_home() ) return;
+
+    $vehicles = array(
+        array( 'name' => 'A80 Classic',        'years' => '2015-2023', 'abbr' => 'A80' ),
+        array( 'name' => 'Deliver 3',           'years' => '2019-2023', 'abbr' => 'D3' ),
+        array( 'name' => 'Deliver 7',           'years' => '2021-2023', 'abbr' => 'D7' ),
+        array( 'name' => 'Deliver 7 Low Roof',  'years' => '2021-2023', 'abbr' => 'D7L' ),
+        array( 'name' => 'Deliver 9',           'years' => '2020-2023', 'abbr' => 'D9' ),
+        array( 'name' => 'E Deliver 3',         'years' => '2019-2023', 'abbr' => 'ED3' ),
+        array( 'name' => 'E Deliver 9',         'years' => '2021-2023', 'abbr' => 'ED9' ),
+        array( 'name' => 'Deliver 9 FRID',      'years' => '2023',     'abbr' => 'D9F' ),
+        array( 'name' => 'T60',                 'years' => '2017-2023', 'abbr' => 'T60' ),
+        array( 'name' => 'T90',                 'years' => '2023',     'abbr' => 'T90' ),
+        array( 'name' => 'T90 EV',              'years' => '2023',     'abbr' => 'EV' ),
+        array( 'name' => 'V80',                 'years' => '2014-2018', 'abbr' => 'V80' ),
+    );
+
+    // Build vehicle cards HTML
+    $cards = '';
+    foreach ( $vehicles as $v ) {
+        $cards .= '<div class="mvp-vehicle-card">'
+            . '<div class="mvp-vehicle-circle">' . esc_html( $v['abbr'] ) . '</div>'
+            . '<div class="mvp-vehicle-name">' . esc_html( $v['name'] ) . '</div>'
+            . '<div class="mvp-vehicle-years">' . esc_html( $v['years'] ) . '</div>'
+            . '</div>';
+    }
+
+    $hero_html = '<div class="mvp-hero">'
+        . '<div class="mvp-hero-content">'
+        . '<h1>Genuine OEM Parts<br>Direct From Maxus</h1>'
+        . '<p>Original factory parts at competitive prices. Perfect fit. Guaranteed quality.</p>'
+        . '<a href="/shop/" class="mvp-hero-btn">Shop All Parts</a>'
+        . '</div></div>';
+
+    $carousel_html = '<section class="mvp-vehicles">'
+        . '<div class="mvp-carousel-wrapper">'
+        . '<button class="mvp-carousel-nav prev" onclick="document.querySelector(\'.mvp-carousel-track\').scrollBy({left:-220,behavior:\'smooth\'})">&#8249;</button>'
+        . '<div class="mvp-carousel-track">' . $cards . '</div>'
+        . '<button class="mvp-carousel-nav next" onclick="document.querySelector(\'.mvp-carousel-track\').scrollBy({left:220,behavior:\'smooth\'})">&#8250;</button>'
+        . '</div></section>';
+
+    $combined = json_encode( $hero_html . $carousel_html );
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var target = document.querySelector('.elementor-11641');
+        if (!target) return;
+        var container = document.createElement('div');
+        container.id = 'mvp-facelift-hero-area';
+        container.innerHTML = <?php echo $combined; ?>;
+        target.parentNode.insertBefore(container, target);
+    });
+    </script>
+    <?php
+}
+
+// ============================================================
+// 3. "WHY USE US?" — Injected before the footer
+// ============================================================
+add_action( 'wp_footer', 'mvp_facelift_why_us', 5 );
+function mvp_facelift_why_us() {
+    if ( ! is_front_page() && ! is_home() ) return;
+    ?>
+    <section class="mvp-why-us">
+        <h2>Why Use Us?</h2>
+        <div class="mvp-why-grid">
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><path d="M24 4L6 12v12c0 11 8 18 18 20 10-2 18-9 18-20V12L24 4z"/><polyline points="16 24 22 30 34 18"/></svg></div>
+                <h3>Genuine OEM Parts</h3>
+                <p>100% authentic Maxus factory parts for perfect compatibility.</p>
+            </div>
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="14" r="8"/><path d="M8 42c0-9 7-16 16-16s16 7 16 16"/></svg></div>
+                <h3>Professional Team</h3>
+                <p>Expert staff with deep knowledge of the full Maxus range.</p>
+            </div>
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><path d="M24 44s-18-10-18-24a10 10 0 0118-6 10 10 0 0118 6c0 14-18 24-18 24z"/></svg></div>
+                <h3>Happy to Help</h3>
+                <p>Friendly support to help you find exactly the right part.</p>
+            </div>
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><path d="M4 24c0-11 9-20 20-20s20 9 20 20"/><path d="M4 28v6a4 4 0 004 4h2a2 2 0 002-2v-8a2 2 0 00-2-2H6a4 4 0 00-2 4zm40 0v6a4 4 0 01-4 4h-2a2 2 0 01-2-2v-8a2 2 0 012-2h4a4 4 0 012 4z"/><path d="M40 38c0 4-7 6-16 6"/></svg></div>
+                <h3>Great Customer Service</h3>
+                <p>Responsive, reliable service from order to delivery.</p>
+            </div>
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="32" rx="3"/><polyline points="16 24 22 30 34 18"/><line x1="6" y1="16" x2="42" y2="16"/></svg></div>
+                <h3>Verified Before Dispatch</h3>
+                <p>Every order checked and confirmed before shipping.</p>
+            </div>
+            <div class="mvp-why-card">
+                <div class="mvp-why-icon"><svg viewBox="0 0 48 48"><rect x="2" y="10" width="28" height="20" rx="2"/><path d="M30 16h8l6 8v6h-14V16z"/><circle cx="12" cy="34" r="4"/><circle cx="38" cy="34" r="4"/></svg></div>
+                <h3>UK Wide Delivery</h3>
+                <p>Fast, tracked delivery to anywhere in the United Kingdom.</p>
+            </div>
+        </div>
+    </section>
+    <?php
+}
+
+// ============================================================
+// 4. CUSTOM FOOTER — Matching target site
+// ============================================================
+add_action( 'wp_footer', 'mvp_facelift_footer', 10 );
+function mvp_facelift_footer() {
+    if ( ! is_front_page() && ! is_home() ) return;
+    ?>
+    <footer class="mvp-footer">
+        <div class="mvp-footer-main">
+            <div class="mvp-footer-col">
+                <h4>Maxus Parts Direct</h4>
+                <div class="mvp-footer-trading">A trading name of Van Parts Direct Ltd</div>
+                <div class="mvp-footer-contact">
+                    <p>Unit 1-10, Cherry Tree Road,<br>Tibenham, NR16 1PH</p>
+                    <p class="mvp-footer-phone"><a href="tel:01953528800">01953 528 800</a></p>
+                    <p><a href="mailto:accounts@vanparts-direct.co.uk">accounts@vanparts-direct.co.uk</a></p>
+                </div>
+                <div class="mvp-footer-reg">
+                    <p>Company Reg: 16322863</p>
+                    <p>VAT No: 490 9953 39</p>
+                </div>
+                <div class="mvp-footer-payments">
+                    <span class="pay-icon">VISA</span>
+                    <span class="pay-icon">Mastercard</span>
+                    <span class="pay-icon">AMEX</span>
+                    <span class="pay-icon">Maestro</span>
+                </div>
+            </div>
+            <div class="mvp-footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/shop/">Shop</a></li>
+                    <li><a href="/my-account/">My Account</a></li>
+                    <li><a href="/cart/">Cart</a></li>
+                    <li><a href="/wishlist/">Wishlist</a></li>
+                </ul>
+            </div>
+            <div class="mvp-footer-col">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="/about-us/">About Us</a></li>
+                    <li><a href="/contact-us/">Contact Us</a></li>
+                    <li><a href="/terms-and-conditions/">Terms &amp; Conditions</a></li>
+                    <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                    <li><a href="/gdpr-data-protection/">GDPR Data Protection</a></li>
+                    <li><a href="/refund_returns/">Returns &amp; Exchanges</a></li>
+                </ul>
+            </div>
+            <div class="mvp-footer-col">
+                <h4>Vehicles</h4>
+                <ul>
+                    <li><a href="/shop/">E Deliver 3</a></li>
+                    <li><a href="/shop/">E Deliver 7</a></li>
+                    <li><a href="/shop/">E Deliver 9</a></li>
+                    <li><a href="/shop/">T90 EV</a></li>
+                </ul>
+            </div>
+            <div class="mvp-footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="/my-account/">Login</a></li>
+                    <li><a href="/my-account/">Register</a></li>
+                    <li><a href="/my-account/orders/">Order History</a></li>
+                    <li><a href="/shipping-info/">Shipping Info</a></li>
+                    <li><a href="/faq/">FAQ</a></li>
+                    <li><a href="/trade-account/">Trade Account</a></li>
+                </ul>
+            </div>
+            <div class="mvp-footer-col">
+                <h4>Our Other Services</h4>
+                <ul>
+                    <li><a href="https://vansalesdirect.uk" target="_blank" rel="noopener">vansalesdirect.uk</a></li>
+                    <li><a href="https://direct-vanhire.co.uk" target="_blank" rel="noopener">direct-vanhire.co.uk</a></li>
+                    <li><a href="https://rapidfit.co.uk" target="_blank" rel="noopener">rapidfit.co.uk</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="mvp-footer-bottom">
+            <div class="mvp-footer-bottom-inner">
+                <p class="mvp-footer-copyright">&copy; <?php echo date('Y'); ?> Van Parts Direct Ltd. All rights reserved.</p>
+                <div class="mvp-footer-bottom-links">
+                    <a href="/privacy-policy/">Privacy Policy</a>
+                    <span class="sep">|</span>
+                    <a href="/terms-and-conditions/">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <?php
+}

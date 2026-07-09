@@ -17,9 +17,10 @@ sys.path.insert(0, str(base_dir))
 from config import WORDPRESS_URL
 
 class PriceUpdater:
-    def __init__(self, excel_file, wcapi):
+    def __init__(self, excel_file, wcapi, category_id=None):
         self.excel_file = excel_file
         self.wcapi = wcapi
+        self.category_id = category_id  # Filter products to this WP category
         self.pricing_lookup = {}  # In-memory price lookup
         self.no_price_log = base_dir / 'nopricefound.txt'
         self.stats = {
@@ -96,12 +97,12 @@ class PriceUpdater:
             unique_skus = set()
             page = 1
             
+            params = {"per_page": 100, "page": page, "status": "publish"}
+            if self.category_id:
+                params["category"] = self.category_id
+
             while True:
-                response = self.wcapi.get("products", params={
-                    "per_page": 100,
-                    "page": page,
-                    "status": "publish"
-                })
+                response = self.wcapi.get("products", params=params)
                 
                 if response.status_code != 200 or not response.json():
                     break
@@ -121,6 +122,7 @@ class PriceUpdater:
                 
                 print(f"   📄 Processed page {page}: {len(products)} products")
                 page += 1
+                params["page"] = page
                 
                 # Safety limit
                 if page > 200:
@@ -173,12 +175,12 @@ class PriceUpdater:
             products_by_sku = {}
             page = 1
             
+            params = {"per_page": 100, "page": page, "status": "publish"}
+            if self.category_id:
+                params["category"] = self.category_id
+
             while True:
-                response = self.wcapi.get("products", params={
-                    "per_page": 100,
-                    "page": page,
-                    "status": "publish"
-                })
+                response = self.wcapi.get("products", params=params)
                 
                 if response.status_code != 200 or not response.json():
                     break
@@ -220,6 +222,7 @@ class PriceUpdater:
                 
                 print(f"   📄 Processed page {page}: {len(products)} products")
                 page += 1
+                params["page"] = page
                 
                 # Safety limit
                 if page > 200:
@@ -380,19 +383,17 @@ def main():
         print("Please ensure PRCJUL25.xlsx is in the project root directory.")
         return
     
-    # Load keys
+    # Load keys (matching keys.txt format: label line then value line)
     keys_file = base_dir / 'keys.txt'
-    with open(keys_file, 'r') as f:
-        content = f.read().strip()
-        lines = content.split('\n')
-        consumer_key = None
-        consumer_secret = None
-        
-        for i, line in enumerate(lines):
-            if 'ck_' in line:
-                consumer_key = line.strip()
-            elif 'cs_' in line:
-                consumer_secret = line.strip()
+    consumer_key = None
+    consumer_secret = None
+    with open(keys_file, 'r', encoding='utf-8') as f:
+        lines = [l.strip() for l in f if l.strip()]
+    for i, line in enumerate(lines):
+        if 'Consumer key' in line and i + 1 < len(lines):
+            consumer_key = lines[i + 1]
+        if 'Consumer secret' in line and i + 1 < len(lines):
+            consumer_secret = lines[i + 1]
     
     # Initialize API
     wcapi = API(
@@ -406,8 +407,13 @@ def main():
     print("\n" + "="*60)
     print("WooCommerce Price Update - Phase 4 (WordPress-First)")
     print("="*60)
+    # Serial to filter by — LSH14C4C5NA129710 = WP category ID 7301
+    SERIAL = 'LSH14C4C5NA129710'
+    SERIAL_CATEGORY_ID = 7301
+
     print(f"WordPress URL: {WORDPRESS_URL}")
     print(f"Excel file: {excel_file.name}")
+    print(f"Filtering to serial: {SERIAL} (category ID {SERIAL_CATEGORY_ID})")
     
     # Test connection
     try:
@@ -420,8 +426,8 @@ def main():
         print(f"\n✗ API connection error: {str(e)}")
         return
     
-    # Create updater
-    updater = PriceUpdater(excel_file, wcapi)
+    # Create updater — scoped to LSH14C4C5NA129710 (category 7301)
+    updater = PriceUpdater(excel_file, wcapi, category_id=SERIAL_CATEGORY_ID)
     
     # Load pricing data into memory
     try:

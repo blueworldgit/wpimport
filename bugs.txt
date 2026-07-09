@@ -1,40 +1,13 @@
-📂 Images directory: images/converted
-
-🔄 Fetching products from WooCommerce...
-✅ Found 1005 total products
-🔍 Filtering products that need images...
-📦 Found 505 products needing images
-📋 Building optimized upload plan...
-📋 Building PNG file cache from images/converted...
-   📁 Found 1843 PNG files
-   🗃️  Cached 1471 unique SKUs
-Finding images: 100%|████████████████████████████████████████████████| 505/505 [00:00<00:00, 50500.05products/s] 
-📊 Upload plan created:
-   Unique images to upload: 214
-   Total products with images: 473
-   Products without images: 32
-
-⚠️  Products without matching images:
-     - C00073046-blu: BEARING-CRANKSHAFT LOWER
-     - C00073046-blu: BEARING-CRANKSHAFT LOWER
-     - C00073046-bla: BEARING-CRANKSHAFT LOWER
-     - C00073046-bla: BEARING-CRANKSHAFT LOWER
-     - C00073045-gre: BEARING-CRANKSHAFT UPPER
-     ... and 27 more
-
-🔄 Uploading 214 unique images with concurrent processing...
-   📊 Deduplication: 214 files → 70 unique images
-Uploading: 100%|████████████████████████████████████████████████████████████████| 70/70 [02:41<00:00,  2.30s/it]
-   📊 Successfully processed 70/70 unique images
-
-🔄 Updating products with uploaded images...
-Updating products: 100%|█████████████████████████████████████████████████████| 5/5 [00:28<00:00,  5.73s/batches] 
-
-==================================================
-📊 OPTIMIZED UPLOAD SUMMARY
-==================================================
-Unique images uploaded: 70
-Products updated successfully: 473
-Products without images: 32
-Success rate: 100.0%
-Efficiency: 7.2x (uploaded 70 images for 505 products)
+  File "C:\Users\User\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 35: character maps to <undefined>
+Call stack:
+  File "C:\pythonstuff\wpimport\wppriceloader.py", line 505, in <module>
+    main()
+  File "C:\pythonstuff\wpimport\wppriceloader.py", line 497, in main
+    process_excel_file(excel_path)
+  File "C:\pythonstuff\wpimport\wppriceloader.py", line 403, in process_excel_file
+    success, failed = batch_update_products(batch_updates, post_ids_file)
+  File "C:\pythonstuff\wpimport\wppriceloader.py", line 158, in batch_update_products
+    logger.info(f"  ✓ Successfully updated simple products: {updated_ids}")

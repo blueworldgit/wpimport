@@ -1,0 +1,83 @@
+a:4:{s:8:"template";s:5:"mobex";s:4:"mods";a:60:{i:0;b:0;s:18:"nav_menu_locations";a:0:{}s:18:"custom_css_post_id";i:10451;s:10:"main_color";s:7:"#034c8c";s:15:"main_typography";a:3:{s:11:"font-family";s:0:"";s:5:"color";s:7:"#444444";s:7:"variant";s:7:"regular";}s:19:"headings_typography";a:3:{s:11:"font-family";s:0:"";s:7:"variant";s:3:"700";s:5:"color";s:7:"#111111";}s:14:"desktop_header";s:2:"67";s:6:"footer";s:3:"243";s:13:"mailchimp_key";s:37:"";s:7:"css-767";s:273:"html .footer-wrapper-container>.e-con-inner{
+		max-width:100%;
+}
+
+.footer-megamenu .mm-container.column-3 .et-mm {
+    grid-template-columns: repeat(2,minmax(0, 1fr));
+}
+
+.width-max-content-mobile {
+		width:max-content;
+}
+
+.ftr-video {
+    box-shadow: 0 0 0 12px #cbcbcb;
+}";s:13:"mobile_header";s:3:"435";s:19:"shop_sidebar_toggle";b:0;s:12:"shop_sidebar";b:1;s:14:"product_number";s:2:"30";s:14:"vehicle_params";s:45:"make, model, year, engine, transmission, trim";s:12:"blog_sidebar";b:0;s:12:"post_sidebar";b:0;s:11:"blog_layout";s:4:"grid";s:15:"vehicle_cookies";b:1;s:15:"vehicle_columns";s:1:"3";s:12:"font_awesome";b:0;s:11:"vehicle_vin";s:23:"//api.vindecoder.eu/3.2";s:10:"vin_secret";s:10:"07b75cfdbf";s:7:"vin_key";s:32:"";s:11:"vin_decoder";s:24:"https://auto.dev/api/vin";s:17:"vin_user_vehicles";b:1;s:19:"my_account_vehicles";b:1;s:20:"product_compare_page";s:3:"160";s:16:"product_wishlist";b:1;s:18:"product_quick_view";b:1;s:15:"product_compare";b:1;s:15:"shop_navigation";s:10:"pagination";s:11:"shop_layout";s:4:"grid";s:15:"product_sidebar";b:0;s:20:"product_social_share";b:1;s:18:"shop_layout_single";s:7:"layout1";s:16:"product_ask_form";s:7:"c5c9ced";s:17:"post_title_length";s:2:"56";s:17:"post_social_share";b:1;s:19:"post_excerpt_length";s:3:"128";s:17:"category_carousel";b:1;s:18:"post_related_posts";b:1;s:13:"css-1024-1279";s:38:".correct-x-t-l {left:430px !important}";s:3:"css";s:2257:".slider-button i {
+	display:inline-block !important;
+	margin-left:4px !important;
+	font-size:0.8em !important;
+}
+
+.highlight .loop-posts .product .post-inner{box-shadow:none;}
+
+.highlight .swiper-container .swiper-button,.highlight .swiper-container .swiper-button:hover,
+.posts-highlight-block .swiper-container .swiper-button,.posts-highlight-block .swiper-container .swiper-button:hover{
+		background:#fff !important;
+}
+
+.posts-highlight-block .only-posts .post-title,.posts-highlight-block .only-posts .post-title a {
+		color:#ffffff !important;
+}
+
+.swiper-term-no-padding .swiper-initialized {padding:0 !important}
+
+.slider-border-radius rs-module-wrap {border-radius:6px;overflow:hidden !important}
+
+.page-id-25 #wrap {
+		background-color: transparent;
+    background-image: linear-gradient(180deg, var(--e-global-color-primary) 0%, #27A5BF 100%);
+}
+
+.home-6-sidebar .view-all {
+		margin-top:8px;
+		margin-bottom:16px;
+}
+
+.border-bottom-radius-none .elementor-widget-container {
+		border-radius:6px 6px 0 0 !important;
+}
+
+body.page-id-10452 .efp-toggle {display:none !important}
+
+.page-id-10442 .sticky-dashboard {display:none !important}
+
+.ftr-video {
+	border: 8px solid #f0f0f0 !important;
+    box-shadow: 0 0 0 24px #cbcbcb;
+		border-radius:6px;
+		position:relative;
+}
+
+.checkout-custom-note {border-radius:6px;margin-bottom:16px;padding:8px;}
+
+.woocommerce-form-login__submit {display:block;}
+@media screen and (max-height: 1024px) {
+		
+html .elementor-4973 .elementor-element.megamenu-tab-item.elementor-element-d5264c4:not(.elementor-motion-effects-element-type-background), html .elementor-4973 .elementor-element.megamenu-tab-item.elementor-element-d5264c4>.elementor-motion-effects-container>.elementor-motion-effects-layer {
+    background-image: url(https://enovathemes.com/mobex/wp-content/uploads/megamenu-back-1.webp) !important;
+}
+
+html .elementor-4973 .megamenu-tab-item.elementor-element.elementor-element-b95aa43:not(.elementor-motion-effects-element-type-background),
+html .elementor-4973 .megamenu-tab-item.elementor-element.elementor-element-b95aa43>.elementor-motion-effects-container>.elementor-motion-effects-layer {
+    background-image: url(https://enovathemes.com/mobex/wp-content/uploads/banner3-back.webp) !important;
+}
+
+}";s:5:"error";s:4:"9492";s:14:"product_layout";s:8:"advanced";s:6:"layout";s:4:"wide";s:13:"css-1280-1365";s:38:".hide-laptop {display:none !important}";s:8:"css-1280";s:159:".product-layout-single.simple .product .summary form.variations_form.cart, 
+		.product-layout-single.simple .product .summary form.cart {
+		    width: 50%;
+		}";s:13:"css-1366-1599";s:89:".hide-laptop {display:none !important}
+
+
+
+.right1366 {right:-100%}
+.left1366 {left:-100%}";s:8:"css-1023";s:35:".hide1023 {display:none !important}";s:8:"css-1279";s:38:".hide-laptop {display:none !important}";s:21:"product_notfound_form";s:7:"443e959";s:17:"product_quick_buy";b:1;s:7:"css-768";s:0:"";s:16:"sticky_dashboard";a:4:{i:0;a:6:{s:9:"link_text";s:7:"Account";s:10:"list_class";s:7:"account";s:10:"link_class";s:0:"";s:8:"link_url";s:41:"https://enovathemes.com/mobex/my-account/";s:11:"link_target";s:5:"_self";s:9:"link_icon";s:75:"https://enovathemes.com/mobex/wp-content/themes/mobex/images/icons/user.svg";}i:1;a:6:{s:9:"link_text";s:10:"Categories";s:10:"list_class";s:10:"categories";s:10:"link_class";s:0:"";s:8:"link_url";s:0:"";s:11:"link_target";s:5:"_self";s:9:"link_icon";s:81:"https://enovathemes.com/mobex/wp-content/themes/mobex/images/icons/categories.svg";}i:2;a:6:{s:9:"link_text";s:10:"Car filter";s:10:"list_class";s:14:"vfilter-toggle";s:10:"link_class";s:21:"vehicle-filter-toggle";s:8:"link_url";s:1:"#";s:11:"link_target";s:5:"_self";s:9:"link_icon";s:78:"https://enovathemes.com/mobex/wp-content/themes/mobex/images/icons/vehicle.svg";}i:3;a:6:{s:9:"link_text";s:6:"Search";s:10:"list_class";s:14:"product-search";s:10:"link_class";s:21:"product-search-toggle";s:8:"link_url";s:1:"#";s:11:"link_target";s:5:"_self";s:9:"link_icon";s:77:"https://enovathemes.com/mobex/wp-content/themes/mobex/images/icons/search.svg";}}s:19:"product_ajax_filter";b:1;s:22:"product_ajax_search_in";a:7:{i:0;s:5:"title";i:1;s:3:"sku";i:2;s:3:"ean";i:3;s:8:"category";i:4;s:3:"tag";i:5;s:17:"global_attributes";i:6;s:17:"custom_attributes";}s:40:"product_ajax_search_in_global_attributes";a:5:{i:0;s:5:"brand";i:1;s:17:"operating-voltage";i:2;s:16:"fitting-position";i:3;s:8:"diameter";i:4;s:10:"tires-type";}s:13:"product_index";s:34:"160 products at September 19, 2025";}s:7:"options";a:22:{s:9:"site_icon";s:2:"22";s:22:"woocommerce_demo_store";s:2:"no";s:29:"woocommerce_demo_store_notice";s:79:"This is a demo store for testing purposes &mdash; no orders shall be fulfilled.";s:29:"woocommerce_shop_page_display";s:0:"";s:36:"woocommerce_category_archive_display";s:0:"";s:35:"woocommerce_default_catalog_orderby";s:4:"date";s:27:"woocommerce_catalog_columns";i:4;s:24:"woocommerce_catalog_rows";i:4;s:30:"woocommerce_single_image_width";s:3:"600";s:33:"woocommerce_thumbnail_image_width";s:3:"300";s:30:"woocommerce_thumbnail_cropping";s:3:"1:1";s:43:"woocommerce_thumbnail_cropping_custom_width";s:1:"4";s:44:"woocommerce_thumbnail_cropping_custom_height";s:1:"3";s:34:"woocommerce_checkout_company_field";s:8:"optional";s:36:"woocommerce_checkout_address_2_field";s:8:"optional";s:32:"woocommerce_checkout_phone_field";s:8:"required";s:46:"woocommerce_checkout_highlight_required_fields";s:3:"yes";s:55:"woocommerce_checkout_terms_and_conditions_checkbox_text";s:44:"I have read and agree to the website [terms]";s:40:"woocommerce_checkout_privacy_policy_text";s:161:"Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our [privacy_policy].";s:26:"wp_page_for_privacy_policy";s:1:"3";s:25:"woocommerce_terms_page_id";s:0:"";s:23:"nav_menus_created_posts";a:0:{}}s:6:"wp_css";s:0:"";}

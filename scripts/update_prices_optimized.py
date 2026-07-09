@@ -3,6 +3,7 @@ Optimized Price Update Script - High Performance Batch Processing
 Updates WooCommerce product prices with batch API calls and minimal delays
 """
 import sys
+import requests
 import pandas as pd
 from pathlib import Path
 from woocommerce import API
@@ -88,22 +89,64 @@ class OptimizedPriceUpdater:
         except Exception as e:
             raise Exception(f"Failed to load pricing data from {self.excel_file}: {e}")
     
-    def get_all_products_needing_pricing(self):
+    def get_serial_category_id(self, serial_name):
+        """Look up WooCommerce category ID for a serial number."""
+        keys_file = base_dir / 'keys.txt'
+        ck = cs = None
+        with open(keys_file, 'r', encoding='utf-8') as f:
+            lines = [l.strip() for l in f if l.strip()]
+        for i, line in enumerate(lines):
+            if 'Consumer key' in line and i + 1 < len(lines):
+                ck = lines[i + 1]
+            if 'Consumer secret' in line and i + 1 < len(lines):
+                cs = lines[i + 1]
+        page = 1
+        while True:
+            r = requests.get(
+                f"{WORDPRESS_URL}/wp-json/wc/v3/products/categories",
+                params={'per_page': 100, 'page': page, 'search': serial_name},
+                auth=(ck, cs), timeout=30
+            )
+            if r.status_code != 200:
+                break
+            cats = r.json()
+            if not cats:
+                break
+            for cat in cats:
+                if cat['name'] == serial_name:
+                    return cat['id']
+            page += 1
+        return None
+
+    def get_all_products_needing_pricing(self, serial_filter=None):
         """Get all WordPress products that need pricing - FAST BATCH METHOD"""
-        print("🔄 Loading ALL WordPress products (batch method)...")
-        
+        label = f"for serial '{serial_filter}'" if serial_filter else "(all serials)"
+        print(f"🔄 Loading WordPress products {label} (batch method)...")
+
+        category_id = None
+        if serial_filter:
+            print(f"   🔍 Looking up category ID for '{serial_filter}'...")
+            category_id = self.get_serial_category_id(serial_filter)
+            if category_id:
+                print(f"   ✅ Category ID: {category_id}")
+            else:
+                print(f"   ⚠️  Category not found — fetching all products (slow)")
+
         products_by_sku = defaultdict(lambda: {'needs_pricing': [], 'has_pricing': [], 'total_count': 0})
         page = 1
         per_page = 100
-        
+
         with tqdm(desc="Loading products") as pbar:
             while True:
                 try:
-                    response = self.wcapi.get("products", params={
+                    params = {
                         'page': page,
                         'per_page': per_page,
                         'status': 'publish'
-                    })
+                    }
+                    if category_id:
+                        params['category'] = category_id
+                    response = self.wcapi.get("products", params=params)
                     
                     if response.status_code != 200:
                         break
@@ -146,17 +189,18 @@ class OptimizedPriceUpdater:
         print(f"✅ Loaded products grouped by {len(products_by_sku)} unique original SKUs")
         return dict(products_by_sku)
     
-    def update_prices_batch_optimized(self, test_mode=False, test_limit=None):
+    def update_prices_batch_optimized(self, test_mode=False, test_limit=None, serial_filter=None):
         """
         Ultra-optimized price update with batch processing and minimal delays
-        
+
         Args:
             test_mode: If True, only update first N SKUs
             test_limit: Number of SKUs to update in test mode
+            serial_filter: If set, only update products for this vehicle serial
         """
-        
+
         # Step 1: Load all products and group by SKU (FAST!)
-        products_by_sku = self.get_all_products_needing_pricing()
+        products_by_sku = self.get_all_products_needing_pricing(serial_filter=serial_filter)
         if not products_by_sku:
             print("❌ No products found in WordPress")
             return
@@ -332,6 +376,7 @@ def main():
     
     parser = argparse.ArgumentParser(description='Ultra-fast optimized price updater')
     parser.add_argument('--excel-file', type=str, default='PRCJUL25.xlsx', help='Excel file with pricing data')
+    parser.add_argument('--serial', type=str, default=None, help='Only update products for this vehicle serial (e.g. LSH14C4C5NA129710)')
     parser.add_argument('--test-mode', action='store_true', help='Test mode (update first 10 SKUs only)')
     parser.add_argument('--test-limit', type=int, default=10, help='Number of SKUs to test (if test-mode enabled)')
     parser.add_argument('--dry-run', action='store_true', help='Show what would be updated without making changes')
@@ -366,13 +411,17 @@ def main():
         updater.load_pricing_data()
         
         # Update prices using ultra-optimized approach
+        if args.serial:
+            print(f"🚗 Serial filter: {args.serial}")
+
         if args.dry_run:
             print("\n🔍 DRY RUN: Would execute batch price updates...")
             # Could implement dry run logic here
         else:
             updater.update_prices_batch_optimized(
                 test_mode=args.test_mode,
-                test_limit=args.test_limit if args.test_mode else None
+                test_limit=args.test_limit if args.test_mode else None,
+                serial_filter=args.serial
             )
         
         # Print summary

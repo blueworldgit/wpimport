@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Clear Loader - Reset all checkpoints, cache, and temporary data for fresh testing
-Usage: python clearloader.py
+Usage: python clearloader.py (from any directory)
 """
 
 import os
@@ -10,17 +10,20 @@ import glob
 import json
 from pathlib import Path
 
+# Get the base directory (where this script is located)
+base_dir = Path(__file__).resolve().parent
+
 def clear_checkpoints():
     """Clear all checkpoint files"""
-    checkpoint_dir = Path("data/checkpoints")
+    checkpoint_dir = base_dir / "data" / "checkpoints"
     if checkpoint_dir.exists():
         print("🗑️  Clearing checkpoints...")
         for checkpoint_file in checkpoint_dir.glob("*.json"):
             try:
                 os.remove(checkpoint_file)
-                print(f"   ✓ Removed {checkpoint_file}")
+                print(f"   ✓ Removed {checkpoint_file.name}")
             except Exception as e:
-                print(f"   ❌ Failed to remove {checkpoint_file}: {e}")
+                print(f"   ❌ Failed to remove {checkpoint_file.name}: {e}")
     else:
         print("   ℹ️  No checkpoint directory found")
 
@@ -29,47 +32,55 @@ def clear_cache():
     print("🗑️  Clearing Python cache...")
     
     # Clear __pycache__ directories
-    for pycache_dir in Path(".").rglob("__pycache__"):
+    for pycache_dir in base_dir.rglob("__pycache__"):
         try:
             shutil.rmtree(pycache_dir)
-            print(f"   ✓ Removed {pycache_dir}")
+            print(f"   ✓ Removed {pycache_dir.relative_to(base_dir)}")
         except Exception as e:
-            print(f"   ❌ Failed to remove {pycache_dir}: {e}")
+            print(f"   ❌ Failed to remove __pycache__: {e}")
     
     # Clear .pyc files
-    for pyc_file in Path(".").rglob("*.pyc"):
+    for pyc_file in base_dir.rglob("*.pyc"):
         try:
             os.remove(pyc_file)
-            print(f"   ✓ Removed {pyc_file}")
+            print(f"   ✓ Removed {pyc_file.relative_to(base_dir)}")
         except Exception as e:
-            print(f"   ❌ Failed to remove {pyc_file}: {e}")
+            print(f"   ❌ Failed to remove .pyc: {e}")
 
 def clear_logs():
     """Clear log files"""
-    logs_dir = Path("logs")
+    logs_dir = base_dir / "logs"
     if logs_dir.exists():
         print("🗑️  Clearing logs...")
         for log_file in logs_dir.glob("*.log"):
             try:
                 os.remove(log_file)
-                print(f"   ✓ Removed {log_file}")
+                print(f"   ✓ Removed {log_file.name}")
             except Exception as e:
-                print(f"   ❌ Failed to remove {log_file}: {e}")
+                print(f"   ❌ Failed to remove {log_file.name}: {e}")
+        
+        # Clear JSON progress logs
+        for json_file in logs_dir.glob("*.json"):
+            try:
+                os.remove(json_file)
+                print(f"   ✓ Removed {json_file.name}")
+            except Exception as e:
+                print(f"   ❌ Failed to remove {json_file.name}: {e}")
         
         # Clear any log subdirectories
         for log_subdir in logs_dir.iterdir():
             if log_subdir.is_dir():
                 try:
                     shutil.rmtree(log_subdir)
-                    print(f"   ✓ Removed {log_subdir}")
+                    print(f"   ✓ Removed {log_subdir.name}/")
                 except Exception as e:
-                    print(f"   ❌ Failed to remove {log_subdir}: {e}")
+                    print(f"   ❌ Failed to remove {log_subdir.name}/: {e}")
     else:
         print("   ℹ️  No logs directory found")
 
 def clear_temp_data():
     """Clear temporary extracted data files"""
-    extracted_dir = Path("data/extracted")
+    extracted_dir = base_dir / "data" / "extracted"
     if extracted_dir.exists():
         print("🗑️  Clearing temporary extracted data...")
         temp_files = [
@@ -82,22 +93,22 @@ def clear_temp_data():
             if file_path.exists():
                 try:
                     os.remove(file_path)
-                    print(f"   ✓ Removed {file_path}")
+                    print(f"   ✓ Removed {temp_file}")
                 except Exception as e:
-                    print(f"   ❌ Failed to remove {file_path}: {e}")
+                    print(f"   ❌ Failed to remove {temp_file}: {e}")
     else:
         print("   ℹ️  No extracted data directory found")
 
 def clear_converted_images():
     """Clear converted images (optional - comment out if you want to keep them)"""
-    converted_dir = Path("images/converted")
+    converted_dir = base_dir / "images" / "converted"
     if converted_dir.exists():
         print("🗑️  Clearing converted images...")
         for img_file in converted_dir.glob("*"):
             if img_file.is_file():
                 try:
                     os.remove(img_file)
-                    print(f"   ✓ Removed {img_file}")
+                    print(f"   ✓ Removed {img_file.name}")
                 except Exception as e:
                     print(f"   ❌ Failed to remove {img_file}: {e}")
     else:
@@ -105,7 +116,7 @@ def clear_converted_images():
 
 def create_fresh_checkpoint():
     """Create a fresh, empty checkpoint structure"""
-    checkpoint_dir = Path("data/checkpoints")
+    checkpoint_dir = base_dir / "data" / "checkpoints"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     
     fresh_checkpoint = {
@@ -120,13 +131,15 @@ def create_fresh_checkpoint():
     try:
         with open(checkpoint_file, 'w') as f:
             json.dump(fresh_checkpoint, f, indent=2)
-        print(f"   ✓ Created fresh checkpoint: {checkpoint_file}")
+        print(f"   ✓ Created fresh checkpoint: import_checkpoint.json")
     except Exception as e:
         print(f"   ❌ Failed to create fresh checkpoint: {e}")
 
 def main():
     print("🧹 Clear Loader - Resetting for fresh testing...")
     print("=" * 50)
+    print(f"📂 Working directory: {base_dir}")
+    print()
     
     # Clear all data
     clear_checkpoints()
