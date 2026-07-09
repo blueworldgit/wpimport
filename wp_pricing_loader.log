@@ -17419,3 +17419,32 @@ FORCE QUIT - Excel file may be corrupted!
 
 2026-07-09 17:11:00,467 - ERROR - 
 FORCE QUIT - Excel file may be corrupted!
+2026-07-09 17:47:25,238 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-09 17:47:25,239 - INFO - Starting WordPress pricing data loading from Excel: C:\pythonstuff\wpimport\latest.xlsx
+2026-07-09 17:47:25,239 - INFO - Reading Excel file: C:\pythonstuff\wpimport\latest.xlsx
+2026-07-09 17:47:26,373 - INFO - Found 'New Part Number' column - will update replacement fields
+2026-07-09 17:47:26,373 - INFO - Found 'Updated' column - will skip rows marked 'written' or 'NOT_FOUND' and track progress
+2026-07-09 17:47:26,386 - INFO - Total rows: 12751, Already processed: 0, Pending: 12751
+2026-07-09 17:47:26,389 - INFO - Preparing SKU AA660 for batch update
+2026-07-09 17:47:27,608 - WARNING - No products found with original_sku: AA660 - marking as NOT_FOUND
+2026-07-09 17:47:28,450 - WARNING - 
+================================================================================
+2026-07-09 17:47:28,450 - WARNING - SHUTDOWN REQUESTED - Finishing current batch and saving progress...
+2026-07-09 17:47:28,450 - WARNING - Press Ctrl+C again to force quit (may corrupt Excel file)
+2026-07-09 17:47:28,451 - WARNING - ================================================================================
+
+2026-07-09 17:47:28,816 - ERROR - Failed to mark row 0 as NOT_FOUND: [Errno 13] Permission denied: 'C:\\pythonstuff\\wpimport\\latest.xlsx'
+2026-07-09 17:47:28,817 - WARNING - Shutdown requested - stopping after current batch
+2026-07-09 17:47:28,817 - WARNING - Processed 1 rows before shutdown
+2026-07-09 17:47:28,817 - INFO - 
+================================================================================
+2026-07-09 17:47:28,817 - INFO - Post IDs log saved to: C:\pythonstuff\wpimport\updated_post_ids.csv
+2026-07-09 17:47:28,817 - WARNING - Processing INTERRUPTED by user - progress saved safely!
+2026-07-09 17:47:28,818 - WARNING - Run the script again to continue processing remaining rows
+2026-07-09 17:47:28,818 - INFO -   Pending rows processed: 12751
+2026-07-09 17:47:28,818 - INFO -   Successfully updated: 0
+2026-07-09 17:47:28,818 - INFO -   Skipped: 1
+2026-07-09 17:47:28,818 - INFO -   Errors: 0
+2026-07-09 17:47:28,818 - INFO - Report saved to: C:\pythonstuff\wpimport\updated_prices.txt
+2026-07-09 17:47:28,818 - INFO - Progress saved to Excel file - rows marked as 'written'
+2026-07-09 17:47:28,820 - WARNING - WordPress pricing data loading interrupted safely - progress saved
