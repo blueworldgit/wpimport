@@ -18,12 +18,13 @@ Optional Excel Columns:
 - Updated: Resume tracking column - rows marked "written" or "NOT_FOUND" are skipped
 
 Features:
-- Parallel batch processing for maximum speed (up to 3 batches simultaneously)
+- Parallel batch processing for maximum speed (up to 4 batches simultaneously)
 - Configurable batch size (default: 99 products per batch)
 - Resume capability: marks rows as "written" after successful update
 - Automatically saves progress to Excel file
 - CSV logging of all updated post IDs
 - Graceful shutdown with Ctrl+C - saves progress before exiting
+- API connectivity monitoring - stops if connection fails to prevent false NOT_FOUND marks
 """
 import os
 import json
@@ -105,11 +106,32 @@ _CUSTOM_BASE = WP_URL.rstrip('/') + '/wp-json/custom/v1/products-by-sku'
 # Batch configuration
 MAX_BATCH_PRODUCTS = 99  # WooCommerce batch API limit is 100, use 99 for maximum throughput
 MAX_PARALLEL_BATCHES = 4  # Number of batches to process in parallel (optimal: 3-4 for fast servers)
+MAX_CONSECUTIVE_ERRORS = 5  # Stop script if this many consecutive API errors occur
+
+
+def test_api_connection():
+    """Test if the API is reachable before processing"""
+    try:
+        logger.info("Testing API connection...")
+        # Try to get a simple product list to verify connectivity
+        resp = wcapi.get('products', params={'per_page': 1})
+        if resp.status_code in [200, 201]:
+            logger.info("API connection test successful")
+            return True
+        else:
+            logger.error(f"API connection test failed: HTTP {resp.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"API connection test failed: {e}")
+        return False
+
 
 def find_products_by_original_sku(sku):
     """
     Use the custom/v1 GET endpoint to find all post IDs with original_sku=sku.
-    Returns list of dicts: {id, parent_id, type, wc_sku}
+    Returns tuple: (status, products)
+        status: 'success' | 'error' | 'not_found'
+        products: list of dicts {id, parent_id, type, wc_sku} or empty list
     """
     try:
         # Use query parameters for auth (endpoint checks these first)
@@ -125,12 +147,25 @@ def find_products_by_original_sku(sku):
         )
         if resp.status_code != 200:
             logger.error(f"Custom endpoint GET error for {sku}: HTTP {resp.status_code} — {resp.text[:200]}")
-            return []
+            return ('error', [])
+        
         data = resp.json()
-        return data.get('products', [])
+        products = data.get('products', [])
+        
+        if not products:
+            return ('not_found', [])
+        
+        return ('success', products)
+        
+    except requests.exceptions.Timeout:
+        logger.error(f"Timeout calling custom endpoint for {sku}")
+        return ('error', [])
+    except requests.exceptions.ConnectionError:
+        logger.error(f"Connection error calling custom endpoint for {sku}")
+        return ('error', [])
     except Exception as e:
         logger.error(f"Error calling custom endpoint for {sku}: {e}")
-        return []
+        return ('error', [])
 
 
 def batch_update_products(batch_updates, post_ids_file=None):
@@ -270,11 +305,17 @@ def prepare_product_updates(sku, price, new_part_number=None):
         price: Product price
         new_part_number: Replacement SKU if available
     
-    Returns: List of update items for batching
+    Returns: Tuple (status, update_items)
+        status: 'success' | 'error' | 'not_found'
+        update_items: List of update items for batching
     """
-    products = find_products_by_original_sku(sku)
-    if not products:
-        return []
+    status, products = find_products_by_original_sku(sku)
+    
+    if status == 'error':
+        return ('error', [])
+    
+    if status == 'not_found' or not products:
+        return ('not_found', [])
 
     price_str = f"{float(price):.2f}"
     current_date = datetime.now().strftime('%Y-%m-%d')
@@ -307,7 +348,7 @@ def prepare_product_updates(sku, price, new_part_number=None):
             'new_part_number': new_part_number
         })
     
-    return update_items
+    return ('success', update_items)
 
 
 def process_excel_file(excel_path):
@@ -372,6 +413,12 @@ def process_excel_file(excel_path):
             logger.info("All rows already processed!")
             return
         
+        # Test API connection before proceeding
+        if not test_api_connection():
+            logger.error("API connection test failed - cannot proceed with updates")
+            logger.error("Please check your internet connection and API credentials")
+            raise RuntimeError("API connection unavailable")
+        
         # Open report file and post IDs log
         report_path = os.path.join(os.getcwd(), 'updated_prices.txt')
         post_ids_log_path = os.path.join(os.getcwd(), 'updated_post_ids.csv')
@@ -393,6 +440,7 @@ def process_excel_file(excel_path):
             success_count = 0
             error_count = 0
             skipped_count = 0
+            consecutive_errors = 0  # Track consecutive API errors
             
             batch_updates = []
             batch_row_indices = []
@@ -469,7 +517,34 @@ def process_excel_file(excel_path):
                 
                 # Prepare updates for this SKU
                 try:
-                    updates = prepare_product_updates(sku, price, new_part_number)
+                    status, updates = prepare_product_updates(sku, price, new_part_number)
+                    
+                    if status == 'error':
+                        consecutive_errors += 1
+                        logger.error(f"API error for SKU {sku} (consecutive errors: {consecutive_errors})")
+                        
+                        if consecutive_errors >= MAX_CONSECUTIVE_ERRORS:
+                            logger.error(f"\n{'='*80}")
+                            logger.error(f"CRITICAL: {consecutive_errors} consecutive API errors detected!")
+                            logger.error(f"This indicates a network or API connectivity problem.")
+                            logger.error(f"Stopping script to prevent marking valid SKUs as NOT_FOUND.")
+                            logger.error(f"Please check your connection and try again.")
+                            logger.error(f"{'='*80}\n")
+                            raise RuntimeError(f"Too many consecutive API errors ({consecutive_errors})")
+                        
+                        error_count += 1
+                        continue
+                    
+                    if status == 'not_found':
+                        consecutive_errors = 0  # Reset on successful API call
+                        logger.warning(f"No products found with original_sku: {sku} - marking as NOT_FOUND")
+                        mark_row_as_none(excel_path, index, updated_col_index)
+                        skipped_count += 1
+                        continue
+                    
+                    # Reset consecutive error counter on success
+                    consecutive_errors = 0
+                    
                     if not updates:
                         logger.warning(f"No products found with original_sku: {sku} - marking as NOT_FOUND")
                         mark_row_as_none(excel_path, index, updated_col_index)
@@ -587,6 +662,7 @@ def main():
         print("  - Resume capability (skips rows marked 'written' or 'NOT_FOUND' in Updated column)")
         print("  - Automatic progress saving to Excel file")
         print("  - Graceful shutdown with Ctrl+C (saves progress before exiting)")
+        print(f"  - API connectivity monitoring (stops after {MAX_CONSECUTIVE_ERRORS} consecutive errors)")
         sys.exit(1)
     
     excel_path = sys.argv[1]

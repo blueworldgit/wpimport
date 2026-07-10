@@ -17448,3 +17448,197 @@ FORCE QUIT - Excel file may be corrupted!
 2026-07-09 17:47:28,818 - INFO - Report saved to: C:\pythonstuff\wpimport\updated_prices.txt
 2026-07-09 17:47:28,818 - INFO - Progress saved to Excel file - rows marked as 'written'
 2026-07-09 17:47:28,820 - WARNING - WordPress pricing data loading interrupted safely - progress saved
+2026-07-10 10:54:55,614 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-10 10:54:55,615 - INFO - Starting WordPress pricing data loading from Excel: C:\pythonstuff\wpimport\latest.xlsx
+2026-07-10 10:54:55,615 - INFO - Reading Excel file: C:\pythonstuff\wpimport\latest.xlsx
+2026-07-10 10:54:56,612 - INFO - Found 'New Part Number' column - will update replacement fields
+2026-07-10 10:54:56,612 - INFO - Found 'Updated' column - will skip rows marked 'written' or 'NOT_FOUND' and track progress
+2026-07-10 10:54:56,670 - INFO - Total rows: 12751, Already processed: 3435, Pending: 9316
+2026-07-10 10:54:56,670 - INFO - Testing API connection...
+2026-07-10 10:54:58,094 - INFO - API connection test successful
+2026-07-10 10:54:58,099 - WARNING - Invalid price 0.0 for SKU CANOPYFITTING, skipping
+2026-07-10 10:54:58,099 - INFO - Preparing SKU C00089071 for batch update
+2026-07-10 10:54:59,101 - INFO - Preparing SKU C00089072 for batch update
+2026-07-10 10:55:00,026 - INFO - Preparing SKU C00089075 for batch update
+2026-07-10 10:55:00,916 - INFO - Preparing SKU C00089153 for batch update
+2026-07-10 10:55:02,147 - INFO - Preparing SKU C00089158 for batch update
+2026-07-10 10:55:03,060 - WARNING - No products found with original_sku: C00089158 - marking as NOT_FOUND
+2026-07-10 10:55:05,053 - INFO - Preparing SKU C00089189 for batch update
+2026-07-10 10:55:05,998 - INFO - Preparing SKU C00089201 for batch update
+2026-07-10 10:55:06,889 - INFO - Preparing SKU C00089205 for batch update
+2026-07-10 10:55:07,696 - INFO - Preparing SKU C00089209 for batch update
+2026-07-10 10:55:08,609 - INFO - Preparing SKU C00089211 for batch update
+2026-07-10 10:55:09,521 - INFO - Preparing SKU C00089213 for batch update
+2026-07-10 10:55:10,638 - INFO - Preparing SKU C00089216 for batch update
+2026-07-10 10:55:11,536 - INFO - Preparing SKU C00089217 for batch update
+2026-07-10 10:55:12,440 - INFO - Preparing SKU C00089218 for batch update
+2026-07-10 10:55:13,267 - INFO - Preparing SKU C00089219 for batch update
+2026-07-10 10:55:14,145 - INFO - Preparing SKU C00089220 for batch update
+2026-07-10 10:55:14,973 - INFO - Preparing SKU C00089224 for batch update
+2026-07-10 10:55:15,809 - INFO - Preparing SKU C00089225 for batch update
+2026-07-10 10:55:16,647 - WARNING - No products found with original_sku: C00089225 - marking as NOT_FOUND
+2026-07-10 10:55:19,018 - INFO - Preparing SKU C00089227 for batch update
+2026-07-10 10:55:19,847 - WARNING - No products found with original_sku: C00089227 - marking as NOT_FOUND
+2026-07-10 10:55:22,204 - INFO - Preparing SKU C00089306 for batch update
+2026-07-10 10:55:23,093 - INFO - Preparing SKU C00089307 for batch update
+2026-07-10 10:55:23,917 - WARNING - No products found with original_sku: C00089307 - marking as NOT_FOUND
+2026-07-10 10:55:26,337 - INFO - Preparing SKU C00089326 for batch update
+2026-07-10 10:55:27,214 - INFO - Preparing SKU C00089331-D114 for batch update
+2026-07-10 10:55:28,016 - WARNING - No products found with original_sku: C00089331-D114 - marking as NOT_FOUND
+2026-07-10 10:55:30,447 - INFO - Preparing SKU C00089331-D143 for batch update
+2026-07-10 10:55:31,358 - WARNING - No products found with original_sku: C00089331-D143 - marking as NOT_FOUND
+2026-07-10 10:55:33,677 - INFO - Preparing SKU C00089333-D114 for batch update
+2026-07-10 10:55:34,495 - WARNING - No products found with original_sku: C00089333-D114 - marking as NOT_FOUND
+2026-07-10 10:55:36,892 - INFO - Preparing SKU C00089333-D143 for batch update
+2026-07-10 10:55:37,769 - WARNING - No products found with original_sku: C00089333-D143 - marking as NOT_FOUND
+2026-07-10 10:55:40,140 - INFO - Preparing SKU C00089338 for batch update
+2026-07-10 10:55:40,948 - INFO - Preparing SKU C00089344 for batch update
+2026-07-10 10:55:41,744 - INFO - Preparing SKU C00089346 for batch update
+2026-07-10 10:55:42,566 - INFO - Preparing SKU C00089364 for batch update
+2026-07-10 10:55:43,370 - INFO - Preparing SKU C00089366 for batch update
+2026-07-10 10:55:44,221 - INFO - Preparing SKU C00089368 for batch update
+2026-07-10 10:55:45,122 - INFO - Preparing SKU C00089373 for batch update
+2026-07-10 10:55:45,960 - INFO - Batch 1 ready with 94 products
+2026-07-10 10:55:45,960 - INFO - Preparing SKU C00089377-F050 for batch update
+2026-07-10 10:55:46,754 - INFO - Preparing SKU C00089378-F050 for batch update
+2026-07-10 10:55:47,538 - INFO - Preparing SKU C00089379 for batch update
+2026-07-10 10:55:48,327 - INFO - Preparing SKU C00089389 for batch update
+2026-07-10 10:55:49,147 - INFO - Preparing SKU C00089405 for batch update
+2026-07-10 10:55:49,938 - WARNING - No products found with original_sku: C00089405 - marking as NOT_FOUND
+2026-07-10 10:55:52,272 - INFO - Preparing SKU C00089411 for batch update
+2026-07-10 10:55:53,123 - INFO - Preparing SKU C00089415 for batch update
+2026-07-10 10:55:53,929 - INFO - Preparing SKU C00089416 for batch update
+2026-07-10 10:55:54,773 - INFO - Preparing SKU C00089431 for batch update
+2026-07-10 10:55:55,589 - WARNING - No products found with original_sku: C00089431 - marking as NOT_FOUND
+2026-07-10 10:55:57,990 - INFO - Preparing SKU C00089530-E for batch update
+2026-07-10 10:55:58,889 - INFO - Preparing SKU C00089590 for batch update
+2026-07-10 10:55:59,710 - INFO - Preparing SKU C00089595 for batch update
+2026-07-10 10:56:00,514 - INFO - Preparing SKU C00089625 for batch update
+2026-07-10 10:56:01,529 - INFO - Batch 2 ready with 45 products
+2026-07-10 10:56:01,530 - INFO - Preparing SKU C00089667 for batch update
+2026-07-10 10:56:02,368 - INFO - Batch 3 ready with 93 products
+2026-07-10 10:56:02,368 - INFO - Preparing SKU C00089670 for batch update
+2026-07-10 10:56:03,196 - INFO - Preparing SKU C00089671 for batch update
+2026-07-10 10:56:04,170 - INFO - Preparing SKU C00089672 for batch update
+2026-07-10 10:56:04,995 - INFO - Preparing SKU C00089673 for batch update
+2026-07-10 10:56:05,863 - INFO - Preparing SKU C00089683 for batch update
+2026-07-10 10:56:06,700 - INFO - Preparing SKU C00089700 for batch update
+2026-07-10 10:56:07,558 - INFO - Preparing SKU C00089726 for batch update
+2026-07-10 10:56:08,413 - WARNING - No products found with original_sku: C00089726 - marking as NOT_FOUND
+2026-07-10 10:56:10,856 - INFO - Preparing SKU C00089777 for batch update
+2026-07-10 10:56:11,664 - INFO - Preparing SKU C00089795-F087 for batch update
+2026-07-10 10:56:12,594 - INFO - Preparing SKU C00089796-F087 for batch update
+2026-07-10 10:56:13,407 - INFO - Preparing SKU C00089800 for batch update
+2026-07-10 10:56:14,223 - INFO - Preparing SKU C00089802 for batch update
+2026-07-10 10:56:15,016 - INFO - Preparing SKU C00089828 for batch update
+2026-07-10 10:56:15,864 - INFO - Preparing SKU C00089829 for batch update
+2026-07-10 10:56:16,788 - INFO - Preparing SKU C00089865 for batch update
+2026-07-10 10:56:17,594 - WARNING - No products found with original_sku: C00089865 - marking as NOT_FOUND
+2026-07-10 10:56:20,108 - INFO - Preparing SKU C00089887 for batch update
+2026-07-10 10:56:20,918 - INFO - Preparing SKU C00089888 for batch update
+2026-07-10 10:56:22,018 - INFO - Preparing SKU C00089889 for batch update
+2026-07-10 10:56:22,812 - INFO - Batch 4 ready with 98 products
+2026-07-10 10:56:22,812 - INFO - 
+============================================================
+2026-07-10 10:56:22,813 - INFO - Submitting 4 batches for parallel processing...
+2026-07-10 10:56:22,813 - INFO - ============================================================
+2026-07-10 10:56:22,814 - INFO - [Batch 1] Processing 94 products...
+2026-07-10 10:56:22,815 - INFO - [Batch 2] Processing 45 products...
+2026-07-10 10:56:22,815 - INFO -   Updating 94 simple products: [36047, 104037, 18691, 18692, 18693, 18695, 49996, 50002, 56361, 56366, 58279, 58283, 60145, 64075, 65975, 65980, 70264, 72355, 74809, 113390, 18697, 18699, 36048, 50009, 58287, 60151, 65986, 68464, 70270, 72361, 87649, 104053, 116964, 116979, 116236, 32765, 115060, 32768, 115071, 32772, 115093, 50021, 60157, 65992, 70276, 72368, 116996, 117013, 32507, 115104, 32511, 115115, 32514, 115126, 32517, 115138, 32521, 115149, 32526, 115160, 32529, 50027, 56372, 58293, 115173, 32534, 115184, 18701, 18703, 50035, 58299, 116241, 32539, 36049, 104069, 115195, 32546, 36050, 104084, 115207, 32552, 36051, 104098, 115217, 32557, 36052, 104113, 115228, 32562, 36053, 104127, 115239, 32567, 115251]
+2026-07-10 10:56:22,815 - INFO - [Batch 3] Processing 93 products...
+2026-07-10 10:56:22,815 - INFO -   Updating 45 simple products: [18705, 18707, 50039, 58306, 60163, 65998, 70282, 72374, 87655, 117030, 117047, 110556, 110572, 32572, 115263, 18709, 18711, 32578, 36054, 50045, 56377, 58315, 60169, 64081, 66004, 68499, 70288, 72380, 104143, 113403, 36055, 104160, 18713, 18715, 87660, 18717, 18719, 87663, 110071, 36056, 104177, 32584, 36058, 104192, 115274]
+2026-07-10 10:56:22,816 - INFO - [Batch 4] Processing 98 products...
+2026-07-10 10:56:22,819 - INFO -   Updating 93 simple products: [18694, 18696, 18698, 18700, 18702, 18704, 18706, 18708, 18710, 18721, 36060, 36062, 36065, 36068, 36071, 36074, 36077, 36080, 50049, 50053, 50057, 50060, 50061, 58319, 58323, 58330, 58336, 58342, 60175, 60181, 60187, 60192, 60197, 60203, 60209, 66010, 66016, 66022, 66028, 66034, 68313, 68523, 68529, 68535, 68541, 68547, 68553, 68558, 70294, 70299, 70305, 70311, 70318, 70325, 70332, 72386, 72393, 72398, 72403, 72409, 72415, 72421, 74864, 74870, 74877, 74883, 87665, 87668, 87671, 87675, 87678, 104209, 104225, 104241, 104255, 104270, 104286, 104302, 104317, 117064, 117079, 117097, 117114, 117130, 117146, 117163, 117180, 117197, 117214, 117230, 117244, 117261, 117278]
+2026-07-10 10:56:22,824 - INFO -   Updating 98 simple products: [18712, 18714, 36083, 49782, 58349, 60215, 66040, 68316, 70338, 72427, 87681, 104334, 117295, 117312, 18716, 18718, 36086, 49789, 58355, 60221, 66045, 68320, 70344, 72433, 87684, 104350, 117330, 117345, 18720, 18722, 36089, 49795, 58361, 60227, 66052, 68324, 70350, 72439, 87686, 104366, 117363, 117380, 18723, 18724, 36093, 49801, 58072, 60232, 66059, 68330, 70356, 72445, 104382, 117398, 117413, 18725, 18726, 36097, 49807, 58078, 60238, 66065, 68336, 70362, 72451, 87690, 104397, 117431, 117447, 49813, 49818, 58083, 80332, 107092, 49823, 74924, 36101, 36105, 36109, 104413, 36113, 104429, 36118, 104443, 36123, 36128, 68359, 104459, 104475, 36131, 104491, 110591, 110611, 110629, 36135, 104505, 36141, 104523]
+2026-07-10 10:56:25,951 - INFO -   [OK] Successfully updated simple products: [18705, 18707, 50039, 58306, 60163, 65998, 70282, 72374, 87655, 117030, 117047, 110556, 110572, 32572, 115263, 18709, 18711, 32578, 36054, 50045, 56377, 58315, 60169, 64081, 66004, 68499, 70288, 72380, 104143, 113403, 36055, 104160, 18713, 18715, 87660, 18717, 18719, 87663, 110071, 36056, 104177, 32584, 36058, 104192, 115274]
+2026-07-10 10:56:25,952 - INFO - [Batch 2] Complete - Success: 45, Failed: 0
+2026-07-10 10:56:28,556 - INFO -   [OK] Successfully updated simple products: [18694, 18696, 18698, 18700, 18702, 18704, 18706, 18708, 18710, 18721, 36060, 36062, 36065, 36068, 36071, 36074, 36077, 36080, 50049, 50053, 50057, 50060, 50061, 58319, 58323, 58330, 58336, 58342, 60175, 60181, 60187, 60192, 60197, 60203, 60209, 66010, 66016, 66022, 66028, 66034, 68313, 68523, 68529, 68535, 68541, 68547, 68553, 68558, 70294, 70299, 70305, 70311, 70318, 70325, 70332, 72386, 72393, 72398, 72403, 72409, 72415, 72421, 74864, 74870, 74877, 74883, 87665, 87668, 87671, 87675, 87678, 104209, 104225, 104241, 104255, 104270, 104286, 104302, 104317, 117064, 117079, 117097, 117114, 117130, 117146, 117163, 117180, 117197, 117214, 117230, 117244, 117261, 117278]
+2026-07-10 10:56:28,558 - INFO -   [OK] Successfully updated simple products: [36047, 104037, 18691, 18692, 18693, 18695, 49996, 50002, 56361, 56366, 58279, 58283, 60145, 64075, 65975, 65980, 70264, 72355, 74809, 113390, 18697, 18699, 36048, 50009, 58287, 60151, 65986, 68464, 70270, 72361, 87649, 104053, 116964, 116979, 116236, 32765, 115060, 32768, 115071, 32772, 115093, 50021, 60157, 65992, 70276, 72368, 116996, 117013, 32507, 115104, 32511, 115115, 32514, 115126, 32517, 115138, 32521, 115149, 32526, 115160, 32529, 50027, 56372, 58293, 115173, 32534, 115184, 18701, 18703, 50035, 58299, 116241, 32539, 36049, 104069, 115195, 32546, 36050, 104084, 115207, 32552, 36051, 104098, 115217, 32557, 36052, 104113, 115228, 32562, 36053, 104127, 115239, 32567, 115251]
+2026-07-10 10:56:28,560 - INFO - [Batch 3] Complete - Success: 93, Failed: 0
+2026-07-10 10:56:28,563 - INFO -   [OK] Successfully updated simple products: [18712, 18714, 36083, 49782, 58349, 60215, 66040, 68316, 70338, 72427, 87681, 104334, 117295, 117312, 18716, 18718, 36086, 49789, 58355, 60221, 66045, 68320, 70344, 72433, 87684, 104350, 117330, 117345, 18720, 18722, 36089, 49795, 58361, 60227, 66052, 68324, 70350, 72439, 87686, 104366, 117363, 117380, 18723, 18724, 36093, 49801, 58072, 60232, 66059, 68330, 70356, 72445, 104382, 117398, 117413, 18725, 18726, 36097, 49807, 58078, 60238, 66065, 68336, 70362, 72451, 87690, 104397, 117431, 117447, 49813, 49818, 58083, 80332, 107092, 49823, 74924, 36101, 36105, 36109, 104413, 36113, 104429, 36118, 104443, 36123, 36128, 68359, 104459, 104475, 36131, 104491, 110591, 110611, 110629, 36135, 104505, 36141, 104523]
+2026-07-10 10:56:28,564 - INFO - [Batch 1] Complete - Success: 94, Failed: 0
+2026-07-10 10:56:28,567 - INFO - [Batch 4] Complete - Success: 98, Failed: 0
+2026-07-10 10:58:40,540 - INFO - Parallel batch complete. Total success: 330, Total failed: 0
+
+2026-07-10 10:58:40,540 - INFO - Preparing SKU C00089944 for batch update
+2026-07-10 10:58:41,775 - WARNING - No products found with original_sku: C00089944 - marking as NOT_FOUND
+2026-07-10 10:58:44,357 - INFO - Preparing SKU C00089960 for batch update
+2026-07-10 10:58:45,114 - WARNING - No products found with original_sku: C00089960 - marking as NOT_FOUND
+2026-07-10 10:58:47,654 - INFO - Preparing SKU C00089963 for batch update
+2026-07-10 10:58:48,503 - INFO - Preparing SKU C00090090 for batch update
+2026-07-10 10:58:49,293 - INFO - Preparing SKU C00090111 for batch update
+2026-07-10 10:58:50,107 - INFO - Preparing SKU C00090120-4100 for batch update
+2026-07-10 10:58:51,306 - INFO - Preparing SKU C00090127 for batch update
+2026-07-10 10:58:52,205 - INFO - Preparing SKU C00090128 for batch update
+2026-07-10 10:58:53,336 - WARNING - No products found with original_sku: C00090128 - marking as NOT_FOUND
+2026-07-10 10:58:56,024 - INFO - Preparing SKU C00090133 for batch update
+2026-07-10 10:58:56,797 - WARNING - No products found with original_sku: C00090133 - marking as NOT_FOUND
+2026-07-10 10:58:59,249 - INFO - Preparing SKU C00090295 for batch update
+2026-07-10 10:59:00,040 - INFO - Preparing SKU C00090351 for batch update
+2026-07-10 10:59:00,933 - INFO - Preparing SKU C00090353 for batch update
+2026-07-10 10:59:01,722 - INFO - Preparing SKU C00090357 for batch update
+2026-07-10 10:59:02,589 - WARNING - No products found with original_sku: C00090357 - marking as NOT_FOUND
+2026-07-10 10:59:04,996 - INFO - Preparing SKU C00090363 for batch update
+2026-07-10 10:59:05,851 - INFO - Preparing SKU C00090367 for batch update
+2026-07-10 10:59:06,693 - INFO - Preparing SKU C00090394 for batch update
+2026-07-10 10:59:07,649 - WARNING - No products found with original_sku: C00090394 - marking as NOT_FOUND
+2026-07-10 10:59:10,108 - INFO - Preparing SKU C00090395 for batch update
+2026-07-10 10:59:10,947 - WARNING - No products found with original_sku: C00090395 - marking as NOT_FOUND
+2026-07-10 10:59:13,348 - INFO - Preparing SKU C00090525 for batch update
+2026-07-10 10:59:14,346 - WARNING - No products found with original_sku: C00090525 - marking as NOT_FOUND
+2026-07-10 10:59:17,396 - INFO - Preparing SKU C00090526 for batch update
+2026-07-10 10:59:18,208 - WARNING - No products found with original_sku: C00090526 - marking as NOT_FOUND
+2026-07-10 10:59:20,595 - INFO - Preparing SKU C00090544 for batch update
+2026-07-10 10:59:21,396 - INFO - Preparing SKU C00090566 for batch update
+2026-07-10 10:59:22,265 - INFO - Preparing SKU C00090567 for batch update
+2026-07-10 10:59:23,070 - INFO - Preparing SKU C00090601 for batch update
+2026-07-10 10:59:24,344 - INFO - Preparing SKU C00090602 for batch update
+2026-07-10 10:59:25,158 - INFO - Preparing SKU C00090639 for batch update
+2026-07-10 10:59:26,022 - INFO - Preparing SKU C00090654-4100 for batch update
+2026-07-10 10:59:26,906 - INFO - Batch 5 ready with 95 products
+2026-07-10 10:59:26,907 - INFO - Preparing SKU C00090656 for batch update
+2026-07-10 10:59:27,719 - INFO - Preparing SKU C00090657 for batch update
+2026-07-10 10:59:28,609 - INFO - Preparing SKU C00090687-4100 for batch update
+2026-07-10 10:59:29,423 - INFO - Preparing SKU C00090742 for batch update
+2026-07-10 10:59:30,252 - WARNING - No products found with original_sku: C00090742 - marking as NOT_FOUND
+2026-07-10 10:59:32,807 - INFO - Preparing SKU C00090745 for batch update
+2026-07-10 10:59:33,620 - INFO - Preparing SKU C00090747 for batch update
+2026-07-10 10:59:34,413 - INFO - Preparing SKU C00090967 for batch update
+2026-07-10 10:59:35,246 - WARNING - No products found with original_sku: C00090967 - marking as NOT_FOUND
+2026-07-10 10:59:37,613 - INFO - Preparing SKU C00091200-4100 for batch update
+2026-07-10 10:59:38,527 - WARNING - No products found with original_sku: C00091200-4100 - marking as NOT_FOUND
+2026-07-10 10:59:38,832 - WARNING - 
+================================================================================
+2026-07-10 10:59:38,832 - WARNING - SHUTDOWN REQUESTED - Finishing current batch and saving progress...
+2026-07-10 10:59:38,832 - WARNING - Press Ctrl+C again to force quit (may corrupt Excel file)
+2026-07-10 10:59:38,832 - WARNING - ================================================================================
+
+2026-07-10 10:59:40,945 - WARNING - Shutdown requested - stopping after current batch
+2026-07-10 10:59:40,945 - WARNING - Processed 3535 rows before shutdown
+2026-07-10 10:59:40,945 - INFO - Final batch 6 ready with 34 products
+2026-07-10 10:59:40,946 - INFO - 
+============================================================
+2026-07-10 10:59:40,946 - INFO - Submitting 2 batches for parallel processing...
+2026-07-10 10:59:40,946 - INFO - ============================================================
+2026-07-10 10:59:40,946 - INFO - [Batch 5] Processing 95 products...
+2026-07-10 10:59:40,946 - INFO - [Batch 6] Processing 34 products...
+2026-07-10 10:59:40,946 - INFO -   Updating 95 simple products: [18727, 18728, 36147, 104538, 110681, 110698, 56384, 58088, 49829, 58094, 60244, 64087, 66078, 70368, 87692, 102103, 113416, 32590, 115285, 32596, 115296, 32602, 115308, 18729, 18730, 36153, 49846, 58106, 60250, 66086, 68395, 70374, 72464, 87658, 104555, 117465, 117479, 18731, 18732, 36159, 49852, 58113, 60256, 66092, 68399, 70380, 72469, 87661, 104573, 117496, 117513, 36164, 60262, 68406, 70386, 104589, 117530, 117547, 36168, 104604, 36173, 104619, 18733, 18734, 49857, 58119, 60268, 66098, 70392, 72481, 87664, 117566, 117583, 18735, 18736, 49863, 58125, 60273, 66104, 70398, 72487, 87667, 117599, 117615, 18737, 18738, 18739, 18740, 49869, 49875, 58132, 58139, 74965, 87670, 87673]
+2026-07-10 10:59:40,946 - INFO -   Updating 34 simple products: [18741, 18742, 49881, 56389, 58145, 66110, 87676, 36177, 104634, 18743, 18744, 36182, 49887, 58150, 60279, 66116, 68430, 70403, 72493, 87679, 104649, 117631, 117648, 18745, 18746, 49892, 56399, 58156, 66125, 87682, 80338, 107115, 80347, 107140]
+2026-07-10 10:59:43,500 - INFO -   [OK] Successfully updated simple products: [18741, 18742, 49881, 56389, 58145, 66110, 87676, 36177, 104634, 18743, 18744, 36182, 49887, 58150, 60279, 66116, 68430, 70403, 72493, 87679, 104649, 117631, 117648, 18745, 18746, 49892, 56399, 58156, 66125, 87682, 80338, 107115, 80347, 107140]
+2026-07-10 10:59:43,502 - INFO - [Batch 6] Complete - Success: 34, Failed: 0
+2026-07-10 10:59:46,349 - INFO -   [OK] Successfully updated simple products: [18727, 18728, 36147, 104538, 110681, 110698, 56384, 58088, 49829, 58094, 60244, 64087, 66078, 70368, 87692, 102103, 113416, 32590, 115285, 32596, 115296, 32602, 115308, 18729, 18730, 36153, 49846, 58106, 60250, 66086, 68395, 70374, 72464, 87658, 104555, 117465, 117479, 18731, 18732, 36159, 49852, 58113, 60256, 66092, 68399, 70380, 72469, 87661, 104573, 117496, 117513, 36164, 60262, 68406, 70386, 104589, 117530, 117547, 36168, 104604, 36173, 104619, 18733, 18734, 49857, 58119, 60268, 66098, 70392, 72481, 87664, 117566, 117583, 18735, 18736, 49863, 58125, 60273, 66104, 70398, 72487, 87667, 117599, 117615, 18737, 18738, 18739, 18740, 49869, 49875, 58132, 58139, 74965, 87670, 87673]
+2026-07-10 10:59:46,359 - INFO - [Batch 5] Complete - Success: 95, Failed: 0
+2026-07-10 11:00:38,593 - INFO - Parallel batch complete. Total success: 459, Total failed: 0
+
+2026-07-10 11:00:38,594 - INFO - 
+================================================================================
+2026-07-10 11:00:38,594 - INFO - Post IDs log saved to: C:\pythonstuff\wpimport\updated_post_ids.csv
+2026-07-10 11:00:38,594 - WARNING - Processing INTERRUPTED by user - progress saved safely!
+2026-07-10 11:00:38,594 - WARNING - Run the script again to continue processing remaining rows
+2026-07-10 11:00:38,594 - INFO -   Pending rows processed: 9316
+2026-07-10 11:00:38,594 - INFO -   Successfully updated: 459
+2026-07-10 11:00:38,594 - INFO -   Skipped: 25
+2026-07-10 11:00:38,594 - INFO -   Errors: 0
+2026-07-10 11:00:38,595 - INFO - Report saved to: C:\pythonstuff\wpimport\updated_prices.txt
+2026-07-10 11:00:38,595 - INFO - Progress saved to Excel file - rows marked as 'written'
+2026-07-10 11:00:38,597 - WARNING - WordPress pricing data loading interrupted safely - progress saved
