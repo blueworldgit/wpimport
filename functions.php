@@ -6507,6 +6507,175 @@ function cvone_diagnostic() {
 }
 
 // ============================================================
+// Products by Date Updated Status — REST Endpoint
+// ============================================================
+// GET /wp-json/custom/v1/products-by-date-updated?status=empty|invalid|stale|all&days=7&page=1&per_page=100
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'custom/v1', '/products-by-date-updated', array(
+        'methods'             => 'GET',
+        'callback'            => 'cvone_get_products_by_date_updated',
+        'permission_callback' => '__return_true',
+    ) );
+} );
+
+/**
+ * Query products by date_updated meta field status
+ * 
+ * @param WP_REST_Request $request
+ * @return WP_REST_Response
+ */
+function cvone_get_products_by_date_updated( WP_REST_Request $request ) {
+    global $wpdb;
+    
+    $status   = $request->get_param( 'status' ) ?: 'all'; // empty, invalid, stale, all
+    $days     = (int) ( $request->get_param( 'days' ) ?: 7 );
+    $page     = (int) ( $request->get_param( 'page' ) ?: 1 );
+    $per_page = (int) ( $request->get_param( 'per_page' ) ?: 100 );
+    $offset   = ( $page - 1 ) * $per_page;
+    
+    $date_threshold = date( 'Y-m-d', strtotime( "-{$days} days" ) );
+    
+    // Build query based on status filter
+    $where_clause = "p.post_type = 'product' AND p.post_status = 'publish'";
+    
+    if ( $status === 'empty' ) {
+        // Products with no date_updated meta at all
+        $query = "
+            SELECT p.ID, p.post_title, '' as date_updated
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_id IS NULL
+            ORDER BY p.ID ASC
+            LIMIT %d OFFSET %d
+        ";
+        
+        $count_query = "
+            SELECT COUNT(DISTINCT p.ID)
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_id IS NULL
+        ";
+        
+    } elseif ( $status === 'invalid' ) {
+        // Products with invalid date format (not YYYY-MM-DD or empty string)
+        $query = "
+            SELECT p.ID, p.post_title, pm.meta_value as date_updated
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_value != ''
+              AND pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+            ORDER BY p.ID ASC
+            LIMIT %d OFFSET %d
+        ";
+        
+        $count_query = "
+            SELECT COUNT(DISTINCT p.ID)
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_value != ''
+              AND pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+        ";
+        
+    } elseif ( $status === 'stale' ) {
+        // Products with valid date but older than threshold
+        $query = "
+            SELECT p.ID, p.post_title, pm.meta_value as date_updated
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_value REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+              AND pm.meta_value < %s
+            ORDER BY p.ID ASC
+            LIMIT %d OFFSET %d
+        ";
+        
+        $count_query = "
+            SELECT COUNT(DISTINCT p.ID)
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND pm.meta_value REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+              AND pm.meta_value < %s
+        ";
+        
+    } else {
+        // All products with any date_updated issue (empty, invalid, or stale)
+        $query = "
+            SELECT p.ID, p.post_title, COALESCE(pm.meta_value, '') as date_updated
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND (
+                pm.meta_id IS NULL
+                OR pm.meta_value = ''
+                OR pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+                OR pm.meta_value < %s
+              )
+            ORDER BY p.ID ASC
+            LIMIT %d OFFSET %d
+        ";
+        
+        $count_query = "
+            SELECT COUNT(DISTINCT p.ID)
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            WHERE {$where_clause}
+              AND (
+                pm.meta_id IS NULL
+                OR pm.meta_value = ''
+                OR pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+                OR pm.meta_value < %s
+              )
+        ";
+    }
+    
+    // Execute query with proper parameter binding
+    if ( $status === 'stale' ) {
+        $products = $wpdb->get_results( $wpdb->prepare( $query, $date_threshold, $per_page, $offset ), ARRAY_A );
+        $total = (int) $wpdb->get_var( $wpdb->prepare( $count_query, $date_threshold ) );
+    } elseif ( $status === 'all' ) {
+        $products = $wpdb->get_results( $wpdb->prepare( $query, $date_threshold, $per_page, $offset ), ARRAY_A );
+        $total = (int) $wpdb->get_var( $wpdb->prepare( $count_query, $date_threshold ) );
+    } else {
+        $products = $wpdb->get_results( $wpdb->prepare( $query, $per_page, $offset ), ARRAY_A );
+        $total = (int) $wpdb->get_var( $count_query );
+    }
+    
+    // Add additional product details
+    $enriched_products = array();
+    foreach ( $products as $product ) {
+        $_product = wc_get_product( $product['ID'] );
+        if ( ! $_product ) continue;
+        
+        $enriched_products[] = array(
+            'id'            => (int) $product['ID'],
+            'title'         => $product['post_title'],
+            'sku'           => $_product->get_sku(),
+            'original_sku'  => get_post_meta( $product['ID'], 'original_sku', true ),
+            'date_updated'  => $product['date_updated'],
+            'edit_link'     => admin_url( 'post.php?post=' . $product['ID'] . '&action=edit' ),
+        );
+    }
+    
+    $total_pages = ceil( $total / $per_page );
+    
+    return new WP_REST_Response( array(
+        'status'        => $status,
+        'days'          => $days,
+        'date_threshold' => $date_threshold,
+        'page'          => $page,
+        'per_page'      => $per_page,
+        'total'         => $total,
+        'total_pages'   => $total_pages,
+        'products'      => $enriched_products,
+    ), 200 );
+}
+
+// ============================================================
 // 14. COMPONENT DIAGRAM — REST ENDPOINT TO SAVE TERM META
 // ============================================================
 // POST /wp-json/custom/v1/set-component-meta
