@@ -1,0 +1,103 @@
+"""
+Create new parts for replacements
+
+"""
+import os
+import json
+import logging
+import requests
+import pandas as pd
+import openpyxl
+from pathlib import Path
+from datetime import datetime
+import json
+from woocommerce import API
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import signal
+import sys
+
+
+
+
+
+# Load site URL and credentials from config.py / keys.txt
+_base_dir = Path(__file__).resolve().parent
+import sys
+sys.path.insert(0, str(_base_dir))
+from config import WORDPRESS_URL
+
+_keys_file = _base_dir / 'keys.txt'
+CONSUMER_KEY = CONSUMER_SECRET = None
+with open(_keys_file, 'r', encoding='utf-8') as _f:
+    _lines = [l.strip() for l in _f if l.strip()]
+for _i, _line in enumerate(_lines):
+    if 'Consumer key' in _line and _i + 1 < len(_lines):
+        CONSUMER_KEY = _lines[_i + 1]
+    if 'Consumer secret' in _line and _i + 1 < len(_lines):
+        CONSUMER_SECRET = _lines[_i + 1]
+if not CONSUMER_KEY or not CONSUMER_SECRET:
+    raise RuntimeError("Could not load WooCommerce credentials from keys.txt")
+
+WP_URL = WORDPRESS_URL
+
+
+
+# Initialize WooCommerce API
+wcapi = API(
+    url=WP_URL,
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    version="wc/v3",
+    timeout=30
+)
+
+
+
+original_product = wcapi.get(f"products/{18709}").json()
+
+
+    # Extract the original SKU
+original_sku = original_product.get("sku", "")
+    
+    # Create the new SKU (only prepend if the original SKU wasn't empty)
+new_sku = f"rep-{original_sku}" if original_sku else ""
+
+    # 2. Extract and clean fields to create payload
+duplicated_data = {
+"name": f"{original_product.get('name')}",
+"type": original_product.get("type"),
+"status": "draft",
+"regular_price": original_product.get("regular_price"),
+"description": original_product.get("description"),
+"short_description": original_product.get("short_description"),
+"categories": original_product.get("categories"),
+"images": original_product.get("images"),
+"attributes": original_product.get("attributes"),
+"sku": new_sku  # <-- Sets the new SKU with "rep-" prefix
+}
+
+
+print(json.dumps(original_product, indent=4))
+
+
+
+def main():
+    """Main function to run the WordPress pricing data loader"""
+    import sys
+    
+response = wcapi.post("products", duplicated_data)
+    
+if response.status_code == 201:
+    new_product = response.json()
+    print(f"Success! Duplicated Product ID: {new_product['id']}")
+   
+else:
+    print(f"Error: {response.text}")
+
+
+    
+ 
+
+
+if __name__ == "__main__":
+    main()

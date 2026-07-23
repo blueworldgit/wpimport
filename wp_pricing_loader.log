@@ -17642,3 +17642,9 @@ FORCE QUIT - Excel file may be corrupted!
 2026-07-10 11:00:38,595 - INFO - Report saved to: C:\pythonstuff\wpimport\updated_prices.txt
 2026-07-10 11:00:38,595 - INFO - Progress saved to Excel file - rows marked as 'written'
 2026-07-10 11:00:38,597 - WARNING - WordPress pricing data loading interrupted safely - progress saved
+2026-07-18 16:11:30,597 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-18 16:12:04,707 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-18 16:12:53,060 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-18 16:14:43,597 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-18 16:24:19,918 - INFO - Connecting to: https://shane.maxusvanparts.co.uk
+2026-07-18 16:24:54,648 - INFO - Connecting to: https://shane.maxusvanparts.co.uk

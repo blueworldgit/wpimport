@@ -6508,8 +6508,9 @@ function cvone_diagnostic() {
 
 // ============================================================
 // Products by Date Updated Status — REST Endpoint
+// Now with unique original_sku filtering
 // ============================================================
-// GET /wp-json/custom/v1/products-by-date-updated?status=empty|invalid|stale|all&days=7&page=1&per_page=100
+// GET /wp-json/custom/v1/products-by-date-updated?status=empty|invalid|stale|all&days=7&page=1&per_page=100&unique_original_sku=1
 add_action( 'rest_api_init', function () {
     register_rest_route( 'custom/v1', '/products-by-date-updated', array(
         'methods'             => 'GET',
@@ -6518,111 +6519,73 @@ add_action( 'rest_api_init', function () {
     ) );
 } );
 
-/**
- * Query products by date_updated meta field status
- * 
- * @param WP_REST_Request $request
- * @return WP_REST_Response
- */
 function cvone_get_products_by_date_updated( WP_REST_Request $request ) {
     global $wpdb;
-    
-    $status   = $request->get_param( 'status' ) ?: 'all'; // empty, invalid, stale, all
-    $days     = (int) ( $request->get_param( 'days' ) ?: 7 );
-    $page     = (int) ( $request->get_param( 'page' ) ?: 1 );
-    $per_page = (int) ( $request->get_param( 'per_page' ) ?: 100 );
-    $offset   = ( $page - 1 ) * $per_page;
-    
+
+    $status              = $request->get_param( 'status' ) ?: 'all';
+    $days                = (int) ( $request->get_param( 'days' ) ?: 7 );
+    $page                = (int) ( $request->get_param( 'page' ) ?: 1 );
+    $per_page            = (int) ( $request->get_param( 'per_page' ) ?: 100 );
+    $offset              = ( $page - 1 ) * $per_page;
+    $unique_original_sku = filter_var( $request->get_param( 'unique_original_sku' ), FILTER_VALIDATE_BOOLEAN );
+
     $date_threshold = date( 'Y-m-d', strtotime( "-{$days} days" ) );
-    
-    // Build query based on status filter
+
     $where_clause = "p.post_type = 'product' AND p.post_status = 'publish'";
-    
+
+    // Join used only when dedup is requested
+    $osku_join = "
+        LEFT JOIN {$wpdb->postmeta} osku ON p.ID = osku.post_id AND osku.meta_key = 'original_sku'
+    ";
+
+    // Dedup key: real original_sku when present/non-empty, otherwise a per-ID fallback so
+    // products without an original_sku are never collapsed into each other.
+    $dedup_key = "IF(osku.meta_value IS NULL OR osku.meta_value = '', CONCAT('__no_osku_', p.ID), osku.meta_value)";
+
     if ( $status === 'empty' ) {
-        // Products with no date_updated meta at all
-        $query = "
-            SELECT p.ID, p.post_title, '' as date_updated
+        $base_select = "p.ID, p.post_title, '' as date_updated";
+        $base_from   = "
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
-            WHERE {$where_clause}
-              AND pm.meta_id IS NULL
-            ORDER BY p.ID ASC
-            LIMIT %d OFFSET %d
-        ";
-        
-        $count_query = "
-            SELECT COUNT(DISTINCT p.ID)
-            FROM {$wpdb->posts} p
-            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            {$osku_join}
             WHERE {$where_clause}
               AND pm.meta_id IS NULL
         ";
-        
+        $prepare_args_query = array( $per_page, $offset );
+        $prepare_args_count = array();
+
     } elseif ( $status === 'invalid' ) {
-        // Products with invalid date format (not YYYY-MM-DD or empty string)
-        $query = "
-            SELECT p.ID, p.post_title, pm.meta_value as date_updated
+        $base_select = "p.ID, p.post_title, pm.meta_value as date_updated";
+        $base_from   = "
             FROM {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
-            WHERE {$where_clause}
-              AND pm.meta_value != ''
-              AND pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
-            ORDER BY p.ID ASC
-            LIMIT %d OFFSET %d
-        ";
-        
-        $count_query = "
-            SELECT COUNT(DISTINCT p.ID)
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            {$osku_join}
             WHERE {$where_clause}
               AND pm.meta_value != ''
               AND pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
         ";
-        
+        $prepare_args_query = array( $per_page, $offset );
+        $prepare_args_count = array();
+
     } elseif ( $status === 'stale' ) {
-        // Products with valid date but older than threshold
-        $query = "
-            SELECT p.ID, p.post_title, pm.meta_value as date_updated
+        $base_select = "p.ID, p.post_title, pm.meta_value as date_updated";
+        $base_from   = "
             FROM {$wpdb->posts} p
             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
-            WHERE {$where_clause}
-              AND pm.meta_value REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
-              AND pm.meta_value < %s
-            ORDER BY p.ID ASC
-            LIMIT %d OFFSET %d
-        ";
-        
-        $count_query = "
-            SELECT COUNT(DISTINCT p.ID)
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            {$osku_join}
             WHERE {$where_clause}
               AND pm.meta_value REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
               AND pm.meta_value < %s
         ";
-        
-    } else {
-        // All products with any date_updated issue (empty, invalid, or stale)
-        $query = "
-            SELECT p.ID, p.post_title, COALESCE(pm.meta_value, '') as date_updated
+        $prepare_args_query = array( $date_threshold, $per_page, $offset );
+        $prepare_args_count = array( $date_threshold );
+
+    } else { // all
+        $base_select = "p.ID, p.post_title, COALESCE(pm.meta_value, '') as date_updated";
+        $base_from   = "
             FROM {$wpdb->posts} p
             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
-            WHERE {$where_clause}
-              AND (
-                pm.meta_id IS NULL
-                OR pm.meta_value = ''
-                OR pm.meta_value NOT REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
-                OR pm.meta_value < %s
-              )
-            ORDER BY p.ID ASC
-            LIMIT %d OFFSET %d
-        ";
-        
-        $count_query = "
-            SELECT COUNT(DISTINCT p.ID)
-            FROM {$wpdb->posts} p
-            LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = 'date_updated'
+            {$osku_join}
             WHERE {$where_clause}
               AND (
                 pm.meta_id IS NULL
@@ -6631,26 +6594,70 @@ function cvone_get_products_by_date_updated( WP_REST_Request $request ) {
                 OR pm.meta_value < %s
               )
         ";
+        $prepare_args_query = array( $date_threshold, $per_page, $offset );
+        $prepare_args_count = array( $date_threshold );
     }
-    
-    // Execute query with proper parameter binding
-    if ( $status === 'stale' ) {
-        $products = $wpdb->get_results( $wpdb->prepare( $query, $date_threshold, $per_page, $offset ), ARRAY_A );
-        $total = (int) $wpdb->get_var( $wpdb->prepare( $count_query, $date_threshold ) );
-    } elseif ( $status === 'all' ) {
-        $products = $wpdb->get_results( $wpdb->prepare( $query, $date_threshold, $per_page, $offset ), ARRAY_A );
-        $total = (int) $wpdb->get_var( $wpdb->prepare( $count_query, $date_threshold ) );
+
+    if ( $unique_original_sku ) {
+        // Wrap in a window-function subquery to pick one row per original_sku
+        // (lowest post ID wins), THEN paginate the deduped set.
+        $query = "
+            SELECT ID, post_title, date_updated FROM (
+                SELECT {$base_select},
+                       ROW_NUMBER() OVER (
+                           PARTITION BY {$dedup_key}
+                           ORDER BY p.ID ASC
+                       ) as rn
+                {$base_from}
+            ) deduped
+            WHERE rn = 1
+            ORDER BY ID ASC
+            LIMIT %d OFFSET %d
+        ";
+
+        $count_query = "
+            SELECT COUNT(*) FROM (
+                SELECT {$dedup_key} as dkey
+                {$base_from}
+                GROUP BY dkey
+            ) deduped_count
+        ";
+
+        // query needs all args except the trailing LIMIT/OFFSET replaced correctly;
+        // count query drops the trailing per_page/offset args entirely.
+        $count_args = array_slice( $prepare_args_query, 0, count( $prepare_args_query ) - 2 );
+
+        $products = $wpdb->get_results( $wpdb->prepare( $query, $prepare_args_query ), ARRAY_A );
+        $total    = empty( $count_args )
+            ? (int) $wpdb->get_var( $count_query )
+            : (int) $wpdb->get_var( $wpdb->prepare( $count_query, $count_args ) );
+
     } else {
-        $products = $wpdb->get_results( $wpdb->prepare( $query, $per_page, $offset ), ARRAY_A );
-        $total = (int) $wpdb->get_var( $count_query );
+        // Original (non-deduped) behavior
+        $query = "
+            SELECT {$base_select}
+            {$base_from}
+            ORDER BY p.ID ASC
+            LIMIT %d OFFSET %d
+        ";
+        $count_query = "
+            SELECT COUNT(DISTINCT p.ID)
+            {$base_from}
+        ";
+        $count_args = array_slice( $prepare_args_query, 0, count( $prepare_args_query ) - 2 );
+
+        $products = $wpdb->get_results( $wpdb->prepare( $query, $prepare_args_query ), ARRAY_A );
+        $total    = empty( $count_args )
+            ? (int) $wpdb->get_var( $count_query )
+            : (int) $wpdb->get_var( $wpdb->prepare( $count_query, $count_args ) );
     }
-    
+
     // Add additional product details
     $enriched_products = array();
     foreach ( $products as $product ) {
         $_product = wc_get_product( $product['ID'] );
         if ( ! $_product ) continue;
-        
+
         $enriched_products[] = array(
             'id'            => (int) $product['ID'],
             'title'         => $product['post_title'],
@@ -6660,18 +6667,19 @@ function cvone_get_products_by_date_updated( WP_REST_Request $request ) {
             'edit_link'     => admin_url( 'post.php?post=' . $product['ID'] . '&action=edit' ),
         );
     }
-    
+
     $total_pages = ceil( $total / $per_page );
-    
+
     return new WP_REST_Response( array(
-        'status'        => $status,
-        'days'          => $days,
-        'date_threshold' => $date_threshold,
-        'page'          => $page,
-        'per_page'      => $per_page,
-        'total'         => $total,
-        'total_pages'   => $total_pages,
-        'products'      => $enriched_products,
+        'status'              => $status,
+        'days'                => $days,
+        'date_threshold'      => $date_threshold,
+        'page'                => $page,
+        'per_page'            => $per_page,
+        'unique_original_sku' => $unique_original_sku,
+        'total'               => $total,
+        'total_pages'         => $total_pages,
+        'products'            => $enriched_products,
     ), 200 );
 }
 
