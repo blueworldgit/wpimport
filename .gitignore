@@ -15,6 +15,7 @@ build/
 config_local.py
 productioncreds.txt
 config.py
+keys.txt
 
 
 

@@ -1,0 +1,7 @@
+2026-09-16 15:36:42 INFO Logging to C:\pythonstuff\wpimport\create_all_duplicates_20260916_153642.log
+2026-09-16 15:36:43 INFO Fetched page 1/28: 100 products (reported total: 2726)
+2026-09-16 15:36:43 INFO Starting duplicate run: pages 1-28 of 28, per_page=100
+2026-09-16 15:36:43 INFO [1] Creating duplicate for product id=118124 sku=C00246117-3A52 replacement_sku=C00638000
+2026-09-16 15:36:51 INFO [1] Duplicate created: new id=119386 sku=C00638000-7N8F8
+2026-09-16 15:36:51 INFO Reached requested limit of 1 products
+2026-09-16 15:36:51 INFO Run complete: attempted=1 succeeded=1 failed=0

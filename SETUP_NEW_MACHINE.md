@@ -25,38 +25,44 @@ python -m venv env
 pip install -r requirements.txt
 ```
 
-### 4. Copy Credentials (NOT in git)
-Create these files with your credentials:
+### 4. Create Local Configuration and Credentials (never commit)
+Create these files locally from a secure source. Do not copy credentials from
+Git history or commit them:
 
 **keys.txt:**
 ```
 Consumer key
-ck_1be77215f05ca7f848ac0ec16a6b68e76ced9302
+<YOUR_WOOCOMMERCE_CONSUMER_KEY>
 
 Consumer secret
-cs_b2c2be6911c85fe9abc62b4ec5170b9ab746392e
+<YOUR_WOOCOMMERCE_CONSUMER_SECRET>
 ```
 
 **productioncreds.txt:**
 ```
-https://maxusvanparts.co.uk/
-Consumer key ck_1be77215f05ca7f848ac0ec16a6b68e76ced9302
-Consumer secret cs_b2c2be6911c85fe9abc62b4ec5170b9ab746392e	
+<YOUR_CONFIRMED_WORDPRESS_URL>
+Consumer key <YOUR_WOOCOMMERCE_CONSUMER_KEY>
+Consumer secret <YOUR_WOOCOMMERCE_CONSUMER_SECRET>
 
 developer
 productintegration
-nIbM 6KlW sft3 hQyj OG4P ZYeI
+<YOUR_APPLICATION_PASSWORD>
 ```
 
 **config.py:**
 ```python
-WORDPRESS_URL = "https://maxusvanparts.co.uk"
+WORDPRESS_URL = "https://your-confirmed-store.example"
 CURRENCY = "GBP"
 DEFAULT_STOCK_QUANTITY = 50
 DEFAULT_STOCK_STATUS = "instock"
 API_DELAY = 0.5
 TEST_PRODUCT_LIMIT = 20
 ```
+
+**Security note:** this repository previously tracked `config.py` and
+`keys.txt`. Remove tracked credential files from the repository before pushing,
+rotate any credentials that have been committed, and recreate these local files
+on each machine. `.gitignore` alone does not untrack existing Git files.
 
 ### 5. Copy Source HTML Files
 Transfer the `LSFAL11A4PA157987/` folder with all HTML diagram files to the project root.
@@ -90,6 +96,10 @@ python scripts\import_to_woocommerce.py
   ```powershell
   python fix_lookup_table.py
   ```
+- For the resumable replacement duplicate batch, follow
+  [CREATE_DUPLICATES_RUNBOOK.md](CREATE_DUPLICATES_RUNBOOK.md). It includes the
+  checkpoint log, target-store verification, dry-run, resume, and completion
+  steps.
 
 ## What's in Git vs What's Not
 
@@ -108,6 +118,9 @@ python scripts\import_to_woocommerce.py
 - `images/converted/` - Generated PNG/SVG files
 - `data/extracted/` - Extracted JSON data
 - `logs/` - Log files
+
+`config.py` and `keys.txt` must be untracked in Git as well as ignored. See the
+security note above before pushing or cloning to another machine.
 
 ## Quick Start Summary
 ```powershell

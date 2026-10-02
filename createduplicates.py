@@ -50,8 +50,33 @@ def _random_suffix(length: int = 5) -> str:
     return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
+def _to_str(value) -> str:
+    """Coerce to string, treating None/empty as ''. Used for fields the Woo
+    REST API stores as strings even when GET returns them as numbers
+    (e.g. weight comes back as 0.6 but must be posted as "0.6")."""
+    if value is None or value == "":
+        return ""
+    return str(value)
+
+
+def _to_bool(value) -> bool:
+    return bool(value)
+
+
+def _to_int(value, default: int = 0) -> int:
+    if value is None:
+        return default
+    return int(value)
+
+
+def _id_list(items) -> list:
+    """Categories/tags/brands only need their id on write — GET returns
+    name/slug alongside it, but those are read-only and ignored on POST."""
+    return [{"id": item["id"]} for item in (items or []) if "id" in item]
+
+
 def duplicate_product(product_id: int) -> dict | None:
-    """Fetch an existing product and create a draft duplicate.
+    """Fetch an existing product and create a live duplicate.
 
     The new product's SKU (and its `original_sku` meta) are derived from
     the source product's `replacement_sku` meta value, with a random
@@ -100,24 +125,83 @@ def duplicate_product(product_id: int) -> dict | None:
         if key not in existing_keys:
             new_meta.append({"key": key, "value": value})
 
+    # weight/dimensions are string-typed fields in the Woo REST API schema.
+    # GET can return them as numbers (weight: 0.6) or null when unset, but
+    # POST requires strings — coerce explicitly rather than relying on
+    # truthiness.
+    original_dimensions = original_product.get("dimensions") or {}
+    dimensions = {
+        "length": _to_str(original_dimensions.get("length")),
+        "width": _to_str(original_dimensions.get("width")),
+        "height": _to_str(original_dimensions.get("height")),
+    }
+
     duplicated_data = {
+        # --- core content ---
         "name": original_product.get("name"),
         "type": original_product.get("type"),
-        "status": "draft",
-        "regular_price": original_product.get("regular_price"),
-        "description": original_product.get("description"),
-        "short_description": original_product.get("short_description"),
-        "categories": original_product.get("categories"),
-        "images": original_product.get("images"),
-        "attributes": original_product.get("attributes"),
+        "status": "publish",
+        "featured": _to_bool(original_product.get("featured")),
+        "catalog_visibility": original_product.get("catalog_visibility") or "visible",
+        "description": original_product.get("description") or "",
+        "short_description": original_product.get("short_description") or "",
         "sku": new_sku,
+
+        # --- pricing (regular_price is already a string like "13.04";
+        # sale_price/scheduling intentionally NOT carried over — a fresh
+        # draft duplicate shouldn't inherit an active/scheduled sale) ---
+        "regular_price": _to_str(original_product.get("regular_price")),
+
+        # --- virtual/downloadable products ---
+        "virtual": _to_bool(original_product.get("virtual")),
+        "downloadable": _to_bool(original_product.get("downloadable")),
+        "download_limit": _to_int(original_product.get("download_limit"), -1),
+        "download_expiry": _to_int(original_product.get("download_expiry"), -1),
+
+        # --- external/affiliate products (no-ops for type="simple") ---
+        "external_url": original_product.get("external_url") or "",
+        "button_text": original_product.get("button_text") or "",
+
+        # --- tax ---
+        "tax_status": original_product.get("tax_status") or "taxable",
+        "tax_class": original_product.get("tax_class") or "",
+
+        # --- stock ---
+        "manage_stock": _to_bool(original_product.get("manage_stock")),
+        "stock_quantity": original_product.get("stock_quantity"),
+        "stock_status": original_product.get("stock_status") or "instock",
+        "backorders": original_product.get("backorders") or "no",
+        "sold_individually": _to_bool(original_product.get("sold_individually")),
+
+        # --- shipping ---
+        "weight": _to_str(original_product.get("weight")),
+        "dimensions": dimensions,
+        "shipping_class": original_product.get("shipping_class") or "",
+
+        # --- reviews / ordering ---
+        "reviews_allowed": _to_bool(original_product.get("reviews_allowed")),
+        "purchase_note": original_product.get("purchase_note") or "",
+        "menu_order": _to_int(original_product.get("menu_order"), 0),
+
+        # --- relationships (only id needed on write) ---
+        "upsell_ids": original_product.get("upsell_ids") or [],
+        "cross_sell_ids": original_product.get("cross_sell_ids") or [],
+        "categories": _id_list(original_product.get("categories")),
+        "tags": _id_list(original_product.get("tags")),
+
+        # --- media / variations ---
+        "images": original_product.get("images") or [],
+        "attributes": original_product.get("attributes") or [],
+        "default_attributes": original_product.get("default_attributes") or [],
+
         "meta_data": new_meta,
-        # Shipping / dimensions are NOT copied by WooCommerce automatically —
-        # they must be passed explicitly like everything else.
-        "weight": original_product.get("weight"),
-        "dimensions": original_product.get("dimensions"),
-        "shipping_class": original_product.get("shipping_class"),
     }
+
+    # "brands" is a custom taxonomy some Woo sites have (not core on every
+    # install) — only send it if the source product actually returned one,
+    # to avoid rest_invalid_param on sites where it isn't registered.
+    if original_product.get("brands"):
+        duplicated_data["brands"] = _id_list(original_product.get("brands"))
 
     create_resp = wcapi.post("products", duplicated_data)
     if create_resp.status_code == 201:
@@ -132,8 +216,19 @@ def duplicate_product(product_id: int) -> dict | None:
         return None
 
 
+def get_product_data(product_id: int) -> dict | None:
+    """Fetch and pretty-print the raw product JSON for inspection."""
+    resp = wcapi.get(f"products/{product_id}")
+    if resp.status_code != 200:
+        print(f"Error fetching product {product_id}: {resp.status_code} {resp.text}")
+        return None
+    data = resp.json()
+    print(json.dumps(data, indent=4))
+    return data
+
+
 def main():
-    duplicate_product(18709)
+    duplicate_product(117846)
 
 
 if __name__ == "__main__":

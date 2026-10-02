@@ -1,0 +1,2 @@
+from createduplicates import get_product_data
+get_product_data(117846)
